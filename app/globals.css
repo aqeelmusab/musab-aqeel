@@ -4,12 +4,6 @@
 @layer base, components, utilities;
 
 /* Modern CSS — @property typed custom properties enable CSS variable transitions */
-@property --gradient-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
 @property --accent-opacity {
   syntax: '<number>';
   inherits: false;
@@ -51,6 +45,9 @@
   --color-accent:        oklch(93% 0.23 120);
   --color-accent-muted:  color-mix(in oklch, var(--color-accent) 7%, transparent);
   --color-accent-border: color-mix(in oklch, var(--color-accent) 18%, transparent);
+
+  /* Semantic functional */
+  --color-error: oklch(65% 0.2 25);
 
   /* Functional */
   --color-white: oklch(100% 0 0);
@@ -117,6 +114,12 @@ h1, h2, h3, h4 {
   min-height: 100dvh;
 }
 
+/* Hide RevealText elements before GSAP initialises — prevents FOUC on first scroll-down */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
 .mobile-nav-overlay {
   height: 100svh; /* Modern CSS — svh: always fits even with browser chrome visible */
 }
@@ -172,7 +175,6 @@ h1, h2, h3, h4 {
   container-name: card;
 }
 
-/* Modern CSS — native CSS nesting, no preprocessor */
 .nav-link {
   color: var(--color-text-secondary);
   transition: color 0.2s ease;
@@ -180,10 +182,6 @@ h1, h2, h3, h4 {
 
   &:hover {
     color: var(--color-text-primary);
-  }
-
-  &[data-active='true'] {
-    color: var(--color-accent);
   }
 
   & .nav-link-underline {
@@ -325,9 +323,84 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Tailwind v4 theme inline */
+/* 404 page — clean CSS glitch (ported from 404-glitch/style.css) */
+@keyframes glitch-404 {
+  2%, 64% {
+    transform: translate(2px, 0) skew(0deg);
+  }
+  4%, 60% {
+    transform: translate(-2px, 0) skew(0deg);
+  }
+  62% {
+    transform: translate(0, 0) skew(5deg);
+  }
+}
+
+@keyframes glitch-404-top {
+  2%, 64% {
+    transform: translate(2px, -2px);
+  }
+  4%, 60% {
+    transform: translate(-2px, 2px);
+  }
+  62% {
+    transform: translate(13px, -1px) skew(-13deg);
+  }
+}
+
+@keyframes glitch-404-bottom {
+  2%, 64% {
+    transform: translate(-2px, 0);
+  }
+  4%, 60% {
+    transform: translate(-2px, 0);
+  }
+  62% {
+    transform: translate(-22px, 5px) skew(21deg);
+  }
+}
+
+.glitch-404 {
+  position: relative;
+  display: inline-block;
+  animation: glitch-404 1s linear infinite;
+}
+
+.glitch-404::before,
+.glitch-404::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.glitch-404::before {
+  animation: glitch-404-top 1s linear infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+.glitch-404::after {
+  animation: glitch-404-bottom 1.5s linear infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-404,
+  .glitch-404::before,
+  .glitch-404::after {
+    animation: none;
+  }
+}
+
+/* Tailwind v4 theme inline — exposes font-display, font-body, font-mono utilities */
 @theme inline {
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
-  --font-mono: var(--font-mono);
+  --font-display: var(--font-display), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }

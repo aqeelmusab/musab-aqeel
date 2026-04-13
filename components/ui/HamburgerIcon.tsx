@@ -47,6 +47,7 @@ export default function HamburgerIcon({ isOpen, onClick }: HamburgerIconProps) {
     <button
       onClick={onClick}
       aria-label={isOpen ? 'Close menu' : 'Open menu'}
+      aria-expanded={isOpen}
       className="relative z-50 flex items-center justify-end w-10 h-10 lg:hidden ml-auto"
     >
       {/* 22 × 11.5 hit area with absolute-positioned lines */}

@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { projects } from '@/lib/projects'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://musabaqeel.com'
+import { SITE_URL } from '@/lib/config'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const projectRoutes = projects.map((p) => ({

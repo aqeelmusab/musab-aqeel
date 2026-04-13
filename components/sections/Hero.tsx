@@ -48,26 +48,25 @@ export default function Hero() {
           background: 'radial-gradient(circle, var(--color-accent) 0%, transparent 70%)',
           opacity: 0.03,
         }}
+        aria-hidden="true"
       />
 
-      {/* Headline block — fills space, vertically centered */}
+      {/* Headline block */}
       <div className="relative z-10 flex-1 flex flex-col justify-center max-w-[1200px]">
-        {/* COPY */}
         <div className="mb-4 md:mb-6">
           <SplitText
             as="h1"
-            className="font-semibold tracking-tight"
-            style={{ fontFamily: 'var(--font-display), sans-serif', fontSize: 'var(--text-hero)', lineHeight: 1.05 }}
+            className="font-semibold tracking-tight font-display"
+            style={{ fontSize: 'var(--text-hero)', lineHeight: 1.05 }}
             trigger="load"
             delay={0.1}
           >
             Musab Aqeel.
           </SplitText>
           <SplitText
-            as="h1"
-            className="font-semibold tracking-tight"
+            as="h2"
+            className="font-semibold tracking-tight font-display"
             style={{
-              fontFamily: 'var(--font-display), sans-serif',
               fontSize: 'var(--text-hero)',
               lineHeight: 1.05,
               color: 'var(--color-text-secondary)',
@@ -79,12 +78,10 @@ export default function Hero() {
           </SplitText>
         </div>
 
-        {/* COPY */}
         <motion.p
           {...fadeUp(0.35)}
-          className="max-w-[600px] text-base md:text-lg leading-relaxed mb-8 md:mb-12"
+          className="max-w-[600px] text-base md:text-lg leading-relaxed mb-8 md:mb-12 font-body"
           style={{
-            fontFamily: 'var(--font-body), sans-serif',
             fontWeight: 300,
             color: 'var(--color-text-secondary)',
           }}
@@ -104,7 +101,7 @@ export default function Hero() {
             className="btn-text md:text-base"
             onClick={() => scrollToSection('#work')}
           >
-            View work <span className="arrow">→</span>
+            View work <span className="arrow" aria-hidden="true">→</span>
           </MagneticButton>
         </motion.div>
       </div>
@@ -113,24 +110,20 @@ export default function Hero() {
       <div className="relative z-10 flex items-end justify-between">
         <motion.p
           {...fadeUp(0.7)}
-          className="text-[10px] md:text-xs uppercase tracking-widest"
-          style={{
-            fontFamily: 'var(--font-mono), monospace',
-            color: 'var(--color-text-tertiary)',
-          }}
+          className="text-[10px] md:text-xs uppercase tracking-widest font-mono"
+          style={{ color: 'var(--color-text-tertiary)' }}
         >
-          {/* COPY */}
-          Trusted by 25+ clients worldwide {/* UPDATE: real numbers */}
+          Trusted by 25+ clients worldwide
         </motion.p>
 
         <motion.div
           {...fadeUp(0.85)}
           className="flex flex-col items-center gap-2 flex-shrink-0 ml-4"
+          aria-hidden="true"
         >
           <span
-            className="text-[9px] md:text-[10px] uppercase tracking-widest"
+            className="text-[9px] md:text-[10px] uppercase tracking-widest font-mono"
             style={{
-              fontFamily: 'var(--font-mono), monospace',
               color: 'var(--color-text-tertiary)',
               writingMode: 'vertical-rl',
             }}

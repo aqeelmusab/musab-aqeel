@@ -1,11 +1,16 @@
 import type { Project } from '@/types'
 
-// COPY
+/*
+ * TODO — Before launch, verify or update:
+ *  - liveUrl values: replace placeholder domains with real live URLs (or remove)
+ *  - Contact.tsx / Nav.tsx: verify hello@musabaqeel.com email address
+ */
+
 export const projects: Project[] = [
   {
     slug: 'meridian-platform',
     title: 'Meridian Platform',
-    client: 'Client A', // UPDATE: real client name
+    client: 'Confidential',
     type: 'Full Stack Application',
     year: '2024',
     tags: ['Next.js', 'TypeScript', 'PostgreSQL', 'Tailwind CSS'],
@@ -39,13 +44,13 @@ export const projects: Project[] = [
       { name: 'PostgreSQL', reason: 'Strong relational model for patient, appointment, and billing data with ACID guarantees.' },
       { name: 'Tailwind CSS', reason: 'Rapid iteration on a consistent design system without writing custom CSS for every component.' },
     ],
-    liveUrl: 'https://meridian-platform.com', // PLACEHOLDER — update with real URL
+    liveUrl: 'https://meridian-platform.com',
     repoUrl: '',
   },
   {
     slug: 'aura-commerce',
     title: 'Aura Commerce',
-    client: 'Client B', // UPDATE: real client name
+    client: 'Confidential',
     type: 'E-commerce Platform',
     year: '2024',
     tags: ['Next.js', 'Shopify', 'GSAP', 'Framer Motion'],
@@ -75,13 +80,13 @@ export const projects: Project[] = [
       { name: 'GSAP + ScrollTrigger', reason: 'Scroll-driven product reveals and parallax effects that match the brand aesthetic.' },
       { name: 'Framer Motion', reason: 'Page transitions and micro-interactions for the configurator UI.' },
     ],
-    liveUrl: 'https://aura-lifestyle.com', // PLACEHOLDER — update with real URL
+    liveUrl: 'https://aura-lifestyle.com',
     repoUrl: '',
   },
   {
     slug: 'nexus-dashboard',
     title: 'Nexus Dashboard',
-    client: 'Client C', // UPDATE: real client name
+    client: 'Confidential',
     type: 'SaaS Dashboard',
     year: '2023',
     tags: ['React', 'Node.js', 'D3.js', 'WebSocket'],
@@ -111,13 +116,13 @@ export const projects: Project[] = [
       { name: 'D3.js', reason: 'Custom high-performance visualizations that no charting library could deliver.' },
       { name: 'WebSocket', reason: 'Bi-directional real-time communication for live event streaming and alert triggers.' },
     ],
-    liveUrl: 'https://nexus-analytics.io', // PLACEHOLDER — update with real URL
+    liveUrl: 'https://nexus-analytics.io',
     repoUrl: '',
   },
   {
     slug: 'vertex-studio',
     title: 'Vertex Studio',
-    client: 'Client D', // UPDATE: real client name
+    client: 'Confidential',
     type: 'Agency Website',
     year: '2023',
     tags: ['Next.js', 'GSAP', 'Webflow CMS', 'Tailwind CSS'],
@@ -147,7 +152,7 @@ export const projects: Project[] = [
       { name: 'Webflow CMS', reason: 'Visual content management for a non-technical team.' },
       { name: 'Tailwind CSS', reason: 'Consistent spacing and typography system across all pages.' },
     ],
-    liveUrl: 'https://vertex-creative.com', // PLACEHOLDER — update with real URL
+    liveUrl: 'https://vertex-creative.com',
     repoUrl: '',
   },
 ]

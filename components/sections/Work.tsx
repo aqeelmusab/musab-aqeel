@@ -12,6 +12,8 @@ export default function Work() {
   const featured = HOME_PROJECTS[0]
   const rest = HOME_PROJECTS.slice(1)
 
+  if (!featured) return null
+
   return (
     <section id="work" className="py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-[1400px] mx-auto">
@@ -24,8 +26,7 @@ export default function Work() {
             </RevealText>
             <SplitText
               as="h2"
-              className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-display), sans-serif' }}
+              className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight font-display"
             >
               Selected projects
             </SplitText>
@@ -33,13 +34,10 @@ export default function Work() {
           <RevealText delay={0.1}>
             <Link
               href="/work"
-              className="hidden md:flex items-center gap-2 text-sm"
-              style={{
-                fontFamily: 'var(--font-body), sans-serif',
-                color: 'var(--color-text-secondary)',
-              }}
+              className="hidden md:flex items-center gap-2 text-sm font-body"
+              style={{ color: 'var(--color-text-secondary)' }}
             >
-              View all <span>→</span>
+              View all <span aria-hidden="true">→</span>
             </Link>
           </RevealText>
         </div>

@@ -4,7 +4,6 @@ import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import type { ProcessStep } from '@/types'
 
-// COPY
 const STEPS: ProcessStep[] = [
   {
     number: '01',
@@ -39,8 +38,7 @@ export default function Process() {
         </RevealText>
         <SplitText
           as="h2"
-          className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-16"
-          style={{ fontFamily: 'var(--font-display), sans-serif' }}
+          className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-16 font-display"
         >
           How I work
         </SplitText>
@@ -50,26 +48,19 @@ export default function Process() {
             <RevealText key={step.number} delay={0.05 + i * 0.08}>
               <div className="relative pt-6" style={{ borderTop: '1px solid var(--color-border-sub)' }}>
                 <span
-                  className="text-4xl lg:text-5xl font-normal mb-4 block"
-                  style={{
-                    fontFamily: 'var(--font-mono), monospace',
-                    color: 'var(--color-text-tertiary)',
-                  }}
+                  className="text-4xl lg:text-5xl font-normal mb-4 block font-mono"
+                  style={{ color: 'var(--color-text-tertiary)' }}
                 >
                   {step.number}
                 </span>
                 <h3
-                  className="text-xl font-medium tracking-tight mb-3"
-                  style={{ fontFamily: 'var(--font-display), sans-serif' }}
+                  className="text-xl font-medium tracking-tight mb-3 font-display"
                 >
                   {step.title}
                 </h3>
                 <p
-                  className="text-sm leading-relaxed"
-                  style={{
-                    fontFamily: 'var(--font-body), sans-serif',
-                    color: 'var(--color-text-secondary)',
-                  }}
+                  className="text-sm leading-relaxed font-body"
+                  style={{ color: 'var(--color-text-secondary)' }}
                 >
                   {step.description}
                 </p>

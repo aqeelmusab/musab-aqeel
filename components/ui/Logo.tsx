@@ -11,7 +11,11 @@ import {
   logoGlitchState3,
 } from '@/lib/logo-paths'
 
-export default function Logo() {
+interface LogoProps {
+  onClick?: (e: React.MouseEvent) => void
+}
+
+export default function Logo({ onClick: externalOnClick }: LogoProps = {}) {
   const svgRef = useRef<SVGSVGElement>(null)
   const animatedRef = useRef(false)
 
@@ -73,22 +77,25 @@ export default function Logo() {
       repeat: -1,
     }, '-=0.2')
 
-    return () => {
-      tl.kill()
-    }
+    return () => { tl.kill() }
   }, [])
 
   const pathname = usePathname()
 
   const handleClick = useCallback((e: React.MouseEvent) => {
+    if (externalOnClick) {
+      externalOnClick(e)
+      return
+    }
+    // Fallback when Logo is used outside Nav
     if (pathname === '/') {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  }, [pathname])
+  }, [pathname, externalOnClick])
 
   return (
-    <Link href="/" onClick={handleClick} aria-label="Musab Aqeel — Home">
+    <Link href="/" onClick={handleClick} aria-label="Musab Aqeel - Home">
       <svg
         ref={svgRef}
         viewBox="0 0 60 24"

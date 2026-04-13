@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import MagneticButton from '@/components/ui/MagneticButton'
 
 const BUDGET_OPTIONS = [
   'Under $1k',
-  '$1k - $5k',
-  '$5k - $15k',
+  '$1k–$5k',
+  '$5k–$15k',
   '$15k+',
   "Let's discuss",
 ]
@@ -21,6 +21,18 @@ const PROJECT_TYPES = [
   'Other',
 ]
 
+const SelectArrow = () => (
+  <span
+    className="absolute inset-y-0 right-3 flex items-center pointer-events-none"
+    style={{ color: 'var(--color-text-tertiary)' }}
+    aria-hidden="true"
+  >
+    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </span>
+)
+
 export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [form, setForm] = useState({
@@ -30,6 +42,12 @@ export default function Contact() {
     projectType: '',
     message: '',
   })
+
+  useEffect(() => {
+    if (status !== 'sent') return
+    const t = setTimeout(() => setStatus('idle'), 5000)
+    return () => clearTimeout(t)
+  }, [status])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -61,11 +79,11 @@ export default function Contact() {
     backgroundColor: 'var(--color-surface-up)',
     border: '1px solid var(--color-border)',
     color: 'var(--color-text-primary)',
-    fontFamily: 'var(--font-body), sans-serif',
   }
 
-  const labelClass = "block mb-1.5 text-xs uppercase tracking-widest"
-  const labelStyle = { fontFamily: 'var(--font-mono), monospace', color: 'var(--color-text-tertiary)' }
+  const labelClass = 'block mb-1.5 text-xs uppercase tracking-widest font-mono'
+  const labelStyle = { color: 'var(--color-text-tertiary)' }
+  const inputClass = 'w-full pl-4 pr-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200 font-body'
 
   return (
     <section id="contact" className="py-24 md:py-32 px-6 md:px-12 lg:px-24">
@@ -80,8 +98,7 @@ export default function Contact() {
 
           <SplitText
             as="h2"
-            className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-8"
-            style={{ fontFamily: 'var(--font-display), sans-serif' }}
+            className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-8 font-display"
           >
             Start a project
           </SplitText>
@@ -92,14 +109,12 @@ export default function Contact() {
               style={{ borderLeft: '2px solid var(--color-border-sub)' }}
             >
               <p
-                className="text-sm leading-relaxed"
+                className="text-sm leading-relaxed font-body"
                 style={{
-                  fontFamily: 'var(--font-body), sans-serif',
                   fontWeight: 300,
                   color: 'var(--color-text-secondary)',
                 }}
               >
-                {/* COPY */}
                 I price based on what the project is worth to your business, not how many hours I spend on it.
                 Fast delivery is a feature, not a discount. Clients who need something shipped in days
                 pay accordingly because that speed has real business value.
@@ -110,11 +125,10 @@ export default function Contact() {
 
           <RevealText delay={0.1}>
             <a
-              href="mailto:hello@musabaqeel.com" // {/* UPDATE: real email */}
-              className="inline-block text-lg font-medium mb-6 relative group"
-              style={{ fontFamily: 'var(--font-body), sans-serif' }}
+              href="mailto:hello@musabaqeel.com"
+              className="inline-block text-lg font-medium mb-6 relative group font-body"
             >
-              hello@musabaqeel.com {/* UPDATE: real email */}
+              hello@musabaqeel.com
               <span
                 className="absolute bottom-0 left-0 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
                 style={{ backgroundColor: 'var(--color-text-primary)', transitionTimingFunction: 'var(--ease-out)' }}
@@ -135,22 +149,22 @@ export default function Contact() {
                 />
               </span>
               <span
-                className="text-xs"
-                style={{ fontFamily: 'var(--font-mono), monospace', color: 'var(--color-text-secondary)' }}
+                className="text-xs font-mono"
+                style={{ color: 'var(--color-text-secondary)' }}
               >
                 Available for new projects
               </span>
             </div>
             <p
-              className="text-xs"
-              style={{ fontFamily: 'var(--font-mono), monospace', color: 'var(--color-text-tertiary)' }}
+              className="text-xs font-mono"
+              style={{ color: 'var(--color-text-tertiary)' }}
             >
               Response within 24 hours.
             </p>
           </RevealText>
         </div>
 
-        {/* Right column — form with staggered field reveals */}
+        {/* Right column — form */}
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <RevealText delay={0.05}>
@@ -159,7 +173,7 @@ export default function Contact() {
                 <input
                   type="text" name="name" required value={form.name} onChange={handleChange}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200"
+                  className={inputClass}
                   style={inputStyle}
                 />
               </div>
@@ -171,7 +185,7 @@ export default function Contact() {
                 <input
                   type="email" name="email" required value={form.email} onChange={handleChange}
                   placeholder="your@email.com"
-                  className="w-full px-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200"
+                  className={inputClass}
                   style={inputStyle}
                 />
               </div>
@@ -181,25 +195,31 @@ export default function Contact() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="form-field">
                   <label className={labelClass} style={labelStyle}>Budget</label>
-                  <select
-                    name="budget" required value={form.budget} onChange={handleChange}
-                    className="w-full px-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200 appearance-none"
-                    style={{ ...inputStyle, color: form.budget ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
-                  >
-                    <option value="" disabled>Select range</option>
-                    {BUDGET_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="budget" required value={form.budget} onChange={handleChange}
+                      className={`${inputClass} pr-10 appearance-none`}
+                      style={{ ...inputStyle, color: form.budget ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
+                    >
+                      <option value="" disabled>Select range</option>
+                      {BUDGET_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <SelectArrow />
+                  </div>
                 </div>
                 <div className="form-field">
                   <label className={labelClass} style={labelStyle}>Project type</label>
-                  <select
-                    name="projectType" required value={form.projectType} onChange={handleChange}
-                    className="w-full px-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200 appearance-none"
-                    style={{ ...inputStyle, color: form.projectType ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
-                  >
-                    <option value="" disabled>Select type</option>
-                    {PROJECT_TYPES.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="projectType" required value={form.projectType} onChange={handleChange}
+                      className={`${inputClass} pr-10 appearance-none`}
+                      style={{ ...inputStyle, color: form.projectType ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
+                    >
+                      <option value="" disabled>Select type</option>
+                      {PROJECT_TYPES.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <SelectArrow />
+                  </div>
                 </div>
               </div>
             </RevealText>
@@ -210,7 +230,7 @@ export default function Contact() {
                 <textarea
                   name="message" required value={form.message} onChange={handleChange}
                   placeholder="Tell me about your project" rows={4}
-                  className="w-full px-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200 resize-none"
+                  className={`${inputClass} resize-none`}
                   style={inputStyle}
                 />
               </div>
@@ -218,16 +238,16 @@ export default function Contact() {
 
             <RevealText delay={0.25}>
               <MagneticButton className="btn-outline w-full mt-2" type="submit">
-                {status === 'sending' ? 'Sending...' : status === 'sent' ? 'Sent' : 'Send message'}
+                {status === 'sending' ? 'Sending...' : status === 'sent' ? 'Sent ✓' : 'Send message'}
               </MagneticButton>
 
               {status === 'sent' && (
-                <p className="text-xs text-center mt-4" style={{ fontFamily: 'var(--font-mono), monospace', color: 'var(--color-accent)' }}>
+                <p className="text-xs text-center mt-4 font-mono" style={{ color: 'var(--color-accent)' }}>
                   Message received. I will be in touch within 24 hours.
                 </p>
               )}
               {status === 'error' && (
-                <p className="text-xs text-center mt-4" style={{ fontFamily: 'var(--font-mono), monospace', color: 'oklch(65% 0.2 25)' }}>
+                <p className="text-xs text-center mt-4 font-mono" style={{ color: 'var(--color-error)' }}>
                   Something went wrong. Try emailing me directly.
                 </p>
               )}

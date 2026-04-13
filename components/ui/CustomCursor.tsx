@@ -130,11 +130,8 @@ export default function CustomCursor() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="text-[10px] uppercase tracking-widest"
-            style={{
-              fontFamily: 'var(--font-mono), monospace',
-              color: 'var(--color-text-primary)',
-            }}
+            className="text-[10px] uppercase tracking-widest font-mono"
+            style={{ color: 'var(--color-text-primary)' }}
           >
             View
           </motion.span>

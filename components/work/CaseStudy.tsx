@@ -48,17 +48,13 @@ export default function CaseStudy({ project }: CaseStudyProps) {
         />
         <div className="absolute bottom-8 left-6 md:left-12 lg:left-24">
           <p
-            className="text-xs mb-2"
-            style={{
-              fontFamily: 'var(--font-mono), monospace',
-              color: 'var(--color-text-secondary)',
-            }}
+            className="text-xs mb-2 font-mono"
+            style={{ color: 'var(--color-text-secondary)' }}
           >
             {project.type} / {project.year}
           </p>
           <h1
-            className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight"
-            style={{ fontFamily: 'var(--font-display), sans-serif' }}
+            className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight font-display"
           >
             {project.title}
           </h1>
@@ -72,13 +68,12 @@ export default function CaseStudy({ project }: CaseStudyProps) {
         transition={{ duration: 0.6, ease: ease.out, delay: 0.3 }}
       >
         {/* Overview */}
-        <section className="py-16 md:py-24 px-6 md:px-12 lg:px-24">
+        <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
           <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2">
               <p
-                className="text-xl leading-relaxed"
+                className="text-xl leading-relaxed font-body"
                 style={{
-                  fontFamily: 'var(--font-body), sans-serif',
                   fontWeight: 300,
                   color: 'var(--color-text-secondary)',
                 }}
@@ -92,8 +87,8 @@ export default function CaseStudy({ project }: CaseStudyProps) {
               <MetaRow label="Role" value="Full Stack Development" />
               <div>
                 <span
-                  className="text-xs uppercase tracking-widest block mb-2"
-                  style={{ fontFamily: 'var(--font-mono), monospace', color: 'var(--color-text-tertiary)' }}
+                  className="text-xs uppercase tracking-widest block mb-2 font-mono"
+                  style={{ color: 'var(--color-text-tertiary)' }}
                 >
                   Stack
                 </span>
@@ -103,14 +98,11 @@ export default function CaseStudy({ project }: CaseStudyProps) {
               </div>
               {project.liveUrl && (
                 <a
-                  href={project.liveUrl} // {/* UPDATE: real URL */}
+                  href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm inline-flex items-center gap-1.5 mt-2"
-                  style={{
-                    fontFamily: 'var(--font-body), sans-serif',
-                    color: 'var(--color-text-secondary)',
-                  }}
+                  className="text-sm inline-flex items-center gap-1.5 mt-2 font-body"
+                  style={{ color: 'var(--color-text-secondary)' }}
                 >
                   View live ↗
                 </a>
@@ -135,17 +127,13 @@ export default function CaseStudy({ project }: CaseStudyProps) {
               {project.decisions.map((d, i) => (
                 <RevealText key={i} delay={i * 0.08}>
                   <h3
-                    className="text-xl md:text-2xl font-medium tracking-tight mb-3"
-                    style={{ fontFamily: 'var(--font-display), sans-serif' }}
+                    className="text-xl md:text-2xl font-medium tracking-tight mb-3 font-display"
                   >
                     {d.title}
                   </h3>
                   <p
-                    className="text-sm leading-relaxed max-w-[680px]"
-                    style={{
-                      fontFamily: 'var(--font-body), sans-serif',
-                      color: 'var(--color-text-secondary)',
-                    }}
+                    className="text-sm leading-relaxed max-w-[680px] font-body"
+                    style={{ color: 'var(--color-text-secondary)' }}
                   >
                     {d.description}
                   </p>
@@ -161,21 +149,17 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             <span className="section-label block mb-8">Outcome</span>
             {project.outcomeMetrics && (
               <RevealText>
-                <div className="flex items-center gap-10 md:gap-16 mb-10">
+                <div className="flex flex-wrap items-center gap-10 md:gap-16 mb-10">
                   {project.outcomeMetrics.map((m, i) => (
                     <div key={i} className="flex flex-col">
                       <span
-                        className="text-4xl md:text-5xl font-normal"
-                        style={{ fontFamily: 'var(--font-mono), monospace' }}
+                        className="text-4xl md:text-5xl font-normal font-mono"
                       >
                         {m.value}
                       </span>
                       <span
-                        className="text-xs mt-1"
-                        style={{
-                          fontFamily: 'var(--font-body), sans-serif',
-                          color: 'var(--color-text-tertiary)',
-                        }}
+                        className="text-xs mt-1 font-body"
+                        style={{ color: 'var(--color-text-tertiary)' }}
                       >
                         {m.label}
                       </span>
@@ -186,11 +170,8 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             )}
             <RevealText delay={0.1}>
               <p
-                className="text-base leading-relaxed max-w-[680px]"
-                style={{
-                  fontFamily: 'var(--font-body), sans-serif',
-                  color: 'var(--color-text-secondary)',
-                }}
+                className="text-base leading-relaxed max-w-[680px] font-body"
+                style={{ color: 'var(--color-text-secondary)' }}
               >
                 {project.outcome}
               </p>
@@ -213,17 +194,13 @@ export default function CaseStudy({ project }: CaseStudyProps) {
                     }}
                   >
                     <h4
-                      className="text-base font-medium mb-2"
-                      style={{ fontFamily: 'var(--font-display), sans-serif' }}
+                      className="text-base font-medium mb-2 font-display"
                     >
                       {s.name}
                     </h4>
                     <p
-                      className="text-sm leading-relaxed"
-                      style={{
-                        fontFamily: 'var(--font-body), sans-serif',
-                        color: 'var(--color-text-secondary)',
-                      }}
+                      className="text-sm leading-relaxed font-body"
+                      style={{ color: 'var(--color-text-secondary)' }}
                     >
                       {s.reason}
                     </p>
@@ -256,14 +233,14 @@ function MetaRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <span
-        className="text-xs uppercase tracking-widest block mb-1"
-        style={{ fontFamily: 'var(--font-mono), monospace', color: 'var(--color-text-tertiary)' }}
+        className="text-xs uppercase tracking-widest block mb-1 font-mono"
+        style={{ color: 'var(--color-text-tertiary)' }}
       >
         {label}
       </span>
       <span
-        className="text-sm"
-        style={{ fontFamily: 'var(--font-body), sans-serif', color: 'var(--color-text-secondary)' }}
+        className="text-sm font-body"
+        style={{ color: 'var(--color-text-secondary)' }}
       >
         {value}
       </span>
@@ -275,14 +252,11 @@ function CaseSection({ label, content }: { label: string; content: string }) {
   return (
     <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
       <div className="max-w-[1400px] mx-auto">
-        <span className="section-label block mb-6">{label}</span>
+        <span className="section-label block mb-8">{label}</span>
         <RevealText>
           <p
-            className="text-base leading-relaxed max-w-[680px]"
-            style={{
-              fontFamily: 'var(--font-body), sans-serif',
-              color: 'var(--color-text-secondary)',
-            }}
+            className="text-base leading-relaxed max-w-[680px] font-body"
+            style={{ color: 'var(--color-text-secondary)' }}
           >
             {content}
           </p>

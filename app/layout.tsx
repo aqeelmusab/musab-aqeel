@@ -4,9 +4,8 @@ import SmoothScroll from '@/lib/SmoothScroll'
 import Nav from '@/components/layout/Nav'
 import CustomCursor from '@/components/ui/CustomCursor'
 import { personJsonLd, websiteJsonLd } from '@/lib/structured-data'
+import { SITE_URL } from '@/lib/config'
 import './globals.css'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://musabaqeel.com'
 
 const clashDisplay = localFont({
   src: [
@@ -41,7 +40,7 @@ const fragmentMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Musab Aqeel — Full Stack Developer, Architect & Operator',
+    default: 'Musab Aqeel - Full Stack Developer, Architect & Operator',
     template: '%s | Musab Aqeel',
   },
   description: 'Full stack developer and studio founder delivering complete builds from design to deployment in weeks, not months. Based in Pakistan, working worldwide.',
@@ -64,15 +63,15 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: SITE_URL,
     siteName: 'Musab Aqeel',
-    title: 'Musab Aqeel — Full Stack Developer, Architect & Operator',
+    title: 'Musab Aqeel - Full Stack Developer, Architect & Operator',
     description: 'I take complete projects from zero to production, across any stack, at a pace most teams cannot match.',
     images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Musab Aqeel — Full Stack Developer',
+    title: 'Musab Aqeel - Full Stack Developer',
     description: 'Complete builds from design to deployment in weeks, not months.',
-    creator: '@musabaqeel', // UPDATE: real handle
+    creator: '@aqeelmusab',
     images: ['/twitter-image'],
   },
   robots: {

@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://musabaqeel.com'
+import { SITE_URL } from '@/lib/config'
 
 export const personJsonLd = {
   '@context': 'https://schema.org',
@@ -12,9 +12,9 @@ export const personJsonLd = {
     'Node.js', 'PostgreSQL', 'E-commerce', 'UI Engineering', 'System Architecture',
   ],
   sameAs: [
-    'https://github.com/musabaqeel', // UPDATE: real URL
-    'https://linkedin.com/in/musabaqeel', // UPDATE: real URL
-    'https://twitter.com/musabaqeel', // UPDATE: real URL
+    'https://github.com/aqeelspark',
+    'https://linkedin.com/in/aqeelmusab',
+    'https://x.com/aqeelmusab',
   ],
   address: {
     '@type': 'PostalAddress',

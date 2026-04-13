@@ -4,8 +4,6 @@ import { useEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 interface RevealTextProps {
   children: React.ReactNode
   className?: string
@@ -32,26 +30,24 @@ export default function RevealText({
   useEffect(() => {
     if (!ref.current) return
 
+    // gsap.set confirms the initial state already applied by the [data-reveal] CSS rule,
+    // ensuring GSAP owns the property from the start with no specificity conflict.
     gsap.set(ref.current, { opacity: 0, y: 30 })
 
     const tween = gsap.to(ref.current, {
       opacity: 1,
       y: 0,
-      duration: 1,
-      ease: 'none',
-      delay,
+      duration: scrub ? 1 : 0.7,
+      ease: scrub ? 'none' : 'power3.out',
+      // delay on a scrubbed tween creates a dead zone — only meaningful for once-mode
+      delay: scrub ? 0 : delay,
       scrollTrigger: {
         trigger: ref.current,
         start: 'top 95%',
         end: 'top 65%',
-        scrub: scrub ? 0.6 : false,
+        scrub: scrub ? 0.3 : false,
         once: !scrub,
         invalidateOnRefresh: true,
-        onEnter: () => {
-          if (!scrub && ref.current) {
-            gsap.to(ref.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay })
-          }
-        },
       },
     })
 
@@ -61,7 +57,7 @@ export default function RevealText({
   }, [delay, scrub, cleanup])
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} data-reveal className={className}>
       {children}
     </div>
   )

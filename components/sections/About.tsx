@@ -24,12 +24,13 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
-    updateFade()
+    const rafId = requestAnimationFrame(updateFade)
     const ro = new ResizeObserver(updateFade)
     ro.observe(el)
     el.addEventListener('scroll', updateFade, { passive: true })
     window.addEventListener('resize', updateFade)
     return () => {
+      cancelAnimationFrame(rafId)
       ro.disconnect()
       el.removeEventListener('scroll', updateFade)
       window.removeEventListener('resize', updateFade)
@@ -43,7 +44,6 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-w-0">
       <div ref={scrollRef} className="overflow-x-auto">
-        {/* Padding lives on the pre so it’s part of scroll overflow — right inset stays when scrolled to end, without an extra padded frame. */}
         <pre className="m-0 box-border inline-block min-w-full w-max max-w-none align-top p-5">
           {children}
         </pre>
@@ -56,7 +56,7 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
           maskImage: 'linear-gradient(to right, black, transparent)',
           WebkitMaskImage: 'linear-gradient(to right, black, transparent)',
         }}
-        aria-hidden
+        aria-hidden="true"
       />
       <div
         className={`${fadeBase} inset-y-0 right-0 w-10`}
@@ -66,7 +66,7 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
           maskImage: 'linear-gradient(to left, black, transparent)',
           WebkitMaskImage: 'linear-gradient(to left, black, transparent)',
         }}
-        aria-hidden
+        aria-hidden="true"
       />
     </div>
   )
@@ -82,7 +82,6 @@ const CODE_BLOCK = `const engagement = {
   support:   'post-launch included',
 }`
 
-// COPY
 const DETAILS = [
   'Remote / Worldwide',
   'Full stack — design to deployment',
@@ -95,29 +94,26 @@ export default function About() {
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         <div>
           <RevealText>
-            <span className="section-label block mb-6">
+            <span className="section-label block mb-4">
               {'// 01 About'}
             </span>
           </RevealText>
 
           <SplitText
             as="h2"
-            className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-8"
-            style={{ fontFamily: 'var(--font-display), sans-serif' }}
+            className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-8 font-display"
           >
             Built on systems. Delivered fast.
           </SplitText>
 
           <RevealText delay={0.05}>
             <p
-              className="text-lg leading-relaxed mb-10 max-w-[520px]"
+              className="text-lg leading-relaxed mb-10 max-w-[520px] font-body"
               style={{
-                fontFamily: 'var(--font-body), sans-serif',
                 fontWeight: 300,
                 color: 'var(--color-text-secondary)',
               }}
             >
-              {/* COPY */}
               Close to a decade of building has produced something more useful than experience: systems.
               Reusable architectures, hardened workflows, and an AI stack that compresses timelines
               from months to weeks without touching quality. I take projects from zero to deployed,
@@ -132,13 +128,10 @@ export default function About() {
                   className="flex items-center gap-3 py-3"
                   style={{ borderTop: '1px solid var(--color-border-sub)' }}
                 >
-                  <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>→</span>
+                  <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }} aria-hidden="true">→</span>
                   <span
-                    className="text-sm"
-                    style={{
-                      fontFamily: 'var(--font-body), sans-serif',
-                      color: 'var(--color-text-secondary)',
-                    }}
+                    className="text-sm font-body"
+                    style={{ color: 'var(--color-text-secondary)' }}
                   >
                     {detail}
                   </span>
@@ -159,16 +152,14 @@ export default function About() {
             <div
               className="flex items-center gap-1.5 px-4 py-3"
               style={{ borderBottom: '1px solid var(--color-border-sub)' }}
+              aria-hidden="true"
             >
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-border-up)' }} />
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-border-up)' }} />
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-border-up)' }} />
             </div>
             <AboutTerminalBlock>
-              <code
-                className="text-[13px] leading-[1.7]"
-                style={{ fontFamily: 'var(--font-mono), monospace' }}
-              >
+              <code className="text-[13px] leading-[1.7] font-mono">
                 {CODE_BLOCK.split('\n').map((line, i) => (
                   <div key={i}>
                     {line.includes(':') ? (

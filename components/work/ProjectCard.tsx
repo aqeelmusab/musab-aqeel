@@ -48,17 +48,13 @@ export default function ProjectCard({ project, className = '' }: ProjectCardProp
         <div className="flex items-start justify-between mt-4">
           <div>
             <h3
-              className="text-lg md:text-xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-display), sans-serif' }}
+              className="text-lg md:text-xl font-medium tracking-tight font-display"
             >
               {project.title}
             </h3>
             <p
-              className="text-xs mt-1"
-              style={{
-                fontFamily: 'var(--font-body), sans-serif',
-                color: 'var(--color-text-tertiary)',
-              }}
+              className="text-xs mt-1 font-body"
+              style={{ color: 'var(--color-text-tertiary)' }}
             >
               {project.client} / {project.type}
             </p>

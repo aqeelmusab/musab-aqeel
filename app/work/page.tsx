@@ -5,13 +5,13 @@ import { projects } from '@/lib/projects'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Work — Selected Projects & Case Studies',
+  title: 'Work - Selected Projects & Case Studies',
   description: 'Full stack projects spanning SaaS platforms, e-commerce, real-time dashboards, and agency websites. Each built solo, start to finish.',
   alternates: {
     canonical: '/work',
   },
   openGraph: {
-    title: 'Work — Selected Projects & Case Studies',
+    title: 'Work - Selected Projects & Case Studies',
     description: 'Full stack projects spanning SaaS platforms, e-commerce, real-time dashboards, and agency websites.',
     url: '/work',
   },
@@ -24,8 +24,7 @@ export default function WorkIndexPage() {
         <div className="max-w-[1400px] mx-auto">
           <BackButton />
           <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-16"
-            style={{ fontFamily: 'var(--font-display), sans-serif' }}
+            className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-16 font-display"
           >
             All work
           </h1>

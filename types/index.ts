@@ -13,8 +13,8 @@ export interface Project {
   outcome: string
   outcomeMetrics?: ProjectMetric[]
   stack: StackItem[]
-  liveUrl: string
-  repoUrl: string
+  liveUrl?: string
+  repoUrl?: string
 }
 
 export interface ProjectDecision {
