@@ -1,5 +1,3 @@
-'use client'
-
 import RevealText from '@/components/ui/RevealText'
 
 const TECH_STACK = [
@@ -67,7 +65,7 @@ function MarqueeRow({
       >
         <div className="flex items-center">
           {repeated.map((item, i) => (
-            <span key={i} className="flex flex-shrink-0 items-center">
+            <span key={i} className="flex shrink-0 items-center">
               <span
                 className="px-5 font-mono text-base whitespace-nowrap md:px-7 md:text-lg"
                 style={{ color: 'var(--color-text-secondary)' }}

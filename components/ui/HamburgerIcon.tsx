@@ -3,6 +3,8 @@
 import { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
 
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
+
 interface HamburgerIconProps {
   isOpen: boolean
   onClick: () => void
@@ -13,6 +15,7 @@ export default function HamburgerIcon({ isOpen, onClick }: HamburgerIconProps) {
   const btmRef = useRef<HTMLSpanElement>(null)
   const prevOpen = useRef(false)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     if (!topRef.current || !btmRef.current) return
@@ -20,6 +23,17 @@ export default function HamburgerIcon({ isOpen, onClick }: HamburgerIconProps) {
     prevOpen.current = isOpen
 
     if (tlRef.current) tlRef.current.kill()
+
+    if (reducedMotion) {
+      if (isOpen) {
+        gsap.set(topRef.current, { y: 5, rotation: 45 })
+        gsap.set(btmRef.current, { width: 22, y: -5, rotation: -45 })
+      } else {
+        gsap.set(topRef.current, { y: 0, rotation: 0 })
+        gsap.set(btmRef.current, { width: 13, y: 0, rotation: 0 })
+      }
+      return
+    }
 
     const tl = gsap.timeline()
     tlRef.current = tl
@@ -61,7 +75,7 @@ export default function HamburgerIcon({ isOpen, onClick }: HamburgerIconProps) {
     return () => {
       tl.kill()
     }
-  }, [isOpen])
+  }, [isOpen, reducedMotion])
 
   return (
     <button

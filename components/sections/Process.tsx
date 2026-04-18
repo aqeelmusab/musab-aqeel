@@ -1,5 +1,3 @@
-'use client'
-
 import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import type { ProcessStep } from '@/types'

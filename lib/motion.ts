@@ -49,4 +49,9 @@ export const lenis = {
   stopInertiaOnNavigate: true,
 } as const
 
-export const LOADER_DURATION_MS = 3500
+/**
+ * Minimum time the loader stays on screen before revealing the page.
+ * Tuned so the three-word morph (2.8 s total) completes and the final word
+ * ("Operator") holds for ~200 ms before the reveal begins.
+ */
+export const LOADER_DURATION_MS = 3000

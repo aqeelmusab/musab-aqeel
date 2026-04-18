@@ -156,6 +156,9 @@ export default function RootLayout({
       className={`${clashDisplay.variable} ${satoshi.variable} ${fragmentMono.variable}`}
     >
       <head>
+        {/* JSON-LD is not subject to CSP script-src (it is not a script MIME
+            type), so no nonce is needed. Adding one triggers a hydration
+            mismatch because browsers strip the nonce attribute from the DOM. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

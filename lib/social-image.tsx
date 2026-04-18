@@ -1,49 +1,136 @@
 import { ImageResponse } from 'next/og'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import { SITE_DOMAIN, SITE_NAME } from '@/lib/config'
 
-export const SOCIAL_IMAGE_RUNTIME = 'edge'
-export const SOCIAL_IMAGE_SIZE = { width: 1200, height: 630 }
+/**
+ * OG images intentionally use system fonts. The site's Clash Display / Fragment
+ * Mono are WOFF2 only, and `next/og` (satori) doesn't decode WOFF2 under Node
+ * runtime — edge runtime does, but Turbopack can't resolve
+ * `new URL('...', import.meta.url)` at build time for prerender. System fonts
+ * render cleanly at 1200×630 scale and keep builds deterministic; the
+ * site-identity signal comes from palette, layout, grid, and mono labels.
+ *
+ * Routes declare `export const runtime = 'edge'` directly because Next.js
+ * requires that field to be a literal string at the export site.
+ */
+export const SOCIAL_IMAGE_SIZE = { width: 1200, height: 630 } as const
 export const SOCIAL_IMAGE_CONTENT_TYPE = 'image/png'
 
-const colors = {
+/**
+ * Hex approximations of the site's oklch palette. Satori's color support
+ * across oklch is patchy, so we resolve to hex once here.
+ */
+const palette = {
+  bg: '#0b0b0b',
+  surface: '#121212',
+  borderSub: '#1c1c1c',
+  border: '#262626',
+  borderUp: '#3a3a3a',
+  textPrimary: '#ededed',
+  textSecondary: '#7a7a7a',
+  textTertiary: '#4a4a4a',
+  textDim: '#343434',
   accent: '#d4ff00',
-  background: '#0d0d0d',
-  border: '#222',
-  dimText: '#555',
-  mutedText: '#3a3a3a',
-  projectLabel: '#333',
-  projectFooter: '#2e2e2e',
-  primaryText: '#f0f0f0',
-  secondaryHeadline: '#1e1e1e',
 } as const
 
-const homeTags = ['Full Stack', 'Next.js', 'TypeScript'] as const
+const FONT_STACK_DISPLAY =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+const FONT_STACK_MONO =
+  "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace"
 
-function AccentTopBar() {
-  return <div style={{ height: '3px', backgroundColor: colors.accent, flexShrink: 0 }} />
+const frameStyles = {
+  root: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: palette.bg,
+    display: 'flex',
+    flexDirection: 'column',
+    fontFamily: FONT_STACK_DISPLAY,
+    color: palette.textPrimary,
+  },
+  accentBar: {
+    height: '3px',
+    backgroundColor: palette.accent,
+    flexShrink: 0,
+  },
+  grid: {
+    position: 'absolute',
+    inset: 0,
+    backgroundImage: `repeating-linear-gradient(105deg, ${palette.border} 0px, ${palette.border} 1px, transparent 1px, transparent 14px)`,
+    opacity: 0.28,
+  },
+  accentWash: {
+    position: 'absolute',
+    top: '-260px',
+    right: '-220px',
+    width: '820px',
+    height: '820px',
+    borderRadius: '50%',
+    background: `radial-gradient(circle, rgba(212, 255, 0, 0.12) 0%, rgba(212, 255, 0, 0) 65%)`,
+  },
+  body: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '56px 72px 56px',
+    position: 'relative',
+    justifyContent: 'space-between',
+  },
+  headerRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    zIndex: 1,
+  },
+  footerRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    zIndex: 1,
+    gap: '32px',
+  },
+} satisfies Record<string, CSSProperties>
+
+const monoLabelStyle: CSSProperties = {
+  fontFamily: FONT_STACK_MONO,
+  fontSize: '14px',
+  letterSpacing: '0.14em',
+  textTransform: 'uppercase',
+  color: palette.textSecondary,
+}
+
+const monoDimLabelStyle: CSSProperties = {
+  ...monoLabelStyle,
+  color: palette.textTertiary,
+}
+
+function Diamond({
+  size = 9,
+  color = palette.accent,
+}: {
+  size?: number
+  color?: string
+}) {
+  return (
+    <div
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        backgroundColor: color,
+        transform: 'rotate(45deg)',
+        flexShrink: 0,
+      }}
+    />
+  )
 }
 
 function DomainBadge() {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <div
-        style={{
-          width: '8px',
-          height: '8px',
-          backgroundColor: colors.accent,
-          transform: 'rotate(45deg)',
-        }}
-      />
-      <span
-        style={{
-          color: colors.dimText,
-          fontSize: '13px',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-        }}
-      >
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <Diamond />
+      <span style={monoLabelStyle}>
+        {'// '}
         {SITE_DOMAIN}
       </span>
     </div>
@@ -52,21 +139,30 @@ function DomainBadge() {
 
 function AvailabilityBadge() {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        padding: '8px 14px',
+        border: `1px solid ${palette.border}`,
+        borderRadius: '999px',
+        backgroundColor: palette.surface,
+      }}
+    >
       <div
         style={{
-          width: '5px',
-          height: '5px',
+          width: '7px',
+          height: '7px',
           borderRadius: '50%',
-          backgroundColor: colors.accent,
+          backgroundColor: palette.accent,
         }}
       />
       <span
         style={{
-          color: colors.accent,
+          ...monoLabelStyle,
+          color: palette.textPrimary,
           fontSize: '12px',
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
         }}
       >
         Available for work
@@ -75,31 +171,66 @@ function AvailabilityBadge() {
   )
 }
 
-function TagRow({
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <span
+      style={{
+        ...monoLabelStyle,
+        color: palette.accent,
+        fontSize: '13px',
+      }}
+    >
+      {'// '}
+      {children}
+    </span>
+  )
+}
+
+function Signature() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <span
+        style={{
+          ...monoLabelStyle,
+          color: palette.textTertiary,
+          fontSize: '12px',
+        }}
+      >
+        MA
+      </span>
+      <Diamond size={7} color={palette.borderUp} />
+    </div>
+  )
+}
+
+function TagChipRow({
   tags,
-  uppercase = true,
+  tone = 'muted',
 }: {
   tags: readonly string[]
-  uppercase?: boolean
+  tone?: 'muted' | 'accent'
 }) {
   return (
-    <div style={{ display: 'flex', gap: '8px' }}>
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
       {tags.map((tag) => (
         <div
           key={tag}
           style={{
-            padding: '5px 14px',
-            border: `1px solid ${colors.border}`,
+            padding: '6px 12px',
+            border: `1px solid ${tone === 'accent' ? palette.borderUp : palette.borderSub}`,
+            borderRadius: '2px',
             display: 'flex',
             alignItems: 'center',
+            backgroundColor: palette.surface,
           }}
         >
           <span
             style={{
-              color: colors.mutedText,
+              fontFamily: FONT_STACK_MONO,
               fontSize: '12px',
               letterSpacing: '0.06em',
-              ...(uppercase ? { textTransform: 'uppercase' as const } : {}),
+              textTransform: 'uppercase',
+              color: tone === 'accent' ? palette.textPrimary : palette.textSecondary,
             }}
           >
             {tag}
@@ -112,56 +243,38 @@ function TagRow({
 
 function SocialImageFrame({
   headerRight,
-  children,
   footerLeft,
   footerRight,
+  children,
 }: {
   headerRight: ReactNode
-  children: ReactNode
   footerLeft: ReactNode
   footerRight: ReactNode
+  children: ReactNode
 }) {
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: colors.background,
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <AccentTopBar />
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '52px 72px 60px',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+    <div style={frameStyles.root}>
+      <div style={frameStyles.accentBar} />
+      <div style={frameStyles.body}>
+        <div style={frameStyles.grid} />
+        <div style={frameStyles.accentWash} />
+
+        <div style={frameStyles.headerRow}>
           <DomainBadge />
           {headerRight}
         </div>
 
-        {children}
-
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: 'column',
+            zIndex: 1,
           }}
         >
+          {children}
+        </div>
+
+        <div style={frameStyles.footerRow}>
           {footerLeft}
           {footerRight}
         </div>
@@ -170,128 +283,183 @@ function SocialImageFrame({
   )
 }
 
-function HomeHeadline() {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span
-        style={{
-          fontSize: '82px',
-          fontWeight: 700,
-          color: colors.primaryText,
-          lineHeight: 1,
-          letterSpacing: '-0.03em',
-        }}
-      >
-        {SITE_NAME}.
-      </span>
-      <span
-        style={{
-          fontSize: '82px',
-          fontWeight: 700,
-          color: colors.secondaryHeadline,
-          lineHeight: 1,
-          letterSpacing: '-0.03em',
-        }}
-      >
-        Developer.
-      </span>
-      <span
-        style={{
-          fontSize: '82px',
-          fontWeight: 700,
-          color: colors.secondaryHeadline,
-          lineHeight: 1,
-          letterSpacing: '-0.03em',
-        }}
-      >
-        Architect. Operator.
-      </span>
-    </div>
-  )
-}
-
+/**
+ * Home OG — mirrors the site hero: large display headline, muted second line,
+ * tagline + tech tag row at the bottom, availability pill top-right.
+ */
 export function createHomeSocialImage() {
   return new ImageResponse(
     (
       <SocialImageFrame
         headerRight={<AvailabilityBadge />}
         footerLeft={
-          <span
+          <div
             style={{
-              color: colors.mutedText,
-              fontSize: '18px',
-              lineHeight: 1.5,
-              maxWidth: '540px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              maxWidth: '520px',
             }}
           >
-            Complete builds from design to deployment in weeks, not months.
-          </span>
+            <span
+              style={{
+                fontFamily: FONT_STACK_DISPLAY,
+                fontWeight: 600,
+                fontSize: '22px',
+                lineHeight: 1.35,
+                color: palette.textSecondary,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Design to deployment.
+            </span>
+            <span
+              style={{
+                fontFamily: FONT_STACK_DISPLAY,
+                fontWeight: 600,
+                fontSize: '22px',
+                lineHeight: 1.35,
+                color: palette.textTertiary,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Weeks, not months.
+            </span>
+          </div>
         }
-        footerRight={<TagRow tags={homeTags} />}
+        footerRight={<TagChipRow tags={['Full Stack', 'Next.js', 'TypeScript']} />}
       >
-        <HomeHeadline />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+          }}
+        >
+          <SectionLabel>01 hero</SectionLabel>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: FONT_STACK_DISPLAY,
+                fontWeight: 700,
+                fontSize: '104px',
+                lineHeight: 1,
+                letterSpacing: '-0.035em',
+                color: palette.textPrimary,
+              }}
+            >
+              {SITE_NAME}.
+            </span>
+            <span
+              style={{
+                fontFamily: FONT_STACK_DISPLAY,
+                fontWeight: 700,
+                fontSize: '104px',
+                lineHeight: 1,
+                letterSpacing: '-0.035em',
+                color: palette.textDim,
+              }}
+            >
+              Developer.
+            </span>
+            <span
+              style={{
+                fontFamily: FONT_STACK_DISPLAY,
+                fontWeight: 700,
+                fontSize: '104px',
+                lineHeight: 1,
+                letterSpacing: '-0.035em',
+                color: palette.textDim,
+              }}
+            >
+              Architect. Operator.
+            </span>
+          </div>
+        </div>
       </SocialImageFrame>
     ),
     { ...SOCIAL_IMAGE_SIZE },
   )
 }
 
+/**
+ * Project OG — mirrors the case-study hero: type label in mono, large title,
+ * tag chip row, "case study" marker top-right.
+ */
 export function createProjectSocialImage({
   title,
   type,
   tags,
+  year,
 }: {
   title: string
   type: string
   tags: readonly string[]
+  year?: string
 }) {
+  const tagsToShow = tags.slice(0, 4)
+
   return new ImageResponse(
     (
       <SocialImageFrame
         headerRight={
-          <span
+          <div
             style={{
-              color: colors.projectLabel,
-              fontSize: '13px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
             }}
           >
-            Case Study
-          </span>
+            <span style={monoDimLabelStyle}>{'// '}case study</span>
+          </div>
         }
-        footerLeft={<TagRow tags={tags} uppercase={false} />}
+        footerLeft={<TagChipRow tags={tagsToShow} tone="accent" />}
         footerRight={
-          <span
+          <div
             style={{
-              color: colors.projectFooter,
-              fontSize: '13px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
             }}
           >
-            {SITE_NAME}
-          </span>
+            {year && (
+              <span
+                style={{
+                  ...monoLabelStyle,
+                  fontSize: '12px',
+                  color: palette.textTertiary,
+                }}
+              >
+                {year}
+              </span>
+            )}
+            <Signature />
+          </div>
         }
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '18px',
+          }}
+        >
+          <SectionLabel>{type}</SectionLabel>
           <span
             style={{
-              color: colors.accent,
-              fontSize: '13px',
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-            }}
-          >
-            {type}
-          </span>
-          <span
-            style={{
-              fontSize: '74px',
+              fontFamily: FONT_STACK_DISPLAY,
               fontWeight: 700,
-              color: colors.primaryText,
+              fontSize: title.length > 18 ? '92px' : '112px',
               lineHeight: 1,
-              letterSpacing: '-0.025em',
+              letterSpacing: '-0.035em',
+              color: palette.textPrimary,
+              maxWidth: '1000px',
             }}
           >
             {title}.

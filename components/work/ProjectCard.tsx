@@ -8,9 +8,26 @@ import Tag from '@/components/ui/Tag'
 import { ProjectCoverImage } from '@/components/work/primitives'
 import type { Project } from '@/types'
 
+const TRANSITION_DURATION_MS = 350
+
 interface ProjectCardProps {
   project: Project
   className?: string
+}
+
+/**
+ * A modifier-key click (⌘/ctrl/shift/alt) or middle-click should fall through
+ * to the browser's default <Link> behaviour so the user can open in a new
+ * tab / background window.
+ */
+function isModifiedClick(event: MouseEvent<HTMLAnchorElement>): boolean {
+  return (
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey ||
+    event.button !== 0
+  )
 }
 
 export default function ProjectCard({
@@ -19,9 +36,14 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter()
   const transitioning = useRef(false)
+  const href = `/work/${project.slug}`
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
+      if (isModifiedClick(e)) {
+        return
+      }
+
       e.preventDefault()
       if (transitioning.current) return
       transitioning.current = true
@@ -30,7 +52,7 @@ export default function ProjectCard({
       const card = linkEl.querySelector('.card-wrapper') as HTMLElement | null
 
       if (!card) {
-        router.push(`/work/${project.slug}`)
+        router.push(href)
         return
       }
 
@@ -66,18 +88,24 @@ export default function ProjectCard({
       }
 
       setTimeout(() => {
-        router.push(`/work/${project.slug}`)
+        router.push(href)
         transitioning.current = false
-      }, 350)
+      }, TRANSITION_DURATION_MS)
     },
-    [project.slug, router],
+    [href, router],
   )
+
+  const handlePrefetch = useCallback(() => {
+    router.prefetch(href)
+  }, [href, router])
 
   return (
     <Link
-      href={`/work/${project.slug}`}
+      href={href}
       className={`group block ${className}`}
       onClick={handleClick}
+      onMouseEnter={handlePrefetch}
+      onFocus={handlePrefetch}
     >
       <div className="card-wrapper" data-cursor="project">
         <ProjectCoverImage

@@ -26,5 +26,6 @@ export default async function ProjectOGImage({
     title,
     type,
     tags: tagList,
+    year: project?.year,
   })
 }

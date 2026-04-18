@@ -4,9 +4,18 @@ import { useEffect, useRef, useState } from 'react'
 
 import { LOADER_DURATION_MS } from '@/lib/motion'
 
-const TEXTS = ['Developer', 'Architect', 'Operator', 'Loading']
-const MORPH_TIME = 0.8
-const COOLDOWN_TIME = 0.3
+/**
+ * Loader choreography: three-word morph cycles through the three role words.
+ * With `textIndexRef` seeded at `TEXTS.length - 1`, the sequence is:
+ *   cooldown (show "Developer") → morph → cooldown (show "Architect") →
+ *   morph → hold on "Operator".
+ * Total visible animation = 2 × (MORPH_TIME + COOLDOWN_TIME) = 2.8 s.
+ * Combined with LOADER_DURATION_MS = 3000 ms, "Operator" holds for ~200 ms
+ * before the page reveal starts.
+ */
+const TEXTS = ['Developer', 'Architect', 'Operator']
+const MORPH_TIME = 1.0
+const COOLDOWN_TIME = 0.4
 
 function updateMorphStyles(
   text1: HTMLSpanElement,

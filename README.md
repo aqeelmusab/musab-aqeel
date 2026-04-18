@@ -37,7 +37,10 @@ CONTACT_WEBHOOK_URL=
 NEXT_PUBLIC_SITE_URL=https://musabaqeel.com
 ```
 
-`CONTACT_WEBHOOK_URL` is optional for local development. If it is not set, the contact route will return success without forwarding to a webhook.
+Both variables are optional:
+
+- `CONTACT_WEBHOOK_URL` — when unset, the contact route returns success without forwarding to a webhook during local development. In production, the route returns `503 service_unavailable` if the webhook URL is missing.
+- `NEXT_PUBLIC_SITE_URL` — defaults to `https://musabaqeel.com` via `lib/config.ts`. Override only when deploying to a different origin.
 
 ### Run locally
 

@@ -9,11 +9,13 @@ import { useLoader } from '@/lib/LoaderContext'
 import { useLenisRef } from '@/lib/lenis-context'
 import { duration, ease } from '@/lib/motion'
 import { scrollToHashSection } from '@/lib/scroll-navigation'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 export default function Hero() {
   const scrollLineRef = useRef<HTMLDivElement>(null)
   const { isReadyToAnimate } = useLoader()
   const lenisRef = useLenisRef()
+  const reducedMotion = usePrefersReducedMotion()
 
   const fadeUp = (delay: number) => ({
     initial: { opacity: 0, y: 12 } as const,
@@ -28,6 +30,12 @@ export default function Hero() {
 
   useEffect(() => {
     if (!scrollLineRef.current || !isReadyToAnimate) return
+
+    if (reducedMotion) {
+      gsap.set(scrollLineRef.current, { scaleY: 1 })
+      return
+    }
+
     const tl = gsap.to(scrollLineRef.current, {
       scaleY: 1,
       duration: 1.2,
@@ -38,7 +46,7 @@ export default function Hero() {
     return () => {
       tl.kill()
     }
-  }, [isReadyToAnimate])
+  }, [isReadyToAnimate, reducedMotion])
 
   return (
     <section

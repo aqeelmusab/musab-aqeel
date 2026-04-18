@@ -1,16 +1,13 @@
-'use client'
-
 import Link from 'next/link'
 import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import ProjectCard from '@/components/work/ProjectCard'
 import { getFeaturedProjects } from '@/lib/projects'
 
-const HOME_PROJECTS = getFeaturedProjects()
-
 export default function Work() {
-  const featured = HOME_PROJECTS[0]
-  const rest = HOME_PROJECTS.slice(1)
+  const featuredProjects = getFeaturedProjects()
+  const featured = featuredProjects[0]
+  const rest = featuredProjects.slice(1)
 
   if (!featured) return null
 

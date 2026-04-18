@@ -1,5 +1,3 @@
-'use client'
-
 import RevealText from '@/components/ui/RevealText'
 import SplitText from '@/components/ui/SplitText'
 import type { Testimonial } from '@/types'

@@ -106,7 +106,8 @@ export function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label="Navigation menu"
-      className="fixed inset-0 z-40 flex h-dvh flex-col"
+      tabIndex={-1}
+      className="fixed inset-0 z-40 flex h-dvh flex-col focus:outline-none"
       style={{ backgroundColor: 'var(--color-bg)' }}
       initial={{ clipPath: MOBILE_MENU_CLOSED_CLIP_PATH }}
       animate={{

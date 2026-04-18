@@ -47,8 +47,21 @@ function handleMissingWebhookConfiguration() {
   )
 }
 
+function hasJsonContentType(request: Request): boolean {
+  const contentType = request.headers.get('content-type')
+  return contentType?.toLowerCase().includes('application/json') ?? false
+}
+
 export async function POST(request: Request) {
   try {
+    if (!hasJsonContentType(request)) {
+      return jsonError(
+        'Contact form expects application/json.',
+        415,
+        'invalid_content_type',
+      )
+    }
+
     const rawBody = await readRequestBody(request)
     if (!rawBody.success) {
       return jsonError('Invalid JSON body.', 400, 'invalid_json')

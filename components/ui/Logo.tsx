@@ -10,6 +10,7 @@ import {
   logoGlitchState2,
   logoGlitchState3,
 } from '@/lib/logo-paths'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 interface LogoProps {
   onClick?: (e: MouseEvent) => void
@@ -18,6 +19,7 @@ interface LogoProps {
 export default function Logo({ onClick: externalOnClick }: LogoProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const animatedRef = useRef(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     if (!svgRef.current || animatedRef.current) return
@@ -30,6 +32,13 @@ export default function Logo({ onClick: externalOnClick }: LogoProps) {
     ) as SVGPathElement
 
     if (!mPath || !aPath || !markPath) return
+
+    if (reducedMotion) {
+      mPath.setAttribute('d', logoFinalState.M)
+      aPath.setAttribute('d', logoFinalState.A)
+      markPath.setAttribute('d', logoFinalState.mark)
+      return
+    }
 
     mPath.setAttribute('d', logoGlitchState1.M)
     aPath.setAttribute('d', logoGlitchState1.A)
@@ -86,7 +95,7 @@ export default function Logo({ onClick: externalOnClick }: LogoProps) {
     return () => {
       tl.kill()
     }
-  }, [])
+  }, [reducedMotion])
 
   const pathname = usePathname()
 

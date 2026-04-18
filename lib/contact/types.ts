@@ -22,6 +22,7 @@ export interface ParsedContactSubmission {
 export type ContactFormStatus = 'idle' | 'sending' | 'sent' | 'error'
 
 export type ContactApiErrorCode =
+  | 'invalid_content_type'
   | 'invalid_json'
   | 'invalid_payload'
   | 'missing_fields'

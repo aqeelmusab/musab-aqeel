@@ -222,8 +222,14 @@ export function useMobileMenuEffects(
     forceSyncActiveSection()
 
     const menuEl = menuRef.current
+
+    // Move focus into the dialog so screen readers announce it and Tab keeps
+    // focus trapped. Target the dialog container (tabIndex={-1}) rather than
+    // the first nav button — programmatic focus on the button can trigger
+    // `:focus-visible` in some UAs, and that ring lands mid-clipPath-sweep,
+    // producing a flickering outline around "About" as the menu opens.
     const focusTimer = window.setTimeout(() => {
-      getFocusableElements(menuEl)[0]?.focus({ preventScroll: true })
+      menuEl?.focus({ preventScroll: true })
     }, 520)
 
     function onKeyDown(event: KeyboardEvent) {
@@ -240,17 +246,30 @@ export function useMobileMenuEffects(
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
+      if (!first || !last) {
+        return
+      }
+
+      // If focus is on the dialog container itself, the first Tab press
+      // should land on the first nav link (or the last, on Shift+Tab) —
+      // mirroring how native modals behave.
+      if (document.activeElement === menuEl) {
+        event.preventDefault()
+        ;(event.shiftKey ? last : first).focus({ preventScroll: true })
+        return
+      }
+
       if (event.shiftKey) {
         if (document.activeElement === first) {
           event.preventDefault()
-          last?.focus({ preventScroll: true })
+          last.focus({ preventScroll: true })
         }
         return
       }
 
       if (document.activeElement === last) {
         event.preventDefault()
-        first?.focus({ preventScroll: true })
+        first.focus({ preventScroll: true })
       }
     }
 

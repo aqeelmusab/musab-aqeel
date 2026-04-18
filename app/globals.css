@@ -155,6 +155,33 @@ h4 {
   html.custom-cursor-active * {
     cursor: none !important;
   }
+
+  /* Restore native cursor for text inputs so the I-beam is available.
+     Button-like <input> types stay under the custom cursor. */
+  html.custom-cursor-active
+    :is(
+      input:not([type='button']):not([type='submit']):not([type='reset']):not(
+          [type='checkbox']
+        ):not([type='radio']):not([type='range']):not([type='file']),
+      textarea,
+      [contenteditable='true']
+    ),
+  html.custom-cursor-active
+    :is(
+      input:not([type='button']):not([type='submit']):not([type='reset']):not(
+          [type='checkbox']
+        ):not([type='radio']):not([type='range']):not([type='file']),
+      textarea,
+      [contenteditable='true']
+    )
+    * {
+    cursor: text !important;
+  }
+
+  html.custom-cursor-active select,
+  html.custom-cursor-active select * {
+    cursor: default !important;
+  }
 }
 
 /* Scrollbar - WebKit */

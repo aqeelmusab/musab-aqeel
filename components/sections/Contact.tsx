@@ -85,7 +85,7 @@ export default function Contact() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const labelClass = 'block mb-1.5 text-xs uppercase tracking-widest font-mono'
+  const labelClass = 'block mb-1.5 text-xs tracking-widest font-mono'
   const inputClass =
     'bg-theme-surface-up border-theme text-theme-primary w-full rounded-[2px] border px-4 py-3 text-sm font-body outline-none transition-colors duration-200'
 
@@ -233,7 +233,7 @@ export default function Contact() {
                     htmlFor="contact-project-type"
                     className={`${labelClass} text-theme-tertiary`}
                   >
-                    Project type
+                    Project Type
                   </label>
                   <div className="relative">
                     <select
@@ -265,7 +265,7 @@ export default function Contact() {
                   htmlFor="contact-message"
                   className={`${labelClass} text-theme-tertiary`}
                 >
-                  Project brief
+                  Project Brief
                 </label>
                 <textarea
                   id="contact-message"

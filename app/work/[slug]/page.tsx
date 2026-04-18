@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import CaseStudy from '@/components/work/CaseStudy'
 import Footer from '@/components/layout/Footer'
+import { PAGE_TITLE_NOT_FOUND } from '@/lib/config'
 import { getProjectBySlug, getProjectSlugs } from '@/lib/projects'
 import { projectJsonLd } from '@/lib/structured-data'
 
@@ -16,7 +17,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const project = getProjectBySlug(slug)
-  if (!project) return {}
+  if (!project) {
+    return {
+      title: PAGE_TITLE_NOT_FOUND,
+      robots: { index: false, follow: false },
+    }
+  }
 
   return {
     title: project.title,

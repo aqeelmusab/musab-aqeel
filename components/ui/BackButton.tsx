@@ -2,14 +2,18 @@
 
 import { useRouter } from 'next/navigation'
 
-export default function BackButton() {
+interface BackButtonProps {
+  fallbackHref?: string
+}
+
+export default function BackButton({ fallbackHref = '/' }: BackButtonProps) {
   const router = useRouter()
 
   function handleBack() {
     if (window.history.length > 1) {
       router.back()
     } else {
-      router.push('/work')
+      router.push(fallbackHref)
     }
   }
 

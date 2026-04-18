@@ -10,7 +10,17 @@ interface RateLimitEntry {
   resetAt: number
 }
 
+/**
+ * In-process rate-limit store. This is intentionally simple and is correct
+ * only for a single long-lived instance. On a multi-instance / serverless
+ * deployment each replica gets its own map, so the limit is best-effort.
+ * Swap this for Upstash Redis / Vercel KV / similar if robust limiting is
+ * required.
+ */
 const rateLimitStore = new Map<string, RateLimitEntry>()
+
+/** Hard cap to prevent unbounded growth from a flood of unique keys. */
+const MAX_RATE_LIMIT_ENTRIES = 5_000
 
 function getFirstHeaderValue(headers: Headers, name: string): string | null {
   const value = headers.get(name)
@@ -19,7 +29,11 @@ function getFirstHeaderValue(headers: Headers, name: string): string | null {
     return null
   }
 
-  return name === 'x-forwarded-for' ? value.split(',')[0]?.trim() ?? null : value.trim()
+  if (name === 'x-forwarded-for') {
+    return value.split(',')[0]?.trim() ?? null
+  }
+
+  return value.trim()
 }
 
 function cleanupExpiredRateLimitEntries(now: number) {
@@ -27,6 +41,18 @@ function cleanupExpiredRateLimitEntries(now: number) {
     if (entry.resetAt <= now) {
       rateLimitStore.delete(ipAddress)
     }
+  }
+
+  if (rateLimitStore.size <= MAX_RATE_LIMIT_ENTRIES) {
+    return
+  }
+
+  const overflow = rateLimitStore.size - MAX_RATE_LIMIT_ENTRIES
+  const iterator = rateLimitStore.keys()
+  for (let i = 0; i < overflow; i += 1) {
+    const next = iterator.next()
+    if (next.done) break
+    rateLimitStore.delete(next.value)
   }
 }
 
