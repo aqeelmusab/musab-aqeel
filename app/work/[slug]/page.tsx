@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import CaseStudy from '@/components/work/CaseStudy'
 import Footer from '@/components/layout/Footer'
-import { projects } from '@/lib/projects'
+import { getProjectBySlug, getProjectSlugs } from '@/lib/projects'
 import { projectJsonLd } from '@/lib/structured-data'
 
 interface Props {
@@ -10,12 +10,12 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }))
+  return getProjectSlugs().map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
+  const project = getProjectBySlug(slug)
   if (!project) return {}
 
   return {
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
+  const project = getProjectBySlug(slug)
 
   if (!project) notFound()
 

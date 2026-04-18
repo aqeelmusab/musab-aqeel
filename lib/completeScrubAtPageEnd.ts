@@ -70,7 +70,7 @@ export function completeScrubAnimationsAtPageEnd(
     if (!anim) continue
 
     const progress = anim.progress()
-    let state = getState(st)
+    const state = getState(st)
 
     if (progress >= ALMOST_DONE) {
       endBySt.set(st, { phase: 'locked' })

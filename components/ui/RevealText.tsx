@@ -1,13 +1,16 @@
 'use client'
 
-import { useId, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import DustFilterSvg from '@/components/ui/DustFilterSvg'
-import { useScrollTriggerCleanup } from '@/components/ui/useScrollTriggerCleanup'
-import { useLoader } from '@/lib/LoaderContext'
-import { dust, scroll } from '@/lib/motion'
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
+import {
+  createRevealScrollTrigger,
+  getDustFilterStyle,
+  getRevealScrollStart,
+  scheduleScrollTriggerRefresh,
+  useTextAnimationBase,
+} from '@/components/ui/text-animation'
+import { dust } from '@/lib/motion'
 
 interface RevealTextProps {
   children: ReactNode
@@ -25,12 +28,15 @@ export default function RevealText({
   delay = 0,
 }: RevealTextProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const displacementRef = useRef<SVGFEDisplacementMapElement | null>(null)
-  const reactId = useId()
-  const filterId = `dust-${reactId.replace(/:/g, '')}`
-  const { isReadyToAnimate } = useLoader()
-  const { cleanup, scrollTriggerRef } = useScrollTriggerCleanup()
-  const reducedMotion = usePrefersReducedMotion()
+  const {
+    cleanup,
+    displacementRef,
+    dustActive,
+    filterId,
+    isReadyToAnimate,
+    reducedMotion,
+    scrollTriggerRef,
+  } = useTextAnimationBase()
 
   useLayoutEffect(() => {
     const el = ref.current
@@ -38,23 +44,15 @@ export default function RevealText({
 
     cleanup()
 
-    const start =
-      delay !== 0
-        ? `${scroll.revealStart}+=${Math.round(delay * 72)}`
-        : scroll.revealStart
+    const start = getRevealScrollStart(delay)
+    const revealScrollTrigger = createRevealScrollTrigger(el, start)
 
     const fe = displacementRef.current
     const useDust = !reducedMotion && fe
 
     if (useDust) {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: el,
-          start,
-          end: scroll.revealEnd,
-          scrub: scroll.revealScrub,
-          invalidateOnRefresh: true,
-        },
+        scrollTrigger: revealScrollTrigger,
       })
 
       tl.fromTo(
@@ -78,29 +76,19 @@ export default function RevealText({
           opacity: 1,
           y: 0,
           ease: 'none',
-          scrollTrigger: {
-            trigger: el,
-            start,
-            end: scroll.revealEnd,
-            scrub: scroll.revealScrub,
-            invalidateOnRefresh: true,
-          },
+          scrollTrigger: revealScrollTrigger,
         },
       )
       scrollTriggerRef.current = tween.scrollTrigger ?? null
     }
 
-    const raf = requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-    })
+    const cancelRefresh = scheduleScrollTriggerRefresh()
 
     return () => {
-      cancelAnimationFrame(raf)
+      cancelRefresh()
       cleanup()
     }
-  }, [delay, cleanup, isReadyToAnimate, reducedMotion])
-
-  const dustActive = !reducedMotion
+  }, [delay, cleanup, displacementRef, isReadyToAnimate, reducedMotion, scrollTriggerRef])
 
   return (
     <>
@@ -111,7 +99,7 @@ export default function RevealText({
         ref={ref}
         data-reveal
         className={className}
-        style={dustActive ? { filter: `url(#${filterId})` } : undefined}
+        style={getDustFilterStyle(dustActive, filterId)}
       >
         {children}
       </div>

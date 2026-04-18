@@ -431,6 +431,60 @@ h4 {
   }
 }
 
+@layer utilities {
+  .text-theme-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-theme-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-theme-tertiary {
+    color: var(--color-text-tertiary);
+  }
+
+  .text-theme-accent {
+    color: var(--color-accent);
+  }
+
+  .text-theme-error {
+    color: var(--color-error);
+  }
+
+  .bg-theme-primary {
+    background-color: var(--color-text-primary);
+  }
+
+  .bg-theme-accent {
+    background-color: var(--color-accent);
+  }
+
+  .bg-theme-surface {
+    background-color: var(--color-surface);
+  }
+
+  .bg-theme-surface-up {
+    background-color: var(--color-surface-up);
+  }
+
+  .border-theme {
+    border-color: var(--color-border);
+  }
+
+  .border-theme-sub {
+    border-color: var(--color-border-sub);
+  }
+
+  .border-theme-up {
+    border-color: var(--color-border-up);
+  }
+
+  .fill-theme-primary {
+    fill: var(--color-text-primary);
+  }
+}
+
 @keyframes site-header-edge-drift {
   0%,
   100% {

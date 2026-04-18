@@ -1,13 +1,11 @@
 'use client'
 
-import { useState, useCallback, useRef, type MouseEvent } from 'react'
+import { useCallback, useRef, type MouseEvent } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { motion } from 'motion/react'
 import { gsap } from 'gsap'
 import Tag from '@/components/ui/Tag'
-import { duration, ease } from '@/lib/motion'
+import { ProjectCoverImage } from '@/components/work/primitives'
 import type { Project } from '@/types'
 
 interface ProjectCardProps {
@@ -19,7 +17,6 @@ export default function ProjectCard({
   project,
   className = '',
 }: ProjectCardProps) {
-  const [loaded, setLoaded] = useState(false)
   const router = useRouter()
   const transitioning = useRef(false)
 
@@ -83,32 +80,18 @@ export default function ProjectCard({
       onClick={handleClick}
     >
       <div className="card-wrapper" data-cursor="project">
-        <motion.div
-          layoutId={`project-image-${project.slug}`}
-          className="relative aspect-16/10 overflow-hidden rounded-[2px]"
-          style={{ backgroundColor: 'var(--color-surface)' }}
-          transition={{
-            layout: { duration: duration.layout, ease: ease.layout },
+        <ProjectCoverImage
+          project={project}
+          aspectClassName="aspect-16/10"
+          className="rounded-[2px]"
+          imageClassName="transition-all duration-700 group-hover:scale-[1.03]"
+          overlayClassName="transition-opacity duration-500 group-hover:opacity-60"
+          overlayStyle={{
+            background: 'linear-gradient(to top, var(--color-bg), transparent 60%)',
+            opacity: 0.7,
           }}
-        >
-          {!loaded && <ImageSkeleton />}
-          <Image
-            src={project.coverImage}
-            alt={project.title}
-            fill
-            className={`max-w-none object-cover transition-all duration-700 group-hover:scale-[1.03] ${loaded ? 'opacity-100' : 'opacity-0'}`}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            onLoad={() => setLoaded(true)}
-          />
-          <div
-            className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-60"
-            style={{
-              background:
-                'linear-gradient(to top, var(--color-bg), transparent 60%)',
-              opacity: 0.7,
-            }}
-          />
-        </motion.div>
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
 
         <div className="card-meta mt-4 flex items-start justify-between">
           <div>
@@ -131,8 +114,4 @@ export default function ProjectCard({
       </div>
     </Link>
   )
-}
-
-function ImageSkeleton() {
-  return <div className="skeleton-shimmer absolute inset-0" />
 }

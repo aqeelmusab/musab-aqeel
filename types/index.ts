@@ -50,17 +50,9 @@ export interface NavLink {
   href: string
 }
 
-export interface ContactPayload {
-  name: string
-  email: string
-  budget: string
-  projectType: string
-  message: string
-}
-
-export type ContactFormStatus = 'idle' | 'sending' | 'sent' | 'error'
-
 export interface SocialLink {
   label: string
   href: string
 }
+
+export type { ContactFormStatus, ContactPayload, ContactSubmission } from '@/lib/contact'

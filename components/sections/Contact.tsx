@@ -4,45 +4,20 @@ import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import MagneticButton from '@/components/ui/MagneticButton'
+import {
+  CONTACT_BUDGET_OPTIONS,
+  CONTACT_HONEYPOT_FIELD_NAME,
+  CONTACT_PROJECT_TYPES,
+  createEmptyContactSubmission,
+  type ContactApiResponse,
+  type ContactFormStatus,
+  type ContactSubmission,
+} from '@/lib/contact'
 import { CONTACT_EMAIL, CONTACT_EMAIL_HREF } from '@/lib/config'
-import type { ContactFormStatus, ContactPayload } from '@/types'
-
-const INPUT_STYLE = {
-  backgroundColor: 'var(--color-surface-up)',
-  border: '1px solid var(--color-border)',
-  color: 'var(--color-text-primary)',
-} as const
-
-const LABEL_STYLE = { color: 'var(--color-text-tertiary)' } as const
-
-const BUDGET_OPTIONS = [
-  'Under $1k',
-  '$1k - $5k',
-  '$5k - $15k',
-  '$15k+',
-  "Let's discuss",
-]
-
-const PROJECT_TYPES = [
-  'Full Stack Build',
-  'Landing Page',
-  'Design System',
-  'Consultation',
-  'Other',
-]
-
-const EMPTY_CONTACT_FORM: ContactPayload = {
-  name: '',
-  email: '',
-  budget: '',
-  projectType: '',
-  message: '',
-}
 
 const SelectArrow = () => (
   <span
-    className="pointer-events-none absolute inset-y-0 right-3 flex items-center"
-    style={{ color: 'var(--color-text-tertiary)' }}
+    className="text-theme-tertiary pointer-events-none absolute inset-y-0 right-3 flex items-center"
     aria-hidden="true"
   >
     <svg
@@ -66,7 +41,7 @@ const SelectArrow = () => (
 export default function Contact() {
   const [status, setStatus] = useState<ContactFormStatus>('idle')
   const [errorMessage, setErrorMessage] = useState('')
-  const [form, setForm] = useState<ContactPayload>(EMPTY_CONTACT_FORM)
+  const [form, setForm] = useState<ContactSubmission>(() => createEmptyContactSubmission())
 
   useEffect(() => {
     if (status !== 'sent') return
@@ -88,11 +63,11 @@ export default function Contact() {
 
       if (res.ok) {
         setStatus('sent')
-        setForm({ ...EMPTY_CONTACT_FORM })
+        setForm(createEmptyContactSubmission())
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = (await res.json().catch(() => null)) as ContactApiResponse | null
         setErrorMessage(
-          typeof data.error === 'string'
+          data && !data.success && typeof data.error === 'string'
             ? data.error
             : 'Something went wrong. Try emailing me directly.',
         )
@@ -112,7 +87,7 @@ export default function Contact() {
 
   const labelClass = 'block mb-1.5 text-xs uppercase tracking-widest font-mono'
   const inputClass =
-    'w-full pl-4 pr-4 py-3 text-sm rounded-[2px] outline-none transition-colors duration-200 font-body'
+    'bg-theme-surface-up border-theme text-theme-primary w-full rounded-[2px] border px-4 py-3 text-sm font-body outline-none transition-colors duration-200'
 
   return (
     <section id="contact" className="px-6 py-24 md:px-12 md:py-32 lg:px-24">
@@ -131,17 +106,8 @@ export default function Contact() {
           </SplitText>
 
           <RevealText delay={0.05}>
-            <div
-              className="mb-10 pl-4"
-              style={{ borderLeft: '2px solid var(--color-border-sub)' }}
-            >
-              <p
-                className="font-body text-sm leading-relaxed"
-                style={{
-                  fontWeight: 300,
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
+            <div className="border-theme-sub mb-10 border-l-2 pl-4">
+              <p className="text-theme-secondary font-body text-sm leading-relaxed font-light">
                 I price based on what the project is worth to your business, not
                 how many hours I spend on it. Fast delivery is a feature, not a
                 discount. Clients who need something shipped in days pay
@@ -159,9 +125,8 @@ export default function Contact() {
             >
               {CONTACT_EMAIL}
               <span
-                className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
+                className="bg-theme-primary absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
                 style={{
-                  backgroundColor: 'var(--color-text-primary)',
                   transitionTimingFunction: 'var(--ease-out)',
                 }}
               />
@@ -171,26 +136,14 @@ export default function Contact() {
           <RevealText delay={0.15}>
             <div className="mb-3 flex items-center gap-2">
               <span className="relative flex h-1.5 w-1.5">
-                <span
-                  className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-                  style={{ backgroundColor: 'var(--color-accent)' }}
-                />
-                <span
-                  className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: 'var(--color-accent)' }}
-                />
+                <span className="bg-theme-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+                <span className="bg-theme-accent relative inline-flex h-1.5 w-1.5 rounded-full" />
               </span>
-              <span
-                className="font-mono text-xs"
-                style={{ color: 'var(--color-text-secondary)' }}
-              >
+              <span className="text-theme-secondary font-mono text-xs">
                 Available for new projects
               </span>
             </div>
-            <p
-              className="font-mono text-xs"
-              style={{ color: 'var(--color-text-tertiary)' }}
-            >
+            <p className="text-theme-tertiary font-mono text-xs">
               Response within 24 hours.
             </p>
           </RevealText>
@@ -207,8 +160,7 @@ export default function Contact() {
               <div className="form-field">
                 <label
                   htmlFor="contact-name"
-                  className={labelClass}
-                  style={LABEL_STYLE}
+                  className={`${labelClass} text-theme-tertiary`}
                 >
                   Name
                 </label>
@@ -221,7 +173,6 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="Your name"
                   className={inputClass}
-                  style={INPUT_STYLE}
                 />
               </div>
             </RevealText>
@@ -230,8 +181,7 @@ export default function Contact() {
               <div className="form-field">
                 <label
                   htmlFor="contact-email"
-                  className={labelClass}
-                  style={LABEL_STYLE}
+                  className={`${labelClass} text-theme-tertiary`}
                 >
                   Email
                 </label>
@@ -244,7 +194,6 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="your@email.com"
                   className={inputClass}
-                  style={INPUT_STYLE}
                 />
               </div>
             </RevealText>
@@ -254,8 +203,7 @@ export default function Contact() {
                 <div className="form-field">
                   <label
                     htmlFor="contact-budget"
-                    className={labelClass}
-                    style={LABEL_STYLE}
+                    className={`${labelClass} text-theme-tertiary`}
                   >
                     Budget
                   </label>
@@ -266,18 +214,12 @@ export default function Contact() {
                       required
                       value={form.budget}
                       onChange={handleChange}
-                      className={`${inputClass} appearance-none pr-10`}
-                      style={{
-                        ...INPUT_STYLE,
-                        color: form.budget
-                          ? 'var(--color-text-primary)'
-                          : 'var(--color-text-tertiary)',
-                      }}
+                      className={`${inputClass} appearance-none pr-10 ${form.budget ? 'text-theme-primary' : 'text-theme-tertiary'}`}
                     >
                       <option value="" disabled>
                         Select range
                       </option>
-                      {BUDGET_OPTIONS.map((opt) => (
+                      {CONTACT_BUDGET_OPTIONS.map((opt) => (
                         <option key={opt} value={opt}>
                           {opt}
                         </option>
@@ -289,8 +231,7 @@ export default function Contact() {
                 <div className="form-field">
                   <label
                     htmlFor="contact-project-type"
-                    className={labelClass}
-                    style={LABEL_STYLE}
+                    className={`${labelClass} text-theme-tertiary`}
                   >
                     Project type
                   </label>
@@ -301,18 +242,12 @@ export default function Contact() {
                       required
                       value={form.projectType}
                       onChange={handleChange}
-                      className={`${inputClass} appearance-none pr-10`}
-                      style={{
-                        ...INPUT_STYLE,
-                        color: form.projectType
-                          ? 'var(--color-text-primary)'
-                          : 'var(--color-text-tertiary)',
-                      }}
+                      className={`${inputClass} appearance-none pr-10 ${form.projectType ? 'text-theme-primary' : 'text-theme-tertiary'}`}
                     >
                       <option value="" disabled>
                         Select type
                       </option>
-                      {PROJECT_TYPES.map((opt) => (
+                      {CONTACT_PROJECT_TYPES.map((opt) => (
                         <option key={opt} value={opt}>
                           {opt}
                         </option>
@@ -328,8 +263,7 @@ export default function Contact() {
               <div className="form-field">
                 <label
                   htmlFor="contact-message"
-                  className={labelClass}
-                  style={LABEL_STYLE}
+                  className={`${labelClass} text-theme-tertiary`}
                 >
                   Project brief
                 </label>
@@ -342,12 +276,27 @@ export default function Contact() {
                   placeholder="Tell me about your project"
                   rows={4}
                   className={`${inputClass} resize-none`}
-                  style={INPUT_STYLE}
                 />
               </div>
             </RevealText>
 
             <RevealText delay={0.25}>
+              <div
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '-9999px', top: 'auto' }}
+              >
+                <label htmlFor="contact-website">Leave this field blank</label>
+                <input
+                  id="contact-website"
+                  type="text"
+                  name={CONTACT_HONEYPOT_FIELD_NAME}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={form.website}
+                  onChange={handleChange}
+                />
+              </div>
+
               <MagneticButton className="btn-outline mt-2 w-full" type="submit">
                 {status === 'sending'
                   ? 'Sending...'
@@ -363,12 +312,12 @@ export default function Contact() {
                 className="mt-4 text-center font-mono text-xs"
               >
                 {status === 'sent' && (
-                  <p style={{ color: 'var(--color-accent)' }}>
+                  <p className="text-theme-accent">
                     Message received. I will be in touch within 24 hours.
                   </p>
                 )}
                 {status === 'error' && (
-                  <p style={{ color: 'var(--color-error)' }}>
+                  <p className="text-theme-error">
                     {errorMessage}
                   </p>
                 )}

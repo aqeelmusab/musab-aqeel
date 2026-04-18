@@ -7,7 +7,8 @@ import SplitText from '@/components/ui/SplitText'
 import MagneticButton from '@/components/ui/MagneticButton'
 import { useLoader } from '@/lib/LoaderContext'
 import { useLenisRef } from '@/lib/lenis-context'
-import { duration, ease, scroll } from '@/lib/motion'
+import { duration, ease } from '@/lib/motion'
+import { scrollToHashSection } from '@/lib/scroll-navigation'
 
 export default function Hero() {
   const scrollLineRef = useRef<HTMLDivElement>(null)
@@ -38,19 +39,6 @@ export default function Hero() {
       tl.kill()
     }
   }, [isReadyToAnimate])
-
-  function scrollToSection(href: string) {
-    const el = document.querySelector<HTMLElement>(href)
-    if (!el) return
-    const lenis = lenisRef.current
-    if (lenis) {
-      lenis.scrollTo(el, { offset: -scroll.headerOffset, duration: 0.8 })
-    } else {
-      const y =
-        el.getBoundingClientRect().top + window.scrollY - scroll.headerOffset
-      window.scrollTo({ top: y, behavior: 'smooth' })
-    }
-  }
 
   return (
     <section
@@ -109,13 +97,13 @@ export default function Hero() {
         <motion.div {...fadeUp(0.5)} className="flex items-center gap-5">
           <MagneticButton
             className="btn-outline md:px-8 md:py-3.5 md:text-base"
-            onClick={() => scrollToSection('#contact')}
+            onClick={() => scrollToHashSection(lenisRef, '#contact', { duration: 0.8 })}
           >
             Start a project
           </MagneticButton>
           <MagneticButton
             className="btn-text md:text-base"
-            onClick={() => scrollToSection('#work')}
+            onClick={() => scrollToHashSection(lenisRef, '#work', { duration: 0.8 })}
           >
             View work{' '}
             <span className="arrow" aria-hidden="true">

@@ -4,9 +4,9 @@ import Link from 'next/link'
 import SplitText from '@/components/ui/SplitText'
 import RevealText from '@/components/ui/RevealText'
 import ProjectCard from '@/components/work/ProjectCard'
-import { projects } from '@/lib/projects'
+import { getFeaturedProjects } from '@/lib/projects'
 
-const HOME_PROJECTS = projects.slice(0, 3)
+const HOME_PROJECTS = getFeaturedProjects()
 
 export default function Work() {
   const featured = HOME_PROJECTS[0]

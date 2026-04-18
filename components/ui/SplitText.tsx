@@ -1,13 +1,17 @@
 'use client'
 
-import { useId, useLayoutEffect, useRef, type CSSProperties } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 import DustFilterSvg from '@/components/ui/DustFilterSvg'
-import { useScrollTriggerCleanup } from '@/components/ui/useScrollTriggerCleanup'
-import { useLoader } from '@/lib/LoaderContext'
-import { dust, scroll, stagger } from '@/lib/motion'
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
+import {
+  createRevealScrollTrigger,
+  getDustFilterStyle,
+  getRevealScrollStart,
+  scheduleScrollTriggerRefresh,
+  useTextAnimationBase,
+} from '@/components/ui/text-animation'
+import { dust, stagger } from '@/lib/motion'
 
 interface SplitTextProps {
   children: string
@@ -16,16 +20,6 @@ interface SplitTextProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span'
   trigger?: 'load' | 'scroll'
   delay?: number
-}
-
-function scrollTriggerConfig(container: HTMLElement, start: string) {
-  return {
-    trigger: container,
-    start,
-    end: scroll.revealEnd,
-    scrub: scroll.revealScrub,
-    invalidateOnRefresh: true,
-  }
 }
 
 export default function SplitText({
@@ -37,14 +31,17 @@ export default function SplitText({
   delay = 0,
 }: SplitTextProps) {
   const containerRef = useRef<HTMLElement | null>(null)
-  const displacementRef = useRef<SVGFEDisplacementMapElement | null>(null)
   const loadTlRef = useRef<gsap.core.Timeline | null>(null)
   const dustTweenRef = useRef<gsap.core.Tween | null>(null)
-  const reactId = useId()
-  const filterId = `dust-${reactId.replace(/:/g, '')}`
-  const { isReadyToAnimate } = useLoader()
-  const { cleanup, scrollTriggerRef } = useScrollTriggerCleanup()
-  const reducedMotion = usePrefersReducedMotion()
+  const {
+    cleanup,
+    displacementRef,
+    dustActive,
+    filterId,
+    isReadyToAnimate,
+    reducedMotion,
+    scrollTriggerRef,
+  } = useTextAnimationBase()
 
   useLayoutEffect(() => {
     const container = containerRef.current
@@ -108,16 +105,13 @@ export default function SplitText({
       }
     }
 
-    const start =
-      delay !== 0
-        ? `${scroll.revealStart}+=${Math.round(delay * 72)}`
-        : scroll.revealStart
+    const start = getRevealScrollStart(delay)
 
     gsap.set(words, { yPercent: 110 })
 
     const fe = displacementRef.current
     const useDust = !reducedMotion && fe
-    const st = scrollTriggerConfig(container, start)
+    const st = createRevealScrollTrigger(container, start)
 
     const wordsTween = gsap.fromTo(
       words,
@@ -144,21 +138,26 @@ export default function SplitText({
       )
     }
 
-    const raf = requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-    })
+    const cancelRefresh = scheduleScrollTriggerRefresh()
 
     return () => {
-      cancelAnimationFrame(raf)
+      cancelRefresh()
       dustTweenRef.current?.scrollTrigger?.kill()
       dustTweenRef.current?.kill()
       dustTweenRef.current = null
       cleanup()
     }
-  }, [propTrigger, delay, cleanup, isReadyToAnimate, reducedMotion])
+  }, [
+    propTrigger,
+    delay,
+    cleanup,
+    displacementRef,
+    isReadyToAnimate,
+    reducedMotion,
+    scrollTriggerRef,
+  ])
 
   const words = children.split(' ')
-  const dustActive = !reducedMotion
 
   return (
     <>
@@ -170,10 +169,7 @@ export default function SplitText({
           containerRef.current = el
         }}
         className={className}
-        style={{
-          ...style,
-          ...(dustActive ? { filter: `url(#${filterId})` } : {}),
-        }}
+        style={getDustFilterStyle(dustActive, filterId, style)}
       >
         {words.map((word, i) => (
           <span key={i} className="inline-block overflow-hidden">

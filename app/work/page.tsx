@@ -2,7 +2,7 @@ import ProjectCard from '@/components/work/ProjectCard'
 import Footer from '@/components/layout/Footer'
 import BackButton from '@/components/ui/BackButton'
 import { PAGE_TITLE_WORK } from '@/lib/config'
-import { projects } from '@/lib/projects'
+import { getAllProjects } from '@/lib/projects'
 import type { Metadata } from 'next'
 
 const workDescription =
@@ -29,6 +29,8 @@ export const metadata: Metadata = {
 }
 
 export default function WorkIndexPage() {
+  const projects = getAllProjects()
+
   return (
     <>
       <section className="px-6 pt-32 pb-24 md:px-12 lg:px-24">
