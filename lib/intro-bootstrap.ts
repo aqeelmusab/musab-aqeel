@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { INTRO_DURATION_MS } from '@/lib/motion'
 
@@ -14,14 +14,11 @@ let introHasPlayed = false
 export function useIntroBootstrap() {
   const [isVisible, setIsVisible] = useState(!introHasPlayed)
   const [isReadyToAnimate, setIsReadyToAnimate] = useState(introHasPlayed)
-  const hasRunRef = useRef(introHasPlayed)
 
   useEffect(() => {
-    if (hasRunRef.current) {
+    if (introHasPlayed) {
       return
     }
-
-    hasRunRef.current = true
 
     const timer = window.setTimeout(() => {
       setIsVisible(false)
