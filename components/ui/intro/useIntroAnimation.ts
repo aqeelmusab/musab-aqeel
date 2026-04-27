@@ -107,7 +107,10 @@ export function useIntroAnimation({ isVisible }: { isVisible: boolean }) {
       timeRef.current = now
 
       // Cosmetic progress counter: linear elapsed time, 0–100.
-      const rounded = Math.min(Math.round((elapsed / INTRO_DURATION_MS) * 100), 100)
+      const rounded = Math.min(
+        Math.round((elapsed / INTRO_DURATION_MS) * 100),
+        100,
+      )
       if (rounded !== prevRoundedRef.current) {
         prevRoundedRef.current = rounded
         setDisplayProgress(rounded)

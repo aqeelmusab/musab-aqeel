@@ -28,7 +28,10 @@ type ContactValidationResult =
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function fail(error: string, code: ContactValidationFailureCode): ContactValidationResult {
+function fail(
+  error: string,
+  code: ContactValidationFailureCode,
+): ContactValidationResult {
   return {
     success: false,
     status: 400,
@@ -53,12 +56,18 @@ function hasAllowedOption(options: readonly string[], value: string): boolean {
   return options.some((option) => option === value)
 }
 
-function readString(record: Record<string, unknown>, key: string): string | null {
+function readString(
+  record: Record<string, unknown>,
+  key: string,
+): string | null {
   const value = record[key]
   return typeof value === 'string' ? value : null
 }
 
-function readNumber(record: Record<string, unknown>, key: string): number | null {
+function readNumber(
+  record: Record<string, unknown>,
+  key: string,
+): number | null {
   const value = record[key]
 
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -73,7 +82,9 @@ function readNumber(record: Record<string, unknown>, key: string): number | null
   return null
 }
 
-export function parseContactSubmission(value: unknown): ContactValidationResult {
+export function parseContactSubmission(
+  value: unknown,
+): ContactValidationResult {
   if (!isRecord(value)) {
     return fail('Invalid contact form payload.', 'invalid_payload')
   }
@@ -122,7 +133,10 @@ export function parseContactSubmission(value: unknown): ContactValidationResult 
     projectType.length > CONTACT_MAX_PROJECT_TYPE_LENGTH ||
     message.length > CONTACT_MAX_MESSAGE_LENGTH
   ) {
-    return fail('One or more fields exceed the allowed length.', 'invalid_payload')
+    return fail(
+      'One or more fields exceed the allowed length.',
+      'invalid_payload',
+    )
   }
 
   if (!hasAllowedOption(CONTACT_BUDGET_OPTIONS, budget)) {

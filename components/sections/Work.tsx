@@ -13,7 +13,7 @@ export default function Work() {
 
   return (
     <section id="work" className="px-6 py-24 md:px-12 md:py-32 lg:px-24">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-350">
         <div className="mb-12 flex items-end justify-between">
           <div>
             <RevealText>

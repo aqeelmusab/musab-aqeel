@@ -21,7 +21,7 @@ export default function NotFound() {
       </span>
 
       {/* Center: massive 404 + message */}
-      <div className="flex max-w-[900px] flex-1 flex-col justify-center">
+      <div className="flex max-w-225 flex-1 flex-col justify-center">
         <h1
           className="font-display mb-6 leading-[0.85] font-bold tracking-tighter"
           style={{
@@ -52,7 +52,7 @@ export default function NotFound() {
           </span>
         </h1>
         <p
-          className="font-body mb-10 max-w-[480px] text-lg leading-relaxed md:text-xl"
+          className="font-body mb-10 max-w-120 text-lg leading-relaxed md:text-xl"
           style={{
             fontWeight: 300,
             color: 'var(--color-text-secondary)',

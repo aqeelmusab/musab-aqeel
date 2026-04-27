@@ -111,11 +111,12 @@ export default function ProjectCard({
         <ProjectCoverImage
           project={project}
           aspectClassName="aspect-16/10"
-          className="rounded-[2px]"
+          className="rounded-xs"
           imageClassName="transition-all duration-700 group-hover:scale-[1.03]"
           overlayClassName="transition-opacity duration-500 group-hover:opacity-60"
           overlayStyle={{
-            background: 'linear-gradient(to top, var(--color-bg), transparent 60%)',
+            background:
+              'linear-gradient(to top, var(--color-bg), transparent 60%)',
             opacity: 0.7,
           }}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -17,7 +17,9 @@ import { useIntro } from '@/lib/IntroContext'
  */
 export default function Intro() {
   const { isVisible } = useIntro()
-  const { displayProgress, text1Ref, text2Ref } = useIntroAnimation({ isVisible })
+  const { displayProgress, text1Ref, text2Ref } = useIntroAnimation({
+    isVisible,
+  })
 
   return (
     <div

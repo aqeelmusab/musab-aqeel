@@ -43,7 +43,9 @@ export interface ContactApiErrorResponse {
   code: ContactApiErrorCode
 }
 
-export type ContactApiResponse = ContactApiSuccessResponse | ContactApiErrorResponse
+export type ContactApiResponse =
+  | ContactApiSuccessResponse
+  | ContactApiErrorResponse
 
 export type ContactWebhookTarget = 'discord' | 'slack' | 'generic'
 

@@ -29,7 +29,9 @@ export const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5
 export const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1_000
 export const CONTACT_WEBHOOK_TIMEOUT_MS = 10_000
 
-export function createEmptyContactSubmission(startedAt = Date.now()): ContactSubmission {
+export function createEmptyContactSubmission(
+  startedAt = Date.now(),
+): ContactSubmission {
   return {
     name: '',
     email: '',

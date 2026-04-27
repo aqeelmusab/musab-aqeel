@@ -87,7 +87,10 @@ export function DesktopActions({ onNavigate }: NavActionProps) {
         </span>
       </div>
 
-      <MagneticButton className="btn-outline" onClick={() => onNavigate('#contact')}>
+      <MagneticButton
+        className="btn-outline"
+        onClick={() => onNavigate('#contact')}
+      >
         Hire Me
       </MagneticButton>
     </div>
@@ -125,7 +128,7 @@ export function MobileMenu({
         },
       }}
     >
-      <div className="h-[64px] shrink-0" />
+      <div className="h-16 shrink-0" />
 
       <div className="flex flex-1 flex-col justify-center px-6">
         {NAV_LINKS.map((link, index) => (
@@ -203,7 +206,7 @@ export function MobileMenu({
         </div>
         <a
           href={CONTACT_EMAIL_HREF}
-          className="group inline-flex items-center gap-2 rounded-[2px] px-4 py-2 font-mono transition-colors duration-200 outline-none focus-visible:ring-1 focus-visible:ring-white/20"
+          className="group inline-flex items-center gap-2 rounded-xs px-4 py-2 font-mono transition-colors duration-200 outline-none focus-visible:ring-1 focus-visible:ring-white/20"
           style={{
             border: '1px solid var(--color-border)',
             fontSize: '10px',

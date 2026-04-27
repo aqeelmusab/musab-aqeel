@@ -55,4 +55,8 @@ export interface SocialLink {
   href: string
 }
 
-export type { ContactFormStatus, ContactPayload, ContactSubmission } from '@/lib/contact'
+export type {
+  ContactFormStatus,
+  ContactPayload,
+  ContactSubmission,
+} from '@/lib/contact'

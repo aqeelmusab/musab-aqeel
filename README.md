@@ -55,17 +55,17 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Script | Purpose |
-| --- | --- |
-| `npm run dev` | Dev server with HMR (Turbopack) |
-| `npm run build` | Production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | ESLint (flat config) |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run test` | Vitest run |
-| `npm run verify` | lint + typecheck + test + build — same thing CI runs |
-| `npm run format` | Prettier write |
-| `npm run format:check` | Prettier check |
+| Script                 | Purpose                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| `npm run dev`          | Dev server with HMR (Turbopack)                                     |
+| `npm run build`        | Production build                                                    |
+| `npm run start`        | Serve the production build                                          |
+| `npm run lint`         | ESLint (flat config)                                                |
+| `npm run typecheck`    | `tsc --noEmit`                                                      |
+| `npm run test`         | Vitest run                                                          |
+| `npm run verify`       | format check + lint + typecheck + test + build — same thing CI runs |
+| `npm run format`       | Prettier write                                                      |
+| `npm run format:check` | Prettier check                                                      |
 
 ## Project structure
 

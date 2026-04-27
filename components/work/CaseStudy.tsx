@@ -123,7 +123,7 @@ export default function CaseStudy({ project }: CaseStudyProps) {
                   {d.title}
                 </h3>
                 <p
-                  className="font-body max-w-[680px] text-sm leading-relaxed"
+                  className="font-body max-w-170 text-sm leading-relaxed"
                   style={{ color: 'var(--color-text-secondary)' }}
                 >
                   {d.description}
@@ -157,7 +157,7 @@ export default function CaseStudy({ project }: CaseStudyProps) {
           )}
           <RevealText delay={0.1}>
             <p
-              className="font-body max-w-[680px] text-base leading-relaxed"
+              className="font-body max-w-170 text-base leading-relaxed"
               style={{ color: 'var(--color-text-secondary)' }}
             >
               {project.outcome}
@@ -172,7 +172,7 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             {project.stack.map((s, i) => (
               <RevealText key={s.name} delay={i * 0.06}>
                 <div
-                  className="rounded-[2px] p-5"
+                  className="rounded-xs p-5"
                   style={{
                     backgroundColor: 'var(--color-surface)',
                     border: '1px solid var(--color-border-sub)',
@@ -234,7 +234,7 @@ function CaseSection({ label, content }: { label: string; content: string }) {
       <span className="section-label mb-8 block">{label}</span>
       <RevealText>
         <p
-          className="font-body max-w-[680px] text-base leading-relaxed"
+          className="font-body max-w-170 text-base leading-relaxed"
           style={{ color: 'var(--color-text-secondary)' }}
         >
           {content}

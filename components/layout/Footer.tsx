@@ -6,7 +6,7 @@ export default function Footer() {
       className="px-6 py-8 md:px-12 lg:px-24"
       style={{ borderTop: '1px solid var(--color-border-sub)' }}
     >
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 md:flex-row">
+      <div className="mx-auto flex max-w-350 flex-col items-center justify-between gap-4 md:flex-row">
         <p
           className="font-mono text-xs"
           style={{ color: 'var(--color-text-tertiary)' }}

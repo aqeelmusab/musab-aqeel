@@ -9,7 +9,10 @@ import type {
 
 type ContactWebhookPayload = Record<string, unknown>
 
-function buildDiscordPayload(contact: ContactPayload, timestamp: string): ContactWebhookPayload {
+function buildDiscordPayload(
+  contact: ContactPayload,
+  timestamp: string,
+): ContactWebhookPayload {
   return {
     username: SITE_DOMAIN,
     avatar_url: FAVICON_96_URL,
@@ -25,7 +28,11 @@ function buildDiscordPayload(contact: ContactPayload, timestamp: string): Contac
           { name: '📧  Email', value: `\`${contact.email}\``, inline: true },
           { name: '\u200b', value: '\u200b', inline: true },
           { name: '💰  Budget', value: `\`${contact.budget}\``, inline: true },
-          { name: '📁  Project Type', value: `\`${contact.projectType}\``, inline: true },
+          {
+            name: '📁  Project Type',
+            value: `\`${contact.projectType}\``,
+            inline: true,
+          },
           { name: '\u200b', value: '\u200b', inline: true },
           { name: '📝  Message', value: `>>> ${contact.message}` },
         ],
@@ -66,7 +73,10 @@ function buildSlackPayload(contact: ContactPayload): ContactWebhookPayload {
   }
 }
 
-function buildGenericPayload(contact: ContactPayload, timestamp: string): ContactWebhookPayload {
+function buildGenericPayload(
+  contact: ContactPayload,
+  timestamp: string,
+): ContactWebhookPayload {
   return {
     ...contact,
     source: 'contact-form',

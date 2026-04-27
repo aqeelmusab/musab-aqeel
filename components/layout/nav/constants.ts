@@ -19,5 +19,7 @@ export const MOBILE_MENU_RESTART_DELAY_MS = 1000
  * fast but disorienting.
  */
 export const MOBILE_SCROLL_DELAY_MS = 900
-export const MOBILE_MENU_OPEN_CLIP_PATH = 'circle(160% at calc(100% - 40px) 36px)'
-export const MOBILE_MENU_CLOSED_CLIP_PATH = 'circle(0% at calc(100% - 40px) 36px)'
+export const MOBILE_MENU_OPEN_CLIP_PATH =
+  'circle(160% at calc(100% - 40px) 36px)'
+export const MOBILE_MENU_CLOSED_CLIP_PATH =
+  'circle(0% at calc(100% - 40px) 36px)'

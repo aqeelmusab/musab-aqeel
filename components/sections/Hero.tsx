@@ -105,13 +105,17 @@ export default function Hero() {
         <motion.div {...fadeUp(0.5)} className="flex items-center gap-5">
           <MagneticButton
             className="btn-outline md:px-8 md:py-3.5 md:text-base"
-            onClick={() => scrollToHashSection(lenisRef, '#contact', { duration: 1 })}
+            onClick={() =>
+              scrollToHashSection(lenisRef, '#contact', { duration: 1 })
+            }
           >
             Start a project
           </MagneticButton>
           <MagneticButton
             className="btn-text md:text-base"
-            onClick={() => scrollToHashSection(lenisRef, '#work', { duration: 1 })}
+            onClick={() =>
+              scrollToHashSection(lenisRef, '#work', { duration: 1 })
+            }
           >
             View work{' '}
             <span className="arrow" aria-hidden="true">

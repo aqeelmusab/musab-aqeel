@@ -1,6 +1,14 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
+} from 'react'
 import type Lenis from 'lenis'
 
 import { useLenisRef } from '@/lib/lenis-context'
@@ -117,7 +125,10 @@ export function useHeaderScrolledState() {
   return scrolled
 }
 
-export function useActiveSectionState(pathname: string, isReadyToAnimate: boolean) {
+export function useActiveSectionState(
+  pathname: string,
+  isReadyToAnimate: boolean,
+) {
   const [activeSection, setActiveSection] = useState('')
   const isProgrammaticScrollRef = useRef(false)
 

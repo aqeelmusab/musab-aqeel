@@ -34,7 +34,7 @@ export default function WorkIndexPage() {
   return (
     <>
       <section className="px-6 pt-32 pb-24 md:px-12 lg:px-24">
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-350">
           <BackButton />
           <h1 className="font-display mb-16 text-4xl font-semibold tracking-tight md:text-5xl lg:text-6xl">
             Work

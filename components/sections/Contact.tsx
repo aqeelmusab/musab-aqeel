@@ -41,7 +41,9 @@ const SelectArrow = () => (
 export default function Contact() {
   const [status, setStatus] = useState<ContactFormStatus>('idle')
   const [errorMessage, setErrorMessage] = useState('')
-  const [form, setForm] = useState<ContactSubmission>(() => createEmptyContactSubmission())
+  const [form, setForm] = useState<ContactSubmission>(() =>
+    createEmptyContactSubmission(),
+  )
 
   useEffect(() => {
     if (status !== 'sent') return
@@ -65,7 +67,9 @@ export default function Contact() {
         setStatus('sent')
         setForm(createEmptyContactSubmission())
       } else {
-        const data = (await res.json().catch(() => null)) as ContactApiResponse | null
+        const data = (await res
+          .json()
+          .catch(() => null)) as ContactApiResponse | null
         setErrorMessage(
           data && !data.success && typeof data.error === 'string'
             ? data.error
@@ -87,11 +91,11 @@ export default function Contact() {
 
   const labelClass = 'block mb-1.5 text-xs tracking-widest font-mono'
   const inputClass =
-    'bg-theme-surface-up border-theme text-theme-primary w-full rounded-[2px] border px-4 py-3 text-sm font-body outline-none transition-colors duration-200'
+    'bg-theme-surface-up border-theme text-theme-primary w-full rounded-xs border px-4 py-3 text-sm font-body outline-none transition-colors duration-200'
 
   return (
     <section id="contact" className="px-6 py-24 md:px-12 md:py-32 lg:px-24">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
+      <div className="mx-auto grid max-w-350 grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
         {/* Left column */}
         <div>
           <RevealText>
@@ -317,9 +321,7 @@ export default function Contact() {
                   </p>
                 )}
                 {status === 'error' && (
-                  <p className="text-theme-error">
-                    {errorMessage}
-                  </p>
+                  <p className="text-theme-error">{errorMessage}</p>
                 )}
               </div>
             </RevealText>

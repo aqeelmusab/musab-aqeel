@@ -4,7 +4,11 @@ import { AnimatePresence } from 'motion/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useRef, useState, type MouseEvent } from 'react'
 
-import { DesktopActions, DesktopNavLinks, MobileMenu } from '@/components/layout/nav/NavPieces'
+import {
+  DesktopActions,
+  DesktopNavLinks,
+  MobileMenu,
+} from '@/components/layout/nav/NavPieces'
 import {
   HOME_PATH,
   MOBILE_SCROLL_DELAY_MS,
@@ -78,7 +82,9 @@ export default function Nav() {
         }
 
         scrollToPageTop(lenisRef, {
-          duration: mobileOpen ? MOBILE_MENU_SCROLL_DURATION : DESKTOP_SCROLL_DURATION,
+          duration: mobileOpen
+            ? MOBILE_MENU_SCROLL_DURATION
+            : DESKTOP_SCROLL_DURATION,
           delayMs: mobileOpen ? MOBILE_SCROLL_DELAY_MS : 0,
           onComplete: finishProgrammaticScroll,
           restartLenis: mobileOpen,
@@ -118,7 +124,9 @@ export default function Nav() {
 
       if (
         !scrollToHashSection(lenisRef, href, {
-          duration: mobileOpen ? MOBILE_MENU_SCROLL_DURATION : DESKTOP_SCROLL_DURATION,
+          duration: mobileOpen
+            ? MOBILE_MENU_SCROLL_DURATION
+            : DESKTOP_SCROLL_DURATION,
           delayMs: mobileOpen ? MOBILE_SCROLL_DELAY_MS : 0,
           onComplete: finishProgrammaticScroll,
           restartLenis: mobileOpen,
@@ -151,8 +159,11 @@ export default function Nav() {
 
   return (
     <>
-      <header className="site-header fixed top-0 right-0 left-0 z-50" data-state={headerState}>
-        <nav className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4">
+      <header
+        className="site-header fixed top-0 right-0 left-0 z-50"
+        data-state={headerState}
+      >
+        <nav className="relative z-10 mx-auto flex max-w-350 items-center justify-between px-6 py-4">
           <Logo onClick={handleLogoClick} />
           <DesktopNavLinks
             activeSection={visibleActiveSection}

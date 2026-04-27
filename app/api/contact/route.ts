@@ -69,7 +69,11 @@ export async function POST(request: Request) {
 
     const parsedSubmission = parseContactSubmission(rawBody.data)
     if (!parsedSubmission.success) {
-      return jsonError(parsedSubmission.error, parsedSubmission.status, parsedSubmission.code)
+      return jsonError(
+        parsedSubmission.error,
+        parsedSubmission.status,
+        parsedSubmission.code,
+      )
     }
 
     const abuseCheck = evaluateContactAbuse({

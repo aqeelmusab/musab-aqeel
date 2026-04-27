@@ -29,7 +29,7 @@ const TESTIMONIALS: Testimonial[] = [
 export default function Testimonials() {
   return (
     <section className="px-6 py-24 md:px-12 md:py-32 lg:px-24">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-350">
         <RevealText>
           <span className="section-label mb-4 block">
             {'// 04 Testimonials'}
@@ -46,7 +46,7 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <RevealText key={t.name} delay={0.05 + i * 0.08}>
               <div
-                className="flex h-full flex-col rounded-[2px] p-6 md:p-8"
+                className="flex h-full flex-col rounded-xs p-6 md:p-8"
                 style={{
                   backgroundColor: 'var(--color-surface)',
                   border: '1px solid var(--color-border-sub)',

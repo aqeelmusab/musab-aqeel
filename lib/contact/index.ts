@@ -4,7 +4,11 @@ export {
   CONTACT_PROJECT_TYPES,
   createEmptyContactSubmission,
 } from './constants'
-export { evaluateContactAbuse, getClientIpAddress, resetContactAbuseState } from './abuse'
+export {
+  evaluateContactAbuse,
+  getClientIpAddress,
+  resetContactAbuseState,
+} from './abuse'
 export { parseContactSubmission } from './validation'
 export {
   buildContactWebhookPayload,

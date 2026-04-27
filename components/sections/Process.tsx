@@ -32,7 +32,7 @@ const STEPS: ProcessStep[] = [
 export default function Process() {
   return (
     <section id="process" className="px-6 py-24 md:px-12 md:py-32 lg:px-24">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-350">
         <RevealText>
           <span className="section-label mb-4 block">{'// 03 Process'}</span>
         </RevealText>

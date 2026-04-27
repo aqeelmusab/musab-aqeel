@@ -7,7 +7,7 @@ import { motion } from 'motion/react'
 import { duration, ease } from '@/lib/motion'
 
 const WORK_SECTION_SPACING = 'px-6 py-16 md:px-12 md:py-20 lg:px-24'
-const WORK_SECTION_MAX_WIDTH = 'mx-auto max-w-[1400px]'
+const WORK_SECTION_MAX_WIDTH = 'mx-auto max-w-350'
 
 interface ProjectImageData {
   slug: string
@@ -51,7 +51,7 @@ export function WorkDivider() {
   return (
     <div className="px-6 md:px-12 lg:px-24">
       <div
-        className="mx-auto h-px max-w-[1400px]"
+        className="mx-auto h-px max-w-350"
         style={{ backgroundColor: 'var(--color-border-sub)' }}
       />
     </div>

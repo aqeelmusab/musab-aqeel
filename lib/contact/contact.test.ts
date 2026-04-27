@@ -140,9 +140,15 @@ describe('evaluateContactAbuse', () => {
 
 describe('webhook helpers', () => {
   it('detects supported webhook targets', () => {
-    expect(resolveWebhookTarget('https://discord.com/api/webhooks/123/abc')).toBe('discord')
-    expect(resolveWebhookTarget('https://hooks.slack.com/services/a/b/c')).toBe('slack')
-    expect(resolveWebhookTarget('https://example.com/webhooks/contact')).toBe('generic')
+    expect(
+      resolveWebhookTarget('https://discord.com/api/webhooks/123/abc'),
+    ).toBe('discord')
+    expect(resolveWebhookTarget('https://hooks.slack.com/services/a/b/c')).toBe(
+      'slack',
+    )
+    expect(resolveWebhookTarget('https://example.com/webhooks/contact')).toBe(
+      'generic',
+    )
   })
 
   it('builds a Discord webhook payload with the expected branding fields', () => {
@@ -212,7 +218,8 @@ describe('contact route', () => {
     expect(response.status).toBe(503)
     await expect(response.json()).resolves.toEqual({
       success: false,
-      error: 'Contact form is temporarily unavailable. Please email me directly.',
+      error:
+        'Contact form is temporarily unavailable. Please email me directly.',
       code: 'service_unavailable',
     })
 

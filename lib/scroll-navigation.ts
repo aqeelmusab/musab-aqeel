@@ -31,7 +31,9 @@ function runAfterDelay(callback: () => void, delayMs: number) {
   window.setTimeout(callback, delayMs)
 }
 
-function resolveEasing(easing: EasingFn | null | undefined): EasingFn | undefined {
+function resolveEasing(
+  easing: EasingFn | null | undefined,
+): EasingFn | undefined {
   if (easing === null) return undefined
   return easing ?? scrollEaseOut
 }

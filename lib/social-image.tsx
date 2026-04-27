@@ -230,7 +230,8 @@ function TagChipRow({
               fontSize: '12px',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color: tone === 'accent' ? palette.textPrimary : palette.textSecondary,
+              color:
+                tone === 'accent' ? palette.textPrimary : palette.textSecondary,
             }}
           >
             {tag}
@@ -289,101 +290,101 @@ function SocialImageFrame({
  */
 export function createHomeSocialImage() {
   return new ImageResponse(
-    (
-      <SocialImageFrame
-        headerRight={<AvailabilityBadge />}
-        footerLeft={
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-              maxWidth: '520px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: FONT_STACK_DISPLAY,
-                fontWeight: 600,
-                fontSize: '22px',
-                lineHeight: 1.35,
-                color: palette.textSecondary,
-                letterSpacing: '-0.01em',
-              }}
-            >
-              Design to deployment.
-            </span>
-            <span
-              style={{
-                fontFamily: FONT_STACK_DISPLAY,
-                fontWeight: 600,
-                fontSize: '22px',
-                lineHeight: 1.35,
-                color: palette.textTertiary,
-                letterSpacing: '-0.01em',
-              }}
-            >
-              Weeks, not months.
-            </span>
-          </div>
-        }
-        footerRight={<TagChipRow tags={['Full Stack', 'Next.js', 'TypeScript']} />}
-      >
+    <SocialImageFrame
+      headerRight={<AvailabilityBadge />}
+      footerLeft={
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '14px',
+            gap: '4px',
+            maxWidth: '520px',
           }}
         >
-          <SectionLabel>01 hero</SectionLabel>
-          <div
+          <span
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 600,
+              fontSize: '22px',
+              lineHeight: 1.35,
+              color: palette.textSecondary,
+              letterSpacing: '-0.01em',
             }}
           >
-            <span
-              style={{
-                fontFamily: FONT_STACK_DISPLAY,
-                fontWeight: 700,
-                fontSize: '104px',
-                lineHeight: 1,
-                letterSpacing: '-0.035em',
-                color: palette.textPrimary,
-              }}
-            >
-              {SITE_NAME}.
-            </span>
-            <span
-              style={{
-                fontFamily: FONT_STACK_DISPLAY,
-                fontWeight: 700,
-                fontSize: '104px',
-                lineHeight: 1,
-                letterSpacing: '-0.035em',
-                color: palette.textDim,
-              }}
-            >
-              Developer.
-            </span>
-            <span
-              style={{
-                fontFamily: FONT_STACK_DISPLAY,
-                fontWeight: 700,
-                fontSize: '104px',
-                lineHeight: 1,
-                letterSpacing: '-0.035em',
-                color: palette.textDim,
-              }}
-            >
-              Architect. Operator.
-            </span>
-          </div>
+            Design to deployment.
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 600,
+              fontSize: '22px',
+              lineHeight: 1.35,
+              color: palette.textTertiary,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Weeks, not months.
+          </span>
         </div>
-      </SocialImageFrame>
-    ),
+      }
+      footerRight={
+        <TagChipRow tags={['Full Stack', 'Next.js', 'TypeScript']} />
+      }
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+        }}
+      >
+        <SectionLabel>01 hero</SectionLabel>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 700,
+              fontSize: '104px',
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
+              color: palette.textPrimary,
+            }}
+          >
+            {SITE_NAME}.
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 700,
+              fontSize: '104px',
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
+              color: palette.textDim,
+            }}
+          >
+            Developer.
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 700,
+              fontSize: '104px',
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
+              color: palette.textDim,
+            }}
+          >
+            Architect. Operator.
+          </span>
+        </div>
+      </div>
+    </SocialImageFrame>,
     { ...SOCIAL_IMAGE_SIZE },
   )
 }
@@ -406,67 +407,65 @@ export function createProjectSocialImage({
   const tagsToShow = tags.slice(0, 4)
 
   return new ImageResponse(
-    (
-      <SocialImageFrame
-        headerRight={
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <span style={monoDimLabelStyle}>{'// '}case study</span>
-          </div>
-        }
-        footerLeft={<TagChipRow tags={tagsToShow} tone="accent" />}
-        footerRight={
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-            }}
-          >
-            {year && (
-              <span
-                style={{
-                  ...monoLabelStyle,
-                  fontSize: '12px',
-                  color: palette.textTertiary,
-                }}
-              >
-                {year}
-              </span>
-            )}
-            <Signature />
-          </div>
-        }
-      >
+    <SocialImageFrame
+      headerRight={
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: '18px',
+            alignItems: 'center',
+            gap: '10px',
           }}
         >
-          <SectionLabel>{type}</SectionLabel>
-          <span
-            style={{
-              fontFamily: FONT_STACK_DISPLAY,
-              fontWeight: 700,
-              fontSize: title.length > 18 ? '92px' : '112px',
-              lineHeight: 1,
-              letterSpacing: '-0.035em',
-              color: palette.textPrimary,
-              maxWidth: '1000px',
-            }}
-          >
-            {title}.
-          </span>
+          <span style={monoDimLabelStyle}>{'// '}case study</span>
         </div>
-      </SocialImageFrame>
-    ),
+      }
+      footerLeft={<TagChipRow tags={tagsToShow} tone="accent" />}
+      footerRight={
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+          }}
+        >
+          {year && (
+            <span
+              style={{
+                ...monoLabelStyle,
+                fontSize: '12px',
+                color: palette.textTertiary,
+              }}
+            >
+              {year}
+            </span>
+          )}
+          <Signature />
+        </div>
+      }
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '18px',
+        }}
+      >
+        <SectionLabel>{type}</SectionLabel>
+        <span
+          style={{
+            fontFamily: FONT_STACK_DISPLAY,
+            fontWeight: 700,
+            fontSize: title.length > 18 ? '92px' : '112px',
+            lineHeight: 1,
+            letterSpacing: '-0.035em',
+            color: palette.textPrimary,
+            maxWidth: '1000px',
+          }}
+        >
+          {title}.
+        </span>
+      </div>
+    </SocialImageFrame>,
     { ...SOCIAL_IMAGE_SIZE },
   )
 }

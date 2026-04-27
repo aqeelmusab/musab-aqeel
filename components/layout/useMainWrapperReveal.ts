@@ -9,7 +9,9 @@ gsap.registerPlugin(ScrollTrigger)
 
 function getIntroElements() {
   const intro = document.querySelector('.intro') as HTMLElement | null
-  const introContent = document.querySelector('.intro-content') as HTMLElement | null
+  const introContent = document.querySelector(
+    '.intro-content',
+  ) as HTMLElement | null
 
   return {
     intro,
@@ -114,7 +116,14 @@ export function useMainWrapperReveal({
         '<',
       )
     },
-    { dependencies: [hasAnimatedRef, isIntroVisible, onRevealComplete, wrapperRef] },
+    {
+      dependencies: [
+        hasAnimatedRef,
+        isIntroVisible,
+        onRevealComplete,
+        wrapperRef,
+      ],
+    },
   )
 
   useEffect(() => {
