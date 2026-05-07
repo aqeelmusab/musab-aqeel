@@ -1,7 +1,14 @@
 'use client'
 
 import { useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import Link from 'next/link'
 import { motion, useMotionValue, useSpring } from 'motion/react'
+
+const MotionLink = motion.create(Link)
+
+function isInternalHref(href: string | undefined): href is string {
+  return typeof href === 'string' && href.startsWith('/')
+}
 
 interface MagneticButtonProps {
   children: ReactNode
@@ -48,7 +55,15 @@ export default function MagneticButton({
     setIsHovered(false)
   }
 
-  const Tag = as === 'a' ? motion.a : motion.button
+  // For internal hrefs, route through next/link so navigation stays SPA and
+  // prefetching works. External (or unset) hrefs fall through to a plain
+  // <a>; non-anchor renders a <button>.
+  const useInternalLink = as === 'a' && isInternalHref(href)
+  const Tag = useInternalLink
+    ? MotionLink
+    : as === 'a'
+      ? motion.a
+      : motion.button
 
   return (
     <motion.div
@@ -59,7 +74,7 @@ export default function MagneticButton({
       style={{ x: springX, y: springY }}
     >
       <Tag
-        href={href}
+        href={href as string}
         onClick={onClick}
         type={as === 'button' ? (type ?? 'button') : undefined}
         disabled={as === 'button' ? disabled : undefined}

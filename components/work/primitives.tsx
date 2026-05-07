@@ -1,6 +1,12 @@
 'use client'
 
-import { useState, type CSSProperties, type ReactNode } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react'
 import Image from 'next/image'
 import { motion } from 'motion/react'
 
@@ -70,6 +76,16 @@ export function ProjectCoverImage({
   children,
 }: ProjectCoverImageProps) {
   const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  // Browsers (notably Safari) often skip `onLoad` for already-cached images,
+  // which would leave the `<img>` stuck at opacity:0. Sync the loaded state
+  // from `img.complete` after mount as a safety net.
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setLoaded(true)
+    }
+  }, [])
 
   return (
     <motion.div
@@ -82,6 +98,7 @@ export function ProjectCoverImage({
     >
       {!loaded && <div className="skeleton-shimmer absolute inset-0" />}
       <Image
+        ref={imgRef}
         src={project.coverImage}
         alt={project.title}
         fill

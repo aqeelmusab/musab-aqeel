@@ -26,7 +26,7 @@ type ContactValidationResult =
       error: string
     }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/
 
 function fail(
   error: string,

@@ -74,6 +74,11 @@ export default function SplitText({
     loadTlRef.current?.kill()
     loadTlRef.current = null
 
+    if (reducedMotion) {
+      gsap.set(words, WORD_VISIBLE_STATE)
+      return
+    }
+
     if (isLoad) {
       gsap.set(words, WORD_HIDDEN_STATE)
 

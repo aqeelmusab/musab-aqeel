@@ -28,13 +28,16 @@ export default function MainWrapper({ children }: { children: ReactNode }) {
   return (
     <div
       ref={wrapperRef}
+      data-main-wrapper
       style={
         revealed
           ? undefined
           : {
               // Seeds GSAP's fromTo so the first paint and the animation start
               // match. The loader (z-9999, opaque) covers this offset content
-              // until it lifts off in `useMainWrapperReveal`.
+              // until it lifts off in `useMainWrapperReveal`. The
+              // `data-main-wrapper` attribute lets the no-JS fallback in
+              // `app/layout.tsx` override these inline styles.
               transform: 'translateY(48px)',
               opacity: 0,
               willChange: 'transform, opacity',

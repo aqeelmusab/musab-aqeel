@@ -172,6 +172,12 @@ export default function RootLayout({
         <script type="application/ld+json">
           {serializeJsonLd(websiteJsonLd)}
         </script>
+        {/* No-JS fallback: the reveal-on-scroll system, the intro screen, and
+          the MainWrapper offset all rely on client-side JS to make content
+          visible. Without JS, surface everything and hide the intro. */}
+        <noscript>
+          <style>{`[data-reveal],[data-main-wrapper]{opacity:1!important;transform:none!important}.intro{display:none!important}`}</style>
+        </noscript>
       </head>
       <body>
         <a href="#main-content" className="skip-link">

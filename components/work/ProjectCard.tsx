@@ -89,7 +89,6 @@ export default function ProjectCard({
 
       setTimeout(() => {
         router.push(href)
-        transitioning.current = false
       }, TRANSITION_DURATION_MS)
     },
     [href, router],

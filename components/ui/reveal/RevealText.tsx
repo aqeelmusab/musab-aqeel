@@ -45,6 +45,11 @@ export default function RevealText({
 
     cleanup()
 
+    if (reducedMotion) {
+      gsap.set(el, { opacity: 1, y: 0, clearProps: 'transform' })
+      return
+    }
+
     const start = getRevealScrollStart(delay)
     const revealScrollTrigger = createRevealScrollTrigger(el, start)
 

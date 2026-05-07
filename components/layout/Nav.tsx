@@ -63,9 +63,9 @@ export default function Nav() {
 
   const handleLogoClick = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault()
-
       if (pathname === HOME_PATH) {
+        event.preventDefault()
+
         if (window.scrollY === 0) {
           resetActiveSection()
           if (mobileOpen) {
@@ -92,11 +92,10 @@ export default function Nav() {
         return
       }
 
+      // Off-home: let next/link handle the navigation. Just close the menu.
       if (mobileOpen) {
         closeMobileMenu()
       }
-
-      router.push(HOME_PATH)
     },
     [
       beginProgrammaticScroll,
@@ -106,7 +105,6 @@ export default function Nav() {
       mobileOpen,
       pathname,
       resetActiveSection,
-      router,
       setActiveSection,
     ],
   )
@@ -122,6 +120,12 @@ export default function Nav() {
         return
       }
 
+      // Mark the scroll as programmatic *before* asking Lenis to scroll, so
+      // the first scroll event Lenis emits doesn't briefly flip the active
+      // section based on the user's current scroll position.
+      beginProgrammaticScroll()
+      setActiveSection(href)
+
       if (
         !scrollToHashSection(lenisRef, href, {
           duration: mobileOpen
@@ -132,12 +136,11 @@ export default function Nav() {
           restartLenis: mobileOpen,
         })
       ) {
+        // Target wasn't found — unwind the programmatic-scroll guard.
+        finishProgrammaticScroll()
         closeMobileMenu()
         return
       }
-
-      beginProgrammaticScroll()
-      setActiveSection(href)
 
       if (mobileOpen) {
         closeMobileMenu()

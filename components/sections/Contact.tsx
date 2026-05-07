@@ -79,7 +79,9 @@ export default function Contact() {
 
       if (res.ok) {
         setStatus('sent')
-        setForm(createEmptyContactSubmission())
+        // Preserve `startedAt` so a rapid second submission isn't blocked by
+        // the server-side time-trap (CONTACT_MIN_SUBMISSION_TIME_MS).
+        setForm((prev) => createEmptyContactSubmission(prev.startedAt))
       } else {
         const data = (await res
           .json()

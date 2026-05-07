@@ -29,7 +29,7 @@ export default function Intro() {
           'linear-gradient(135deg, oklch(0% 0 0) 0%, oklch(12% 0.01 80) 50%, var(--color-bg) 100%)',
       }}
       role="status"
-      aria-label={`Intro — ${displayProgress}%`}
+      aria-label="Loading site"
       aria-hidden={!isVisible}
     >
       <div className="intro-content relative flex h-full w-full flex-col items-center justify-center">
