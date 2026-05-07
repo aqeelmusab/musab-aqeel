@@ -10,6 +10,10 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
+function serializeJsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, '\\u003c')
+}
+
 export async function generateStaticParams() {
   return getProjectSlugs().map((slug) => ({ slug }))
 }
@@ -54,10 +58,7 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json">{serializeJsonLd(jsonLd)}</script>
       <CaseStudy project={project} />
       <Footer />
     </>
