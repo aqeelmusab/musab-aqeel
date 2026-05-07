@@ -18,14 +18,18 @@ export default async function ProjectOGImage({
   const { slug } = await params
   const project = getProjectBySlug(slug)
 
-  const title = project?.title ?? 'Project'
-  const type = project?.type ?? 'Case Study'
-  const tagList = project?.tags?.slice(0, 4) ?? []
+  if (!project) {
+    return new Response('Not found', { status: 404 })
+  }
+
+  const title = project.title
+  const type = project.type
+  const tagList = project.tags.slice(0, 4)
 
   return createProjectSocialImage({
     title,
     type,
     tags: tagList,
-    year: project?.year,
+    year: project.year,
   })
 }

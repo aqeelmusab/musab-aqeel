@@ -1,6 +1,12 @@
 'use client'
 
-import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ChangeEvent,
+  type FormEvent,
+} from 'react'
 import SplitText from '@/components/ui/reveal/SplitText'
 import RevealText from '@/components/ui/reveal/RevealText'
 import MagneticButton from '@/components/ui/MagneticButton'
@@ -26,6 +32,7 @@ const SelectArrow = () => (
       viewBox="0 0 10 6"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
     >
       <path
         d="M1 1L5 5L9 1"
@@ -44,6 +51,7 @@ export default function Contact() {
   const [form, setForm] = useState<ContactSubmission>(() =>
     createEmptyContactSubmission(),
   )
+  const isSubmittingRef = useRef(false)
 
   useEffect(() => {
     if (status !== 'sent') return
@@ -53,6 +61,12 @@ export default function Contact() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+
+    if (isSubmittingRef.current) {
+      return
+    }
+
+    isSubmittingRef.current = true
     setStatus('sending')
     setErrorMessage('')
 
@@ -80,6 +94,8 @@ export default function Contact() {
     } catch {
       setErrorMessage('Something went wrong. Try emailing me directly.')
       setStatus('error')
+    } finally {
+      isSubmittingRef.current = false
     }
   }
 
@@ -301,7 +317,11 @@ export default function Contact() {
                 />
               </div>
 
-              <MagneticButton className="btn-outline mt-2 w-full" type="submit">
+              <MagneticButton
+                className="btn-outline mt-2 w-full"
+                type="submit"
+                disabled={status === 'sending'}
+              >
                 {status === 'sending'
                   ? 'Sending...'
                   : status === 'sent'

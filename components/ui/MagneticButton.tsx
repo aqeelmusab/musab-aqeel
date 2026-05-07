@@ -11,6 +11,7 @@ interface MagneticButtonProps {
   href?: string
   onClick?: () => void
   strength?: number
+  disabled?: boolean
 }
 
 export default function MagneticButton({
@@ -21,6 +22,7 @@ export default function MagneticButton({
   href,
   onClick,
   strength = 0.3,
+  disabled = false,
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -60,6 +62,8 @@ export default function MagneticButton({
         href={href}
         onClick={onClick}
         type={as === 'button' ? (type ?? 'button') : undefined}
+        disabled={as === 'button' ? disabled : undefined}
+        aria-disabled={disabled || undefined}
         className={className}
         whileTap={{ scale: 0.97 }}
         data-magnetic-hover={isHovered || undefined}

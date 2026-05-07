@@ -10,7 +10,11 @@ export default function BackButton({ fallbackHref = '/' }: BackButtonProps) {
   const router = useRouter()
 
   function handleBack() {
-    if (window.history.length > 1) {
+    const hasSameOriginReferrer =
+      document.referrer.length > 0 &&
+      new URL(document.referrer).origin === window.location.origin
+
+    if (window.history.length > 1 && hasSameOriginReferrer) {
       router.back()
     } else {
       router.push(fallbackHref)
