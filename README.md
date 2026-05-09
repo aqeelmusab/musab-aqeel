@@ -1,54 +1,54 @@
 # Musab Aqeel
 
-Personal portfolio and case-study site — Next.js 16 App Router on Vercel-style static output, with a motion layer built on GSAP, Motion (formerly Framer Motion), and Lenis.
+Personal portfolio and case-study site. Next.js 16 App Router with Vercel-style static output, plus motion via GSAP, Motion (formerly Framer Motion), and Lenis.
 
 ## Stack
 
 - **Next.js 16** App Router, Turbopack build, React 19
 - **TypeScript** strict mode, `@/` path alias at repo root
-- **GSAP** for scroll-triggered reveals, the intro choreography, and the cursor/logo micro-animations
-- **Motion** for layout transitions, magnetic buttons, the mobile menu clip-path, and the cursor springs
-- **Lenis** for smooth wheel scroll on desktop (native touch on mobile)
-- **Tailwind CSS 4** with a small set of hand-written primitives in `globals.css`
-- **Vitest** for focused domain-level tests (contact pipeline today)
-- **Proxy** (Next.js 16's renamed middleware) for a per-request nonced CSP
-- **CI + Git hooks** enforce lockfile hygiene and the full verify pipeline
+- **GSAP** scroll-triggered reveals, intro choreography, cursor/logo micro-animations
+- **Motion** layout transitions, magnetic buttons, mobile menu clip-path, cursor springs
+- **Lenis** smooth wheel scroll on desktop (native touch on mobile)
+- **Tailwind CSS 4** plus a small hand-written layer in `globals.css`
+- **Vitest** for domain tests (contact pipeline for now)
+- **Proxy** (Next 16’s renamed middleware) for per-request CSP nonces
+- **CI and git hooks** keep the lockfile honest and run the full verify pipeline
 
 ## Getting started
 
 ### Requirements
 
-- **Node.js 24.x** across deployment, local development, and CI (`package.json#engines`, `.nvmrc`, `.node-version`, and CI all follow the same major-version policy)
-- **pnpm** (exact version pinned via `packageManager`, enforced by [Corepack](https://nodejs.org/api/corepack.html))
+- **Node.js 24.x** everywhere: deploy, local dev, and CI (`package.json#engines`, `.nvmrc`, `.node-version`)
+- **pnpm** version pinned in `packageManager`, enforced with [Corepack](https://nodejs.org/api/corepack.html)
 
-The pnpm pin avoids lockfile drift caused by different local package managers resolving the dependency graph differently. As long as Corepack is enabled (once per machine), every `pnpm` invocation inside this repo uses the pinned version.
+Pinning pnpm stops “works on my machine” lockfile churn from different package managers resolving deps differently. Enable Corepack once per machine; after that `pnpm` in this repo uses that pin.
 
-The Node policy is intentionally major-version based: deployment platforms like Vercel expose supported Node versions as majors such as `24.x`, and local tooling now follows the same policy to avoid patch-level drift between environments.
+Node is pinned at the major so local matches hosts like Vercel (`24.x`) without chasing patch drift.
 
 ### Install
 
 ```bash
-nvm use            # or: fnm use, asdf shell nodejs 24, etc.
-corepack enable    # one-time, honours the packageManager pin
-pnpm install       # runs the postinstall that wires the pre-push hook
+fnm use            # or nvm use, asdf shell nodejs 24, etc.
+corepack enable    # one-time; picks up packageManager
+pnpm install       # postinstall wires the pre-push hook
 ```
 
 ### Environment
 
-Copy `.env.example` → `.env.local` and fill in as needed:
+Copy `.env.example` to `.env.local` and fill what you need:
 
 ```bash
-CONTACT_WEBHOOK_URL=         # Make.com / Zapier / Discord webhook for the contact form
-UPSTASH_REDIS_REST_URL=      # Optional: shared rate-limit backend for contact submissions
-UPSTASH_REDIS_REST_TOKEN=    # Optional: shared rate-limit backend for contact submissions
+CONTACT_WEBHOOK_URL=         # Make.com / Zapier / Discord webhook for contact
+UPSTASH_REDIS_REST_URL=      # Optional: shared rate limit for contact
+UPSTASH_REDIS_REST_TOKEN=    # Optional: shared rate limit for contact
 NEXT_PUBLIC_SITE_URL=https://musabaqeel.com
 ```
 
-Both variables are optional:
+Optional vars:
 
-- `CONTACT_WEBHOOK_URL` — when unset in development the contact route returns success without forwarding. In production it returns `503 service_unavailable` so the submission isn't silently dropped.
-- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — optional but recommended in production. When present, the contact rate limiter uses Upstash Redis so throttling is shared across serverless instances. Without them, the route falls back to the local in-memory limiter.
-- `NEXT_PUBLIC_SITE_URL` — defaults to `https://musabaqeel.com` via `lib/config.ts`. Override only when deploying to a different origin.
+- **`CONTACT_WEBHOOK_URL`** In dev, unset means the route still returns success but doesn’t forward. In production, unset returns `503 service_unavailable` so nothing gets dropped quietly.
+- **`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`** Nice to have in prod. With them, rate limiting hits Upstash Redis across serverless instances. Without, it falls back to in-memory per instance.
+- **`NEXT_PUBLIC_SITE_URL`** Defaults to `https://musabaqeel.com` in `lib/config.ts`. Change only if your deploy origin differs.
 
 ### Run locally
 
@@ -56,7 +56,7 @@ Both variables are optional:
 pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Then open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
@@ -68,58 +68,65 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm run lint`         | ESLint (flat config)                                                |
 | `pnpm run typecheck`    | `tsc --noEmit`                                                      |
 | `pnpm run test`         | Vitest run                                                          |
-| `pnpm run verify`       | format check + lint + typecheck + test + build — same thing CI runs |
+| `pnpm run verify`       | format check + lint + typecheck + test + build (what CI runs)      |
 | `pnpm run format`       | Biome format write                                                  |
 | `pnpm run format:check` | Biome format check                                                  |
 
 ## Project structure
 
 ```text
-app/                     Route segments, layouts, metadata, OG/Twitter images,
-                         robots + sitemap, contact route handler
+app/                     Routes, layouts, metadata, OG/Twitter images,
+                         robots + sitemap, contact handler
 components/
-  layout/                Nav shell, hamburger, main-wrapper reveal choreography
-    nav/                 Desktop + mobile nav internals (state hooks, pieces)
-  sections/              Home-page sections: Hero, Work, Process, About, Contact…
+  layout/                Nav shell, hamburger, main-wrapper reveal (intro handoff)
+    nav/                 Desktop + mobile nav (hooks, pieces)
+  sections/              Home: Hero, Work, Process, About, Contact, …
   ui/
-    cursor/              Custom cursor system (hook, visual, constants)
-    intro/               3 s cosmetic intro — morph text, animated counter, SVG defs
-    reveal/              Scroll-triggered text reveals — SplitText, RevealText,
+    cursor/              Custom cursor (hook, visuals, constants)
+    intro/               Short splash: morph text, counter, SVG defs
+    reveal/              Scroll reveals: SplitText, RevealText,
                          DustFilterSvg, shared text-animation hook,
                          ScrollTrigger cleanup hook
-    …                    Leaf primitives: BackButton, HamburgerIcon, Logo,
+    …                    Primitives: BackButton, HamburgerIcon, Logo,
                          MagneticButton, Tag, CustomCursor, Intro
-  work/                  Case-study layout primitives and the ProjectCard
+  work/                  Case-study layout + ProjectCard
 lib/
-  contact/               Contact pipeline: validation, abuse, webhook, tests
-  project-data/          Per-project content modules (one file per project)
+  contact/               Validation, abuse checks, webhook, tests
+  project-data/          One module per project
   …                      Config, motion tokens, smooth-scroll helpers,
-                         social-image generator, structured-data, intro/lenis
-                         context providers, scroll-navigation, media-query hooks
-public/                  Favicons, fonts (local Clash Display / Satoshi /
-                         Fragment Mono), project cover imagery
-types/                   Shared TypeScript interfaces + re-exports
-proxy.ts                 Per-request nonced CSP + security headers (formerly
-                         middleware.ts under Next.js < 16)
-.githooks/pre-push       Lockfile-sync gate, auto-enabled by the postinstall
-.github/workflows/ci.yml Lint + typecheck + test + build on every PR/push
+                         social images, structured data, intro/lenis
+                         providers, scroll helpers, media-query hooks
+public/                  Favicons, fonts (Clash Display / Satoshi /
+                         Fragment Mono), project images
+types/                   Shared TS types + re-exports
+proxy.ts                 Nonced CSP + security headers (used to be
+                         middleware.ts before Next 16)
+.githooks/pre-push       Lockfile check; enabled by postinstall
+.github/workflows/ci.yml Lint + typecheck + test + build on PR/push
 ```
 
 ## Notable systems
 
-- **Intro** (`components/ui/Intro.tsx` + `lib/IntroContext.tsx`) — 3 s cosmetic screen on first visit. Three-word role morph (Developer → Architect → Operator) via an SVG alpha-threshold filter kept at the body root (`IntroFilterDefs`) so iOS Safari resolves it reliably. Counter enters SplitText-style with per-character stagger. Exit animation lifts the intro via `yPercent: -105` transform + parallel wrapper rise — no clip-path, safe on every browser.
-- **Custom cursor** (`components/ui/cursor/`) — dot + ring loose-spring follower, mix-blend-difference, state detection via `data-cursor` + DOM walking. Ripples spawn at captured click coordinates with frozen size/accent, auto-cleaned via timer.
-- **Text reveal** (`components/ui/reveal/`) — `SplitText` word-slide, `RevealText` fade-and-slide, shared scroll-trigger setup in `text-animation.ts`. Optional SVG dust distortion (`DustFilterSvg`) auto-disables on coarse-pointer devices for mobile GPU reasons.
-- **Smooth scroll** (`lib/SmoothScroll.tsx` + `lib/smooth-scroll-helpers.ts`) — Lenis on desktop wheel, native on touch (`syncTouch: false`). Scroll-navigation helpers in `lib/scroll-navigation.ts` default to a bouncy `scrollEaseOut` for programmatic scrolls. Nested scrollables opt out via `data-lenis-prevent`.
-- **Contact pipeline** (`lib/contact/`) — honeypot + timing guard + shared Upstash-backed rate limiting when configured (with an in-memory fallback) + strict validation, normalized before being shipped to the configured webhook. Unit tests in `contact.test.ts` cover the full pipeline.
-- **Social images** (`lib/social-image.tsx`) — `next/og` edge-runtime generation for `/opengraph-image`, `/twitter-image`, and per-project OG pages.
-- **Structured data** (`lib/structured-data.ts`) — Person + WebSite + CreativeWork JSON-LD injected at the layout root.
+- **Intro** (`components/ui/Intro.tsx`, `lib/IntroContext.tsx`): ~3s splash on first load. Role words morph (Developer / Architect / Operator) through an SVG alpha filter mounted at the body (`IntroFilterDefs`) so Safari behaves. Counter animates in with per-character stagger. Exit moves the panel with `yPercent: -105` and lifts the wrapper in parallel; no clip-path, fewer browser headaches.
+
+- **Custom cursor** (`components/ui/cursor/`): dot + ring follower with loose springs, `mix-blend-difference`, state from `data-cursor` and DOM walks. Click ripples use captured coords and fixed size/color; timers clean them up.
+
+- **Text reveal** (`components/ui/reveal/`): `SplitText` word slides, `RevealText` fade/slide, shared scroll wiring in `text-animation.ts`. Optional `DustFilterSvg` distortion turns off on coarse pointers to spare mobile GPUs.
+
+- **Smooth scroll** (`lib/SmoothScroll.tsx`, `lib/smooth-scroll-helpers.ts`): Lenis on desktop wheel, native touch (`syncTouch: false`). `lib/scroll-navigation.ts` defaults programmatic scrolls to a bouncy `scrollEaseOut`. Nested scroll areas opt out with `data-lenis-prevent`.
+
+- **Contact** (`lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. `contact.test.ts` exercises the path end to end.
+
+- **Social images** (`lib/social-image.tsx`): `next/og` for `/opengraph-image`, `/twitter-image`, and per-project OG routes.
+
+- **Structured data** (`lib/structured-data.ts`): Person + WebSite + CreativeWork JSON-LD at the layout root.
 
 ## Lockfile hygiene
 
-- Use `pnpm install` as your default. When it touches `pnpm-lock.yaml`, commit the lockfile change alongside the `package.json` change that caused it.
-- CI and the pre-push hook run `pnpm install --frozen-lockfile`, which fails if `pnpm-lock.yaml` does not match `package.json`. Fix with `pnpm install`, then commit `pnpm-lock.yaml`.
+- Default to `pnpm install`. If it changes `pnpm-lock.yaml`, commit that with the `package.json` change that caused it.
+
+- CI and pre-push run `pnpm install --frozen-lockfile`. If the lockfile doesn’t match `package.json`, run `pnpm install`, commit `pnpm-lock.yaml`, push again.
 
 ## Deployment
 
-The repo has no platform-specific config — it's a vanilla Next.js 16 output. Any Node-hosting target that can run `next start` works. `proxy.ts` runs automatically on Vercel-compatible platforms.
+No vendor-specific config: plain Next.js 16. Anything that can run `next start` on Node 24 is fine. `proxy.ts` runs as expected on Vercel-style setups.
