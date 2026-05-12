@@ -15,11 +15,21 @@ import {
 } from '@/lib/contact/webhook'
 import { APP_VERSION } from '@/lib/package-version'
 
+// Form submissions carry the slug values; the API resolves them to labels.
+const TEST_SUBMISSION = {
+  name: 'Musab Aqeel',
+  email: 'hello@musabaqeel.com',
+  budget: 'under_3k',
+  projectType: 'surgical',
+  message: 'Build a new product landing page.',
+}
+
+// What the rest of the pipeline (webhook, etc.) sees post-validation.
 const TEST_CONTACT: ContactPayload = {
   name: 'Musab Aqeel',
   email: 'hello@musabaqeel.com',
-  budget: '$5k - $15k',
-  projectType: 'Full Stack Build',
+  budget: 'Under $3k (Scoped Fix)',
+  projectType: 'Surgical Fix / Optimization',
   message: 'Build a new product landing page.',
 }
 
@@ -39,8 +49,8 @@ describe('parseContactSubmission', () => {
       ...createEmptyContactSubmission(2_000),
       name: '  Musab   Aqeel  ',
       email: '  HELLO@musabaqeel.com ',
-      budget: '$5k - $15k',
-      projectType: 'Full Stack Build',
+      budget: 'under_3k',
+      projectType: 'surgical',
       message: '  Need a production-ready build.  ',
     }
 
@@ -52,8 +62,8 @@ describe('parseContactSubmission', () => {
         payload: {
           name: 'Musab Aqeel',
           email: 'hello@musabaqeel.com',
-          budget: '$5k - $15k',
-          projectType: 'Full Stack Build',
+          budget: 'Under $3k (Scoped Fix)',
+          projectType: 'Surgical Fix / Optimization',
           message: 'Need a production-ready build.',
         },
         metadata: {
@@ -67,8 +77,25 @@ describe('parseContactSubmission', () => {
   it('rejects invalid option values', () => {
     const result = parseContactSubmission({
       ...createEmptyContactSubmission(2_000),
-      ...TEST_CONTACT,
+      ...TEST_SUBMISSION,
       budget: 'Totally custom budget',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      status: 400,
+      code: 'invalid_payload',
+      error: 'Please choose a valid budget range.',
+    })
+  })
+
+  it('rejects a budget value that does not belong to the chosen project type', () => {
+    // 'under_3k' is valid under 'surgical' but not under 'build'.
+    const result = parseContactSubmission({
+      ...createEmptyContactSubmission(2_000),
+      ...TEST_SUBMISSION,
+      projectType: 'build',
+      budget: 'under_3k',
     })
 
     expect(result).toEqual({
@@ -228,7 +255,7 @@ describe('contact route', () => {
         },
         body: JSON.stringify({
           ...createEmptyContactSubmission(Date.now() - 5_000),
-          ...TEST_CONTACT,
+          ...TEST_SUBMISSION,
         }),
       }),
     )
@@ -261,7 +288,7 @@ describe('contact route', () => {
           },
           body: JSON.stringify({
             ...createEmptyContactSubmission(Date.now() - 5_000),
-            ...TEST_CONTACT,
+            ...TEST_SUBMISSION,
           }),
         }),
       )
@@ -276,7 +303,7 @@ describe('contact route', () => {
         },
         body: JSON.stringify({
           ...createEmptyContactSubmission(Date.now() - 5_000),
-          ...TEST_CONTACT,
+          ...TEST_SUBMISSION,
         }),
       }),
     )

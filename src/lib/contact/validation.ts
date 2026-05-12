@@ -1,11 +1,11 @@
 import {
-  CONTACT_BUDGET_OPTIONS,
   CONTACT_MAX_BUDGET_LENGTH,
   CONTACT_MAX_EMAIL_LENGTH,
   CONTACT_MAX_MESSAGE_LENGTH,
   CONTACT_MAX_NAME_LENGTH,
   CONTACT_MAX_PROJECT_TYPE_LENGTH,
-  CONTACT_PROJECT_TYPES,
+  getBudgetLabel,
+  getProjectTypeLabel,
 } from './constants'
 import type { ContactApiErrorCode, ParsedContactSubmission } from './types'
 
@@ -50,10 +50,6 @@ function normalizeSingleLine(value: string): string {
 
 function normalizeMultiline(value: string): string {
   return value.replace(/\r\n/g, '\n').trim()
-}
-
-function hasAllowedOption(options: readonly string[], value: string): boolean {
-  return options.some((option) => option === value)
 }
 
 function readString(
@@ -113,12 +109,12 @@ export function parseContactSubmission(
 
   const name = normalizeSingleLine(rawName)
   const email = normalizeSingleLine(rawEmail).toLowerCase()
-  const budget = normalizeSingleLine(rawBudget)
-  const projectType = normalizeSingleLine(rawProjectType)
+  const budgetValue = normalizeSingleLine(rawBudget)
+  const projectTypeValue = normalizeSingleLine(rawProjectType)
   const message = normalizeMultiline(rawMessage)
   const honeypotValue = normalizeSingleLine(rawWebsite)
 
-  if (!name || !email || !budget || !projectType || !message) {
+  if (!name || !email || !budgetValue || !projectTypeValue || !message) {
     return fail('Please complete all required fields.', 'missing_fields')
   }
 
@@ -129,8 +125,8 @@ export function parseContactSubmission(
   if (
     name.length > CONTACT_MAX_NAME_LENGTH ||
     email.length > CONTACT_MAX_EMAIL_LENGTH ||
-    budget.length > CONTACT_MAX_BUDGET_LENGTH ||
-    projectType.length > CONTACT_MAX_PROJECT_TYPE_LENGTH ||
+    budgetValue.length > CONTACT_MAX_BUDGET_LENGTH ||
+    projectTypeValue.length > CONTACT_MAX_PROJECT_TYPE_LENGTH ||
     message.length > CONTACT_MAX_MESSAGE_LENGTH
   ) {
     return fail(
@@ -139,12 +135,14 @@ export function parseContactSubmission(
     )
   }
 
-  if (!hasAllowedOption(CONTACT_BUDGET_OPTIONS, budget)) {
-    return fail('Please choose a valid budget range.', 'invalid_payload')
+  const projectTypeLabel = getProjectTypeLabel(projectTypeValue)
+  if (projectTypeLabel === null) {
+    return fail('Please choose a valid project type.', 'invalid_payload')
   }
 
-  if (!hasAllowedOption(CONTACT_PROJECT_TYPES, projectType)) {
-    return fail('Please choose a valid project type.', 'invalid_payload')
+  const budgetLabel = getBudgetLabel(projectTypeValue, budgetValue)
+  if (budgetLabel === null) {
+    return fail('Please choose a valid budget range.', 'invalid_payload')
   }
 
   return {
@@ -153,8 +151,8 @@ export function parseContactSubmission(
       payload: {
         name,
         email,
-        budget,
-        projectType,
+        budget: budgetLabel,
+        projectType: projectTypeLabel,
         message,
       },
       metadata: {

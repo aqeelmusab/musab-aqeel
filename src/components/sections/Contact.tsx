@@ -11,10 +11,12 @@ import SplitText from '@/components/ui/reveal/SplitText'
 import RevealText from '@/components/ui/reveal/RevealText'
 import MagneticButton from '@/components/ui/MagneticButton'
 import {
-  CONTACT_BUDGET_OPTIONS,
+  CONTACT_BUDGET_PLACEHOLDER_DISABLED,
+  CONTACT_BUDGET_PLACEHOLDER_ENABLED,
   CONTACT_HONEYPOT_FIELD_NAME,
   CONTACT_PROJECT_TYPES,
   createEmptyContactSubmission,
+  getBudgetOptionsForProjectType,
   type ContactApiResponse,
   type ContactFormStatus,
   type ContactSubmission,
@@ -106,6 +108,16 @@ export default function Contact() {
   ) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
+
+  function handleProjectTypeChange(e: ChangeEvent<HTMLSelectElement>) {
+    const projectType = e.target.value
+    // Reset budget so a previously selected value can't survive a project type
+    // change (its options come from BUDGET_MAP[projectType]).
+    setForm((prev) => ({ ...prev, projectType, budget: '' }))
+  }
+
+  const budgetOptions = getBudgetOptionsForProjectType(form.projectType)
+  const isBudgetDisabled = !form.projectType
 
   const labelClass = 'block mb-1.5 text-xs tracking-widest font-mono'
   const inputClass =
@@ -224,6 +236,34 @@ export default function Contact() {
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div className="form-field">
                   <label
+                    htmlFor="contact-project-type"
+                    className={`${labelClass} text-theme-tertiary`}
+                  >
+                    Project Type
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="contact-project-type"
+                      name="projectType"
+                      required
+                      value={form.projectType}
+                      onChange={handleProjectTypeChange}
+                      className={`${inputClass} appearance-none pr-10 ${form.projectType ? 'text-theme-primary' : 'text-theme-tertiary'}`}
+                    >
+                      <option value="" disabled>
+                        Select type
+                      </option>
+                      {CONTACT_PROJECT_TYPES.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <SelectArrow />
+                  </div>
+                </div>
+                <div className="form-field">
+                  <label
                     htmlFor="contact-budget"
                     className={`${labelClass} text-theme-tertiary`}
                   >
@@ -236,44 +276,21 @@ export default function Contact() {
                       required
                       value={form.budget}
                       onChange={handleChange}
-                      className={`${inputClass} appearance-none pr-10 ${form.budget ? 'text-theme-primary' : 'text-theme-tertiary'}`}
+                      disabled={isBudgetDisabled}
+                      aria-disabled={isBudgetDisabled}
+                      className={`${inputClass} appearance-none pr-10 disabled:cursor-not-allowed disabled:opacity-60 ${form.budget ? 'text-theme-primary' : 'text-theme-tertiary'}`}
                     >
                       <option value="" disabled>
-                        Select range
+                        {isBudgetDisabled
+                          ? CONTACT_BUDGET_PLACEHOLDER_DISABLED
+                          : CONTACT_BUDGET_PLACEHOLDER_ENABLED}
                       </option>
-                      {CONTACT_BUDGET_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    <SelectArrow />
-                  </div>
-                </div>
-                <div className="form-field">
-                  <label
-                    htmlFor="contact-project-type"
-                    className={`${labelClass} text-theme-tertiary`}
-                  >
-                    Project Type
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="contact-project-type"
-                      name="projectType"
-                      required
-                      value={form.projectType}
-                      onChange={handleChange}
-                      className={`${inputClass} appearance-none pr-10 ${form.projectType ? 'text-theme-primary' : 'text-theme-tertiary'}`}
-                    >
-                      <option value="" disabled>
-                        Select type
-                      </option>
-                      {CONTACT_PROJECT_TYPES.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
+                      {!isBudgetDisabled &&
+                        budgetOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
                     </select>
                     <SelectArrow />
                   </div>
