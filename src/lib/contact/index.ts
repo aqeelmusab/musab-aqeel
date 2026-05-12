@@ -7,9 +7,12 @@ export {
   getBudgetLabel,
   getBudgetOptionsForProjectType,
   getProjectTypeLabel,
+  isProjectTypeValue,
 } from './constants'
 export type {
   ContactBudgetOption,
+  ContactBudgetValue,
+  ContactBudgetValueFor,
   ContactProjectTypeValue,
 } from './constants'
 export {

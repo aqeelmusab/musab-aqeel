@@ -10,11 +10,9 @@ export const CONTACT_PROJECT_TYPES = [
 export type ContactProjectTypeValue =
   (typeof CONTACT_PROJECT_TYPES)[number]['value']
 
-export interface ContactBudgetOption {
-  value: string
-  label: string
-}
-
+// Inline structural constraint (not the named ContactBudgetOption interface)
+// so the named interface below can reference ContactBudgetValue without
+// creating a circular type dependency.
 export const CONTACT_BUDGET_MAP = {
   build: [
     { value: '15k_30k', label: '$15k - $30k' },
@@ -37,8 +35,19 @@ export const CONTACT_BUDGET_MAP = {
   ],
 } as const satisfies Record<
   ContactProjectTypeValue,
-  ReadonlyArray<ContactBudgetOption>
+  ReadonlyArray<{ readonly value: string; readonly label: string }>
 >
+
+export type ContactBudgetValue =
+  (typeof CONTACT_BUDGET_MAP)[ContactProjectTypeValue][number]['value']
+
+export type ContactBudgetValueFor<T extends ContactProjectTypeValue> =
+  (typeof CONTACT_BUDGET_MAP)[T][number]['value']
+
+export interface ContactBudgetOption {
+  readonly value: ContactBudgetValue
+  readonly label: string
+}
 
 export const CONTACT_BUDGET_PLACEHOLDER_ENABLED = 'Select range'
 
@@ -55,10 +64,18 @@ export const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5
 export const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1_000
 export const CONTACT_WEBHOOK_TIMEOUT_MS = 10_000
 
-function isProjectTypeValue(value: string): value is ContactProjectTypeValue {
+export function isProjectTypeValue(
+  value: string,
+): value is ContactProjectTypeValue {
   return CONTACT_PROJECT_TYPES.some((option) => option.value === value)
 }
 
+export function getBudgetOptionsForProjectType<
+  T extends ContactProjectTypeValue,
+>(value: T): (typeof CONTACT_BUDGET_MAP)[T]
+export function getBudgetOptionsForProjectType(
+  value: string,
+): ReadonlyArray<ContactBudgetOption>
 export function getBudgetOptionsForProjectType(
   value: string,
 ): ReadonlyArray<ContactBudgetOption> {
@@ -66,6 +83,8 @@ export function getBudgetOptionsForProjectType(
   return CONTACT_BUDGET_MAP[value]
 }
 
+export function getProjectTypeLabel(value: ContactProjectTypeValue): string
+export function getProjectTypeLabel(value: string): string | null
 export function getProjectTypeLabel(value: string): string | null {
   return (
     CONTACT_PROJECT_TYPES.find((option) => option.value === value)?.label ??
@@ -73,6 +92,14 @@ export function getProjectTypeLabel(value: string): string | null {
   )
 }
 
+export function getBudgetLabel<T extends ContactProjectTypeValue>(
+  projectType: T,
+  value: ContactBudgetValueFor<T>,
+): string
+export function getBudgetLabel(
+  projectType: string,
+  value: string,
+): string | null
 export function getBudgetLabel(
   projectType: string,
   value: string,
