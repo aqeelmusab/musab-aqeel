@@ -74,65 +74,49 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Project structure
 
-File-naming conventions: components are `PascalCase.tsx`, hook files are `useFoo.ts`,
-plain utilities/modules are `kebab-case.ts`. Each feature with internals lives in
-its own subfolder (entry component + helpers + hooks + constants); flat
-primitives without internals sit at the parent level.
+### Naming conventions
+
+| Kind                     | Filename                   | Example                |
+| ------------------------ | -------------------------- | ---------------------- |
+| React component (`.tsx`) | `PascalCase.tsx`           | `MagneticButton.tsx`   |
+| Hook (`.ts`)             | `useFoo.ts`                | `useCustomCursor.ts`   |
+| Plain utility / module   | `kebab-case.ts`            | `scroll-navigation.ts` |
+| Folder                   | `lowercase` / `kebab-case` | `main-wrapper/`        |
+
+**Feature folders** group an entry component with its internals (helpers, hooks, constants). Flat primitives with no internals sit at the parent level. The cursor folder is a typical example:
+
+```text
+src/components/ui/cursor/
+├── CustomCursor.tsx      entry, imported by app/layout.tsx
+├── CursorVisual.tsx      dot + ring follower
+├── useCustomCursor.ts    mouse state + ripple lifecycle
+└── constants.ts          sizes, states
+```
+
+### Top-level layout
 
 ```text
 src/
-  app/                       Routes, layouts, metadata, OG/Twitter images,
-                             robots + sitemap, contact handler
-  components/
-    layout/
-      Footer.tsx             Flat — no internals
-      nav/                   Desktop + mobile nav
-        Nav.tsx              Entry
-        NavPieces.tsx        Desktop links, mobile menu pieces
-        useNavState.ts       Header/active-section/mobile-menu hooks
-        constants.ts
-      main-wrapper/          Main wrapper + intro-handoff reveal
-        MainWrapper.tsx
-        useMainWrapperReveal.ts
-    sections/                Home: Hero, Work, Process, About, Contact, …
-    ui/
-      cursor/                Custom cursor
-        CustomCursor.tsx     Entry
-        CursorVisual.tsx
-        useCustomCursor.ts
-        constants.ts
-      intro/                 Short splash: morph text, counter, SVG defs
-        Intro.tsx            Entry
-        AnimatedCounter.tsx
-        IntroFilterDefs.tsx
-        useIntroAnimation.ts
-      reveal/                Scroll reveals: SplitText, RevealText,
-                             DustFilterSvg, shared text-animation utils,
-                             ScrollTrigger cleanup hook
-      …                      Flat primitives: BackButton, CurrentYear,
-                             HamburgerIcon, Logo, MagneticButton, Tag
-    work/                    Case-study layout, ProjectCard,
-                             WorkSection (+ WorkDivider), ProjectCoverImage
-  lib/
-    contexts/                Intro + Lenis providers, SmoothScroll shell,
-                             useIntroBootstrap
-    contact/                 Validation, abuse checks, webhook
-    hooks/                   Cross-cutting hooks: useIsCoarsePointer,
-                             usePrefersReducedMotion
-    project-data/            One module per project
-    SocialImage.tsx          next/og template shared by OG/Twitter routes
-    …                        Config, motion tokens, smooth-scroll helpers,
-                             structured data, scroll helpers,
-                             page-end scrub completion
-  types/                     Shared TS types + re-exports
-  proxy.ts                   CSP + security headers (used to be
-                             middleware.ts before Next 16)
-tests/                       Vitest specs mirroring `app/` + `lib/` shape
-public/                      Favicons, fonts (Clash Display / Satoshi /
-                             Fragment Mono), project images
-pnpm-workspace.yaml          allowBuilds only (pnpm 11); not a monorepo
-.githooks/pre-push           Lockfile check; enabled by postinstall
-.github/workflows/ci.yml     Lint + typecheck + test + build on PR/push
+├── app/                  Routes, layouts, OG/Twitter, sitemap, contact API
+├── components/
+│   ├── layout/           Site chrome — nav/, main-wrapper/, Footer.tsx
+│   ├── sections/         Home page sections (Hero, Work, About, Contact, …)
+│   ├── ui/               Flat primitives + feature folders (cursor/, intro/, reveal/)
+│   └── work/             Case-study layout, ProjectCard, WorkSection, ProjectCoverImage
+├── lib/
+│   ├── contexts/         Intro + Lenis providers, SmoothScroll shell
+│   ├── contact/          Validation, abuse checks, webhook
+│   ├── hooks/            Cross-cutting hooks (coarse pointer, reduced motion)
+│   ├── project-data/     One module per project
+│   ├── SocialImage.tsx   next/og template for OG/Twitter routes
+│   └── *.ts              Config, motion tokens, scroll helpers, structured data, …
+├── types/                Shared TS types + re-exports
+└── proxy.ts              CSP + security headers (was middleware.ts before Next 16)
+
+tests/                    Vitest specs mirroring src/
+public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mono), project images
+.githooks/pre-push        Lockfile check; enabled by postinstall
+.github/workflows/ci.yml  format + lint + typecheck + test + build on PR/push
 ```
 
 ## Notable systems
