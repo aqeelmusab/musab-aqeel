@@ -16,6 +16,7 @@ import {
   CONTACT_PROJECT_TYPES,
   createEmptyContactSubmission,
   getBudgetOptionsForProjectType,
+  type ContactApiErrorCode,
   type ContactApiResponse,
   type ContactFormStatus,
   type ContactSubmission,
@@ -23,6 +24,39 @@ import {
 
 const BUDGET_HELPER_ID = 'contact-budget-helper'
 import { CONTACT_EMAIL, CONTACT_EMAIL_HREF } from '@/lib/config'
+
+const GENERIC_ERROR_MESSAGE =
+  'Something went wrong sending your message. Please try again.'
+const NETWORK_ERROR_MESSAGE =
+  "Couldn't reach the server. Check your connection and try again."
+
+// Friendlier, more specific client copy per server error code. Falls back to
+// the server's own message, then to a generic line, so new codes still surface.
+const ERROR_COPY: Record<ContactApiErrorCode, string> = {
+  invalid_content_type: GENERIC_ERROR_MESSAGE,
+  invalid_json: GENERIC_ERROR_MESSAGE,
+  invalid_payload: 'Please double-check the form and try again.',
+  missing_fields: 'Please complete all required fields.',
+  invalid_email: 'Please enter a valid email address.',
+  invalid_timestamp: 'Please refresh the page and try again.',
+  rate_limited: 'Too many attempts. Please wait a few minutes, then try again.',
+  service_unavailable: 'The form is temporarily unavailable right now.',
+  webhook_failed:
+    "Your message couldn't be delivered. Please try again in a moment.",
+  internal_error: 'Something went wrong on our end. Please try again.',
+}
+
+function resolveErrorMessage(
+  data: ContactApiResponse | null,
+  httpStatus: number,
+): string {
+  if (data && data.success === false) {
+    return ERROR_COPY[data.code] ?? data.error ?? GENERIC_ERROR_MESSAGE
+  }
+  if (httpStatus === 429) return ERROR_COPY.rate_limited
+  if (httpStatus >= 500) return ERROR_COPY.internal_error
+  return GENERIC_ERROR_MESSAGE
+}
 
 const SelectArrow = () => (
   <span
@@ -55,7 +89,8 @@ export default function Contact() {
     createEmptyContactSubmission(),
   )
   // Bumped when the post-send cooldown ends to remount the fields and replay
-  // their fade-up. 0 = first render (scroll-driven reveal); >0 = a replay.
+  // their fade-up. 0 = first render (pure scroll-driven reveal); >0 = a replay
+  // (isolated one-shot fade-up, then hands back to the scroll-synced reveal).
   const [revealCycle, setRevealCycle] = useState(0)
   const isSubmittingRef = useRef(false)
 
@@ -98,15 +133,11 @@ export default function Contact() {
         const data = (await res
           .json()
           .catch(() => null)) as ContactApiResponse | null
-        setErrorMessage(
-          data && !data.success && typeof data.error === 'string'
-            ? data.error
-            : 'Something went wrong. Try emailing me directly.',
-        )
+        setErrorMessage(resolveErrorMessage(data, res.status))
         setStatus('error')
       }
     } catch {
-      setErrorMessage('Something went wrong. Try emailing me directly.')
+      setErrorMessage(NETWORK_ERROR_MESSAGE)
       setStatus('error')
     } finally {
       isSubmittingRef.current = false
@@ -379,11 +410,20 @@ export default function Contact() {
               >
                 {status === 'sent' && (
                   <p className="text-theme-accent">
-                    Message received. I will be in touch within 24 hours.
+                    Message received. I&apos;ll be in touch within 24 hours.
                   </p>
                 )}
                 {status === 'error' && (
-                  <p className="text-theme-error">{errorMessage}</p>
+                  <p className="text-theme-error">
+                    {errorMessage}{' '}
+                    <a
+                      href={CONTACT_EMAIL_HREF}
+                      className="underline underline-offset-2 hover:no-underline"
+                    >
+                      Or email me directly
+                    </a>
+                    .
+                  </p>
                 )}
               </div>
             </RevealText>

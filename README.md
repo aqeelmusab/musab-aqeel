@@ -99,7 +99,7 @@ src/components/ui/cursor/
 src/
 ├── app/                  Routes, layouts, OG/Twitter, sitemap, contact API
 ├── components/
-│   ├── layout/           Site chrome — nav/, main-wrapper/, Footer.tsx
+│   ├── layout/           Site chrome: nav/, main-wrapper/, Footer.tsx
 │   ├── sections/         Home page sections (Hero, Work, About, Contact, …)
 │   ├── ui/               Flat primitives + feature folders (cursor/, intro/, reveal/)
 │   └── work/             Case-study layout, ProjectCard, WorkSection, ProjectCoverImage

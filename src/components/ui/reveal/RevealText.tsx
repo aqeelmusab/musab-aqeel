@@ -21,9 +21,11 @@ interface RevealTextProps {
   className?: string
   /**
    * `scroll` (default): fade/slide scrubs to the scroll position.
-   * `load`: plays a one-shot, time-based fade-up on mount — used when the
-   *   reveal must replay in place (e.g. after the contact form resets) where
-   *   the element is already in view and there's no scroll left to drive it.
+   * `load`: plays a one-shot, time-based fade-up on mount, fully isolated from
+   *   ScrollTrigger, then hands off to the scroll-synced reveal so the block
+   *   still animates on scroll afterwards. Used when the reveal must replay in
+   *   place (e.g. after the contact form resets) where the element is already
+   *   in view and there's no scroll left to drive the scrubbed version.
    */
   trigger?: 'load' | 'scroll'
   /**
@@ -74,6 +76,43 @@ export default function RevealText({
       return
     }
 
+    // Arms the scroll-synced (scrubbed) reveal on `el`. `immediateRender` is
+    // false when re-arming after the one-shot so the already-visible element
+    // isn't snapped back to hidden the instant the trigger is created.
+    const armScrollReveal = (immediateRender: boolean) => {
+      const start = getRevealScrollStart(delay)
+      const revealScrollTrigger = createRevealScrollTrigger(el, start)
+
+      const fe = displacementRef.current
+      const useDust = dustActive && fe
+
+      if (useDust) {
+        const tl = gsap.timeline({ scrollTrigger: revealScrollTrigger })
+
+        tl.fromTo(
+          el,
+          HIDDEN_STATE,
+          { ...VISIBLE_STATE, ease: 'none', duration: 1, immediateRender },
+          0,
+        ).fromTo(
+          fe,
+          { attr: { scale: dust.maxDisplacement } },
+          { attr: { scale: 0 }, ease: 'none', duration: 1, immediateRender },
+          0,
+        )
+
+        scrollTriggerRef.current = tl.scrollTrigger ?? null
+      } else {
+        const tween = gsap.fromTo(el, HIDDEN_STATE, {
+          ...VISIBLE_STATE,
+          ease: 'none',
+          immediateRender,
+          scrollTrigger: revealScrollTrigger,
+        })
+        scrollTriggerRef.current = tween.scrollTrigger ?? null
+      }
+    }
+
     if (isLoad) {
       gsap.set(el, HIDDEN_STATE)
 
@@ -91,7 +130,16 @@ export default function RevealText({
         const fe = displacementRef.current
         const useDust = dustActive && fe
 
-        const tl = gsap.timeline({ delay })
+        const tl = gsap.timeline({
+          delay,
+          onComplete: () => {
+            if (canceled) return
+            // Hand back to the scroll-synced reveal so the block keeps
+            // animating on scroll. Done only after the isolated one-shot so the
+            // two never run against each other (the source of the glitching).
+            armScrollReveal(false)
+          },
+        })
         tl.fromTo(
           liveEl,
           HIDDEN_STATE,
@@ -123,41 +171,12 @@ export default function RevealText({
         cancelAnimationFrame(raf2)
         loadTlRef.current?.kill()
         loadTlRef.current = null
+        // Kills the scroll trigger handed off in onComplete (if it armed).
+        cleanup()
       }
     }
 
-    const start = getRevealScrollStart(delay)
-    const revealScrollTrigger = createRevealScrollTrigger(el, start)
-
-    const fe = displacementRef.current
-    const useDust = dustActive && !reducedMotion && fe
-
-    if (useDust) {
-      const tl = gsap.timeline({
-        scrollTrigger: revealScrollTrigger,
-      })
-
-      tl.fromTo(
-        el,
-        HIDDEN_STATE,
-        { ...VISIBLE_STATE, ease: 'none', duration: 1 },
-        0,
-      ).fromTo(
-        fe,
-        { attr: { scale: dust.maxDisplacement } },
-        { attr: { scale: 0 }, ease: 'none', duration: 1 },
-        0,
-      )
-
-      scrollTriggerRef.current = tl.scrollTrigger ?? null
-    } else {
-      const tween = gsap.fromTo(el, HIDDEN_STATE, {
-        ...VISIBLE_STATE,
-        ease: 'none',
-        scrollTrigger: revealScrollTrigger,
-      })
-      scrollTriggerRef.current = tween.scrollTrigger ?? null
-    }
+    armScrollReveal(true)
 
     const cancelRefresh = scheduleScrollTriggerRefresh()
 
