@@ -54,13 +54,22 @@ export default function Contact() {
   const [form, setForm] = useState<ContactSubmission>(() =>
     createEmptyContactSubmission(),
   )
+  // Bumped when the post-send cooldown ends to remount the fields and replay
+  // their fade-up. 0 = first render (scroll-driven reveal); >0 = a replay.
+  const [revealCycle, setRevealCycle] = useState(0)
   const isSubmittingRef = useRef(false)
 
   useEffect(() => {
     if (status !== 'sent') return
-    const t = setTimeout(() => setStatus('idle'), 5000)
+    const t = setTimeout(() => {
+      setStatus('idle')
+      setRevealCycle((cycle) => cycle + 1)
+    }, 5000)
     return () => clearTimeout(t)
   }, [status])
+
+  const isReplay = revealCycle > 0
+  const revealTrigger = isReplay ? 'load' : 'scroll'
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -187,11 +196,12 @@ export default function Contact() {
         {/* Right column - form */}
         <div>
           <form
+            key={revealCycle}
             onSubmit={handleSubmit}
             className="flex flex-col gap-5"
             aria-busy={status === 'sending'}
           >
-            <RevealText delay={0.05}>
+            <RevealText trigger={revealTrigger} delay={0.05}>
               <div className="form-field">
                 <label
                   htmlFor="contact-name"
@@ -213,7 +223,7 @@ export default function Contact() {
               </div>
             </RevealText>
 
-            <RevealText delay={0.1}>
+            <RevealText trigger={revealTrigger} delay={0.1}>
               <div className="form-field">
                 <label
                   htmlFor="contact-email"
@@ -236,7 +246,7 @@ export default function Contact() {
               </div>
             </RevealText>
 
-            <RevealText delay={0.15}>
+            <RevealText trigger={revealTrigger} delay={0.15}>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div className="form-field">
                   <label
@@ -311,7 +321,7 @@ export default function Contact() {
               </div>
             </RevealText>
 
-            <RevealText delay={0.2}>
+            <RevealText trigger={revealTrigger} delay={0.2}>
               <div className="form-field">
                 <label
                   htmlFor="contact-message"
@@ -332,7 +342,7 @@ export default function Contact() {
               </div>
             </RevealText>
 
-            <RevealText delay={0.25}>
+            <RevealText trigger={revealTrigger} delay={0.25}>
               <div
                 aria-hidden="true"
                 style={{ position: 'absolute', left: '-9999px', top: 'auto' }}

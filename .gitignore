@@ -58,7 +58,6 @@ temp/
 
 # VS Code
 .vscode/
-.copilotignore
 .history/
 
 # Vim / Neovim
@@ -85,10 +84,6 @@ Session.vim
 # Zed
 .zed/
 
-# Cursor
-.cursor/
-.cursorignore
-
 # Eclipse
 .project
 .classpath
@@ -96,6 +91,41 @@ Session.vim
 
 # NetBeans
 nbproject/
+
+# ── AI assistants ───────────────────────────────────────────────────────────
+# Agent instruction / memory files
+AGENTS.md
+agents.md
+CLAUDE.md
+claude.md
+GEMINI.md
+gemini.md
+COPILOT.md
+copilot.md
+CURSOR.md
+cursor.md
+.github/copilot-instructions.md
+
+# Cursor
+.cursor/
+.cursorignore
+
+# GitHub Copilot
+.copilotignore
+
+# Claude / Anthropic
+.claude/
+
+# Aider
+.aider*
+
+# Windsurf
+.windsurf/
+.windsurfrules
+
+# Cline / Roo
+.clinerules
+.roo/
 
 # ── OS ──────────────────────────────────────────────────────────────────────
 .DS_Store
