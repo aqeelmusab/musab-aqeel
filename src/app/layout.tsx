@@ -9,6 +9,7 @@ import MainWrapper from '@/components/layout/main-wrapper/MainWrapper'
 import Intro from '@/components/ui/intro/Intro'
 import IntroFilterDefs from '@/components/ui/intro/IntroFilterDefs'
 import CustomCursor from '@/components/ui/cursor/CustomCursor'
+import InputModalityWatcher from '@/components/ui/InputModalityWatcher'
 import { IntroProvider } from '@/lib/contexts/IntroContext'
 import { scroll } from '@/lib/motion'
 import { personJsonLd, websiteJsonLd } from '@/lib/structured-data'
@@ -188,6 +189,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body>
+        <InputModalityWatcher />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>

@@ -549,14 +549,34 @@ h4 {
 
 /* Form field styling */
 /* Modern CSS - :has() parent/relational selector */
-/* The controls set `outline: none`, so the visible focus indicator has to live
-   on the control itself: bump the border and add an accent outline. */
-.form-field input:focus-visible,
-.form-field textarea:focus-visible,
-.form-field select:focus-visible {
+/* Subtle active-field indication for any focus (pointer or keyboard): just a
+   border bump, so clicking/tapping a field never flashes a loud ring. */
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
   border-color: var(--color-border-up);
+}
+
+/* The loud accent outline is reserved for keyboard navigation. `:focus-visible`
+   alone can't do this for text fields (the spec treats them as focus-visible on
+   pointer focus too), so it's gated on the keyboard input modality, set by
+   InputModalityWatcher. The controls set `outline: none`, hence the outline. */
+[data-input-modality="keyboard"] .form-field input:focus,
+[data-input-modality="keyboard"] .form-field textarea:focus,
+[data-input-modality="keyboard"] .form-field select:focus {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* iOS Safari/WebKit auto-zooms when a focused control's font-size is below
+   16px. The fields use a 14px (text-sm) scale, so bump touch devices to 16px to
+   prevent the zoom-on-focus jump. Desktop keeps the smaller type. */
+@media (pointer: coarse) {
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    font-size: 16px;
+  }
 }
 
 .form-field:has(input:not(:placeholder-shown)) .field-label,
