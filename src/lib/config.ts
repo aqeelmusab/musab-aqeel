@@ -6,7 +6,9 @@ export const SITE_URL = rawSiteUrl.endsWith('/')
   ? rawSiteUrl.slice(0, -1)
   : rawSiteUrl
 export const SITE_NAME = 'Musab Aqeel'
-export const SITE_DOMAIN = 'musabaqeel.com'
+// Derived from SITE_URL so preview/staging deploys show the right host in OG
+// badges, the 404 footer, and JSON-LD instead of always the production domain.
+export const SITE_DOMAIN = new URL(SITE_URL).hostname
 export const SITE_TITLE = `${SITE_NAME} | Full stack developer, architect & operator`
 export const SITE_SHORT_TITLE = `${SITE_NAME} | Full stack developer`
 

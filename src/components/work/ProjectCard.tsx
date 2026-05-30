@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, type MouseEvent } from 'react'
+import { useCallback, useEffect, useRef, type MouseEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { gsap } from 'gsap'
@@ -36,7 +36,14 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter()
   const transitioning = useRef(false)
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const href = `/work/${project.slug}`
+
+  useEffect(() => {
+    return () => {
+      if (navTimerRef.current) clearTimeout(navTimerRef.current)
+    }
+  }, [])
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
@@ -87,7 +94,7 @@ export default function ProjectCard({
         gsap.to(meta, { opacity: 0, y: 8, duration: 0.2, ease: 'power2.in' })
       }
 
-      setTimeout(() => {
+      navTimerRef.current = setTimeout(() => {
         router.push(href)
       }, TRANSITION_DURATION_MS)
     },

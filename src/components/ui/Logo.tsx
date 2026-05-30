@@ -18,12 +18,12 @@ interface LogoProps {
 
 export default function Logo({ onClick: externalOnClick }: LogoProps) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const animatedRef = useRef(false)
+  const introPlayedRef = useRef(false)
+  const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (!svgRef.current || animatedRef.current) return
-    animatedRef.current = true
+    if (!svgRef.current) return
 
     const mPath = svgRef.current.querySelector('#logo-path-M') as SVGPathElement
     const aPath = svgRef.current.querySelector('#logo-path-A') as SVGPathElement
@@ -33,12 +33,48 @@ export default function Logo({ onClick: externalOnClick }: LogoProps) {
 
     if (!mPath || !aPath || !markPath) return
 
-    if (reducedMotion) {
+    // Always stop any running pulse before re-evaluating so a reduced-motion
+    // toggle can't leave the mark frozen mid-pulse.
+    timelineRef.current?.kill()
+    timelineRef.current = null
+
+    const setFinalPaths = () => {
       mPath.setAttribute('d', logoFinalState.M)
       aPath.setAttribute('d', logoFinalState.A)
       markPath.setAttribute('d', logoFinalState.mark)
+    }
+
+    const startIdlePulse = () => {
+      const pulse = gsap.timeline()
+      pulse.to(markPath, {
+        scale: 1.04,
+        transformOrigin: 'center center',
+        duration: 2,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      })
+      timelineRef.current = pulse
+    }
+
+    if (reducedMotion) {
+      setFinalPaths()
+      gsap.set(markPath, { scale: 1, clearProps: 'transform' })
       return
     }
+
+    // After the one-time glitch intro, a reduced-motion toggle back to motion
+    // should just resume the idle pulse, not replay the glitch.
+    if (introPlayedRef.current) {
+      setFinalPaths()
+      startIdlePulse()
+      return () => {
+        timelineRef.current?.kill()
+        timelineRef.current = null
+      }
+    }
+
+    introPlayedRef.current = true
 
     mPath.setAttribute('d', logoGlitchState1.M)
     aPath.setAttribute('d', logoGlitchState1.A)
@@ -92,8 +128,11 @@ export default function Logo({ onClick: externalOnClick }: LogoProps) {
         '-=0.2',
       )
 
+    timelineRef.current = tl
+
     return () => {
-      tl.kill()
+      timelineRef.current?.kill()
+      timelineRef.current = null
     }
   }, [reducedMotion])
 

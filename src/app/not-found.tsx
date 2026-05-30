@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: PAGE_TITLE_NOT_FOUND,
   description: 'The page you are looking for does not exist.',
   robots: { index: false, follow: false },
+  // Don't inherit the root layout's `canonical: '/'`; a 404 should not point a
+  // canonical at the homepage.
+  alternates: { canonical: null },
 }
 
 export default function NotFound() {

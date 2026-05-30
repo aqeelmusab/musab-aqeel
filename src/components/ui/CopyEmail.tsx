@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
 import { CONTACT_EMAIL } from '@/lib/config'
+import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 
 const COPIED_RESET_MS = 2000
 
@@ -33,15 +34,9 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
-}
-
 export default function CopyEmail() {
   const [copied, setCopied] = useState(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   const rootRef = useRef<HTMLButtonElement>(null)
   const iconRef = useRef<HTMLSpanElement>(null)
@@ -49,10 +44,12 @@ export default function CopyEmail() {
   const checkRef = useRef<SVGPathElement>(null)
   const labelRef = useRef<HTMLSpanElement>(null)
 
+  const isMountedRef = useRef(true)
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
 
   useEffect(() => {
+    isMountedRef.current = true
     const ctx = gsap.context(() => {
       gsap.set(pageRef.current, { transformOrigin: 'center' })
       gsap.set(checkRef.current, { strokeDasharray: 8, strokeDashoffset: 8 })
@@ -60,6 +57,7 @@ export default function CopyEmail() {
     }, rootRef)
 
     return () => {
+      isMountedRef.current = false
       if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
       timelineRef.current?.kill()
       ctx.revert()
@@ -71,7 +69,7 @@ export default function CopyEmail() {
     // Start from a clean idle page in case a previous reset was interrupted.
     gsap.set(pageRef.current, { rotation: 0, y: 0, autoAlpha: 1 })
 
-    if (prefersReducedMotion()) {
+    if (reducedMotion) {
       gsap.set(checkRef.current, { strokeDashoffset: 0 })
       gsap.set(labelRef.current, { autoAlpha: 1, x: 0 })
       return
@@ -103,12 +101,12 @@ export default function CopyEmail() {
       )
 
     timelineRef.current = tl
-  }, [])
+  }, [reducedMotion])
 
   const playReset = useCallback(() => {
     timelineRef.current?.kill()
 
-    if (prefersReducedMotion()) {
+    if (reducedMotion) {
       gsap.set(pageRef.current, { rotation: 0, y: 0, autoAlpha: 1 })
       gsap.set(checkRef.current, { strokeDashoffset: 8 })
       gsap.set(labelRef.current, { autoAlpha: 0, x: -6 })
@@ -143,17 +141,19 @@ export default function CopyEmail() {
       .set(pageRef.current, { rotation: 0, y: 0, autoAlpha: 1 })
 
     timelineRef.current = tl
-  }, [])
+  }, [reducedMotion])
 
   const handleCopy = useCallback(async () => {
     const succeeded = await copyToClipboard(CONTACT_EMAIL)
-    if (!succeeded) return
+    // The await can resolve after unmount; guard the state/animation updates.
+    if (!succeeded || !isMountedRef.current) return
 
     setCopied(true)
     playCopied()
 
     if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
     resetTimerRef.current = setTimeout(() => {
+      if (!isMountedRef.current) return
       setCopied(false)
       playReset()
     }, COPIED_RESET_MS)

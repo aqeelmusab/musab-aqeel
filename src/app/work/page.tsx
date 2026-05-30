@@ -14,17 +14,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/work',
   },
+  // OG/Twitter images are supplied by the file-based conventions in this route
+  // (work/opengraph-image.tsx, work/twitter-image.tsx), so they aren't set here.
   openGraph: {
     title: PAGE_TITLE_WORK,
     description: workDescription,
     url: '/work',
-    images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
     title: PAGE_TITLE_WORK,
     description: workDescription,
-    images: ['/twitter-image'],
   },
 }
 

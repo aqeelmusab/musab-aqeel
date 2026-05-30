@@ -390,6 +390,80 @@ export function createHomeSocialImage() {
 }
 
 /**
+ * Work index OG — mirrors the home frame but anchored on the work label and a
+ * "Work." headline, so sharing /work shows a work-specific preview instead of
+ * the home hero image.
+ */
+export function createWorkSocialImage() {
+  return new ImageResponse(
+    <SocialImageFrame
+      headerRight={<AvailabilityBadge />}
+      footerLeft={
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            maxWidth: '560px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 600,
+              fontSize: '22px',
+              lineHeight: 1.35,
+              color: palette.textSecondary,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            SaaS, e-commerce, dashboards, and agency builds.
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_STACK_DISPLAY,
+              fontWeight: 600,
+              fontSize: '22px',
+              lineHeight: 1.35,
+              color: palette.textTertiary,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Each shipped solo, start to finish.
+          </span>
+        </div>
+      }
+      footerRight={
+        <TagChipRow tags={['Full Stack', 'Next.js', 'TypeScript']} />
+      }
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+        }}
+      >
+        <SectionLabel>selected work</SectionLabel>
+        <span
+          style={{
+            fontFamily: FONT_STACK_DISPLAY,
+            fontWeight: 700,
+            fontSize: '104px',
+            lineHeight: 1,
+            letterSpacing: '-0.035em',
+            color: palette.textPrimary,
+          }}
+        >
+          Work.
+        </span>
+      </div>
+    </SocialImageFrame>,
+    { ...SOCIAL_IMAGE_SIZE },
+  )
+}
+
+/**
  * Project OG — mirrors the case-study hero: type label in mono, large title,
  * tag chip row, "case study" marker top-right.
  */

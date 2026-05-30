@@ -42,15 +42,17 @@ export function attachLenisTicker(lenis: Lenis) {
     completeScrubAnimationsAtPageEnd(lenis.scroll, lenis.limit)
   }
 
-  lenis.on('scroll', () => {
+  const onLenisScroll = () => {
     ScrollTrigger.update()
-  })
+  }
+  lenis.on('scroll', onLenisScroll)
 
   gsap.ticker.add(rafCallback)
   gsap.ticker.add(pinScrubAfterLenis)
   gsap.ticker.lagSmoothing(0)
 
   return () => {
+    lenis.off('scroll', onLenisScroll)
     gsap.ticker.remove(rafCallback)
     gsap.ticker.remove(pinScrubAfterLenis)
   }

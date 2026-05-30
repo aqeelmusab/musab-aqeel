@@ -33,10 +33,11 @@ export const personJsonLd = {
     '@type': 'PostalAddress',
     addressCountry: 'PK',
   },
+  // No `url`: the org URL is not the personal portfolio, and pointing it here
+  // misattributes the organization. Omit until a real org URL exists.
   worksFor: {
     '@type': 'Organization',
     name: COMPANY_NAME,
-    url: SITE_URL,
   },
 }
 
@@ -66,7 +67,6 @@ export function projectJsonLd(
     description: project.summary,
     image: `${SITE_URL}${project.coverImage}`,
     url: `${SITE_URL}/work/${project.slug}`,
-    dateCreated: `${project.year}-01-01`,
     keywords: project.tags.join(', '),
     creator: {
       '@type': 'Person',

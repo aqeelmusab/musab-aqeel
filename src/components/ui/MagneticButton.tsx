@@ -1,14 +1,10 @@
 'use client'
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type MouseEvent,
-  type ReactNode,
-} from 'react'
+import { useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import Link from 'next/link'
 import { motion, useMotionValue, useSpring } from 'motion/react'
+
+import { useHoverFinePointer } from '@/lib/hooks/useHoverFinePointer'
 
 const MotionLink = motion.create(Link)
 
@@ -45,16 +41,7 @@ export default function MagneticButton({
   // which leaves the button skewed on its own GPU layer; when the contact form
   // remounts the button, mobile browsers can leave that layer painted as a
   // ghost. Gating the transform off on touch removes the layer entirely.
-  const [isMagnetic, setIsMagnetic] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return
-    const query = window.matchMedia('(hover: hover) and (pointer: fine)')
-    const update = () => setIsMagnetic(query.matches)
-    update()
-    query.addEventListener('change', update)
-    return () => query.removeEventListener('change', update)
-  }, [])
+  const isMagnetic = useHoverFinePointer()
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
