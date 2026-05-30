@@ -38,7 +38,7 @@ pnpm install       # postinstall wires the pre-push hook
 Copy `.env.example` to `.env.local` and fill what you need:
 
 ```bash
-CONTACT_WEBHOOK_URL=         # Make.com / Zapier / Discord webhook for contact
+CONTACT_WEBHOOK_URL=         # Discord / Slack / generic (Make.com, Zapier) webhook
 UPSTASH_REDIS_REST_URL=      # Optional: shared rate limit for contact
 UPSTASH_REDIS_REST_TOKEN=    # Optional: shared rate limit for contact
 NEXT_PUBLIC_SITE_URL=https://musabaqeel.com
@@ -106,7 +106,7 @@ src/
 ├── lib/
 │   ├── contexts/         Intro + Lenis providers, SmoothScroll shell
 │   ├── contact/          Validation, abuse checks, webhook
-│   ├── hooks/            Cross-cutting hooks (coarse pointer, reduced motion)
+│   ├── hooks/            Cross-cutting hooks (coarse pointer, fine/hover pointer, reduced motion)
 │   ├── project-data/     One module per project
 │   ├── SocialImage.tsx   next/og template for OG/Twitter routes
 │   └── *.ts              Config, motion tokens, scroll helpers, structured data, …
@@ -129,9 +129,13 @@ public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mo
 
 - **Smooth scroll** (`src/lib/contexts/SmoothScroll.tsx`, `src/lib/smooth-scroll-helpers.ts`): Lenis on desktop wheel, native touch (`syncTouch: false`). `src/lib/scroll-navigation.ts` defaults programmatic scrolls to a bouncy `scrollEaseOut`. Nested scroll areas opt out with `data-lenis-prevent`.
 
-- **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. `tests/lib/contact/contact.test.ts` exercises the path end to end.
+- **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. The webhook auto-targets Discord, Slack, or a generic JSON consumer based on the URL, shaping each payload (and respecting per-provider length limits) accordingly. `tests/lib/contact/contact.test.ts` exercises the path end to end.
 
-- **Social images** (`src/lib/SocialImage.tsx`): `next/og` for `/opengraph-image`, `/twitter-image`, and per-project OG routes.
+- **Copy-to-clipboard email** (`src/components/ui/CopyEmail.tsx`): the contact email is a copy button with a GSAP-driven clipboard animation (the "page" tears off and an accent check draws in on the cooldown). Falls back to a legacy copy path and honors reduced motion.
+
+- **Input affordances**: focus rings show only for keyboard users (`src/components/ui/InputModalityWatcher.tsx` toggles `data-input-modality` on `<html>`); the magnetic button effect (`MagneticButton`) is disabled on touch pointers to avoid a remount ghost; form fields use a 16px font on coarse pointers so iOS Safari does not zoom on focus.
+
+- **Social images** (`src/lib/SocialImage.tsx`): `next/og` for the home `/opengraph-image` and `/twitter-image`, the `/work` index OG/Twitter routes, and per-project OG routes.
 
 - **Structured data** (`src/lib/structured-data.ts`): Person + WebSite + CreativeWork JSON-LD at the layout root.
 
