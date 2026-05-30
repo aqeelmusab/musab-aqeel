@@ -1,6 +1,12 @@
 'use client'
 
-import { useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from 'react'
 import Link from 'next/link'
 import { motion, useMotionValue, useSpring } from 'motion/react'
 
@@ -33,6 +39,22 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
+
+  // The magnetic effect only makes sense for a fine, hover-capable pointer.
+  // On touch devices a tap emulates mouse events (no matching `mouseleave`),
+  // which leaves the button skewed on its own GPU layer; when the contact form
+  // remounts the button, mobile browsers can leave that layer painted as a
+  // ghost. Gating the transform off on touch removes the layer entirely.
+  const [isMagnetic, setIsMagnetic] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const update = () => setIsMagnetic(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -68,10 +90,12 @@ export default function MagneticButton({
   return (
     <motion.div
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY }}
+      onMouseMove={isMagnetic && !disabled ? handleMouseMove : undefined}
+      onMouseEnter={isMagnetic ? () => setIsHovered(true) : undefined}
+      onMouseLeave={isMagnetic ? handleMouseLeave : undefined}
+      // No `style` when non-magnetic: avoids a persistent transform/compositor
+      // layer (the source of the mobile remount ghost).
+      style={isMagnetic ? { x: springX, y: springY } : undefined}
     >
       <Tag
         href={href as string}
