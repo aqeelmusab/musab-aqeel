@@ -160,7 +160,8 @@ export default function Contact() {
   const budgetOptions = getBudgetOptionsForProjectType(form.projectType)
   const isBudgetDisabled = !form.projectType
 
-  const labelClass = 'block mb-1.5 text-xs tracking-widest font-mono'
+  const labelClass =
+    'field-label block mb-1.5 text-xs tracking-widest font-mono'
   const inputClass =
     'bg-theme-surface-up border-theme text-theme-primary w-full rounded-xs border px-4 py-3 text-sm font-body outline-none transition-colors duration-200'
 
@@ -413,19 +414,23 @@ export default function Contact() {
                     Message received. I&apos;ll be in touch within 24 hours.
                   </p>
                 )}
-                {status === 'error' && (
-                  <p className="text-theme-error">
-                    {errorMessage}{' '}
-                    <a
-                      href={CONTACT_EMAIL_HREF}
-                      className="underline underline-offset-2 hover:no-underline"
-                    >
-                      Or email me directly
-                    </a>
-                    .
-                  </p>
-                )}
               </div>
+              {status === 'error' && (
+                <p
+                  role="alert"
+                  aria-atomic="true"
+                  className="text-theme-error mt-4 text-center font-mono text-xs"
+                >
+                  {errorMessage}{' '}
+                  <a
+                    href={CONTACT_EMAIL_HREF}
+                    className="underline underline-offset-2 hover:no-underline"
+                  >
+                    Or email me directly
+                  </a>
+                  .
+                </p>
+              )}
             </RevealText>
           </form>
         </div>

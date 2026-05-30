@@ -549,10 +549,14 @@ h4 {
 
 /* Form field styling */
 /* Modern CSS - :has() parent/relational selector */
-.form-field:has(input:focus),
-.form-field:has(textarea:focus),
-.form-field:has(select:focus) {
+/* The controls set `outline: none`, so the visible focus indicator has to live
+   on the control itself: bump the border and add an accent outline. */
+.form-field input:focus-visible,
+.form-field textarea:focus-visible,
+.form-field select:focus-visible {
   border-color: var(--color-border-up);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .form-field:has(input:not(:placeholder-shown)) .field-label,

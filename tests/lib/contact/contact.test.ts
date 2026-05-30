@@ -194,13 +194,70 @@ describe('webhook helpers', () => {
     expect(payload).toMatchObject({
       username: 'musabaqeel.com',
       avatar_url: `https://musabaqeel.com/favicons/favicon-96x96.png?v=${APP_VERSION}`,
+      allowed_mentions: { parse: [] },
       embeds: [
         {
-          description: '**Musab Aqeel** submitted a project inquiry.',
+          description:
+            '**Musab Aqeel** submitted a project inquiry.\n\n>>> Build a new product landing page.',
           timestamp: '2026-04-16T12:00:00.000Z',
         },
       ],
     })
+  })
+
+  it('keeps a long message inside the Discord description limit', () => {
+    const longMessage = 'a'.repeat(6_000)
+    const payload = buildContactWebhookPayload({
+      contact: { ...TEST_CONTACT, message: longMessage },
+      webhookUrl: 'https://discord.com/api/webhooks/123/abc',
+      now: new Date('2026-04-16T12:00:00.000Z'),
+    }) as {
+      embeds: Array<{
+        description: string
+        fields: Array<{ name: string }>
+      }>
+    }
+
+    expect(payload.embeds[0].description.length).toBeLessThanOrEqual(4_096)
+    // The message must not be relegated to a 1024-char field.
+    expect(
+      payload.embeds[0].fields.some((f) => f.name.includes('Message')),
+    ).toBe(false)
+  })
+
+  it('escapes Discord markdown so values cannot break out of code spans', () => {
+    const payload = buildContactWebhookPayload({
+      contact: { ...TEST_CONTACT, name: 'a`b`c' },
+      webhookUrl: 'https://discord.com/api/webhooks/123/abc',
+      now: new Date('2026-04-16T12:00:00.000Z'),
+    }) as { embeds: Array<{ fields: Array<{ name: string; value: string }> }> }
+
+    const nameField = payload.embeds[0].fields.find((f) =>
+      f.name.includes('Name'),
+    )
+    expect(nameField?.value).toBe("`a'b'c`")
+  })
+
+  it('splits a long Slack message across multiple sections', () => {
+    const longMessage = 'b'.repeat(7_000)
+    const payload = buildContactWebhookPayload({
+      contact: { ...TEST_CONTACT, message: longMessage },
+      webhookUrl: 'https://hooks.slack.com/services/a/b/c',
+      now: new Date('2026-04-16T12:00:00.000Z'),
+    }) as {
+      blocks: Array<{ type: string; text?: { type: string; text: string } }>
+    }
+
+    const messageSections = payload.blocks.filter(
+      (block) =>
+        block.type === 'section' &&
+        typeof block.text?.text === 'string' &&
+        block.text.text.startsWith('b'),
+    )
+    expect(messageSections.length).toBeGreaterThan(1)
+    for (const section of messageSections) {
+      expect(section.text?.text.length).toBeLessThanOrEqual(3_000)
+    }
   })
 
   it('renders slug-shaped contact fields as human-readable labels', () => {
