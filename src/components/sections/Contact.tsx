@@ -23,7 +23,8 @@ import {
 } from '@/lib/contact'
 
 const BUDGET_HELPER_ID = 'contact-budget-helper'
-import { CONTACT_EMAIL, CONTACT_EMAIL_HREF } from '@/lib/config'
+import CopyEmail from '@/components/ui/CopyEmail'
+import { CONTACT_EMAIL_HREF } from '@/lib/config'
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong sending your message. Please try again.'
@@ -195,18 +196,9 @@ export default function Contact() {
           </RevealText>
 
           <RevealText delay={0.1}>
-            <a
-              href={CONTACT_EMAIL_HREF}
-              className="group font-body relative mb-6 inline-block text-lg font-medium"
-            >
-              {CONTACT_EMAIL}
-              <span
-                className="bg-theme-primary absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
-                style={{
-                  transitionTimingFunction: 'var(--ease-out)',
-                }}
-              />
-            </a>
+            <div className="mb-6">
+              <CopyEmail />
+            </div>
           </RevealText>
 
           <RevealText delay={0.15}>

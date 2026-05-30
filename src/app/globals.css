@@ -584,6 +584,23 @@ h4 {
   color: var(--color-text-secondary);
 }
 
+/* Copy-to-clipboard email control. The tear-off + check-draw motion is driven
+   by GSAP in CopyEmail.tsx; these rules just set the static look. The check
+   starts hidden (dashoffset) so it never flashes before GSAP takes over. */
+.copy-clipboard svg path {
+  stroke-width: 1.5;
+  stroke: currentColor;
+  fill: var(--color-bg);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.copy-clipboard svg path.check {
+  stroke: var(--color-accent);
+  stroke-dasharray: 8;
+  stroke-dashoffset: 8;
+}
+
 /* Skeleton shimmer for image loading */
 @keyframes shimmer {
   0% {
