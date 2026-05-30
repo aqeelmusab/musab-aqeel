@@ -1,46 +1,30 @@
 import RevealText from '@/components/ui/reveal/RevealText'
 
-const TECH_STACK = [
-  'React',
-  'Next.js',
-  'TypeScript',
-  'Node.js',
-  'Python',
-  'Go',
-  'Rust',
-  'PHP',
-  'Laravel',
-  'FastAPI',
-  'Django',
-  'Express',
-  'PostgreSQL',
-  'MongoDB',
-  'Redis',
-  'Docker',
-  'AWS',
-  'Tailwind CSS',
-  'GSAP',
-  'Three.js',
-  'Webflow',
-  'Framer',
-  'Shopify',
-  'Supabase',
-  'Prisma',
+// Capability-level phrasing (intent over tool names) so the breadth reads
+// clearly without turning into a cluttered list of every language/framework.
+const CAPABILITIES = [
+  'Full Stack Engineering',
+  'Type-Safe Architecture',
+  'Real-time Systems',
+  'Scalable Databases',
+  'Cloud Infrastructure',
+  'Motion & Interaction',
+  'Headless Commerce',
+  'API Design',
+  'Performance Engineering',
+  'AI-Accelerated Delivery',
 ]
 
 const SERVICES = [
-  'Full Stack Development',
-  'UI Engineering',
-  'Motion Design',
-  'E-commerce',
-  'CMS Integration',
-  'API Development',
-  'Performance Optimization',
-  'Database Architecture',
-  'DevOps',
-  'Technical Consultation',
-  'Design Systems',
-  'SaaS Development',
+  'Complete System Builds',
+  'Architecture & Scoping',
+  'Surgical Fixes & Optimization',
+  'Design to Deployment',
+  'SaaS Platforms',
+  'E-commerce Platforms',
+  'Dashboards & Internal Tools',
+  'MVP to Production',
+  'Technical Consulting',
 ]
 
 function MarqueeRow({
@@ -100,10 +84,10 @@ export default function Marquee() {
           borderTop: '1px solid var(--color-border-sub)',
           borderBottom: '1px solid var(--color-border-sub)',
         }}
-        aria-label="Technologies and services"
+        aria-label="Capabilities and services"
       >
         <div className="flex flex-col gap-5 md:gap-6">
-          <MarqueeRow items={TECH_STACK} direction="left" />
+          <MarqueeRow items={CAPABILITIES} direction="left" />
           <MarqueeRow items={SERVICES} direction="right" />
         </div>
       </section>
