@@ -372,50 +372,6 @@ h4 {
       0 12px 40px color-mix(in oklch, var(--color-black) 35%, transparent);
   }
 
-  /* Radial accent + fine grid — sits above page, below nav content */
-  .site-header::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.55;
-    transition: opacity 0.55s var(--ease-smooth);
-    background:
-      radial-gradient(
-        ellipse 95% 90% at 50% -35%,
-        color-mix(in oklch, var(--color-accent) 14%, transparent),
-        transparent 58%
-      ),
-      repeating-linear-gradient(
-        105deg,
-        color-mix(in oklch, var(--color-border) 10%, transparent) 0,
-        color-mix(in oklch, var(--color-border) 10%, transparent) 1px,
-        transparent 1px,
-        transparent 10px
-      );
-    mask-image: linear-gradient(
-      to bottom,
-      black 0%,
-      black 55%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      black 0%,
-      black 55%,
-      transparent 100%
-    );
-  }
-
-  .site-header[data-state="scrolled"]::before {
-    opacity: 0.95;
-  }
-
-  .site-header[data-state="menu"]::before {
-    opacity: 0.18;
-  }
-
   /* Slow-moving accent line along bottom edge */
   .site-header::after {
     content: "";
