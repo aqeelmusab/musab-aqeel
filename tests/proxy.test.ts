@@ -23,17 +23,16 @@ afterEach(() => {
 })
 
 describe('proxy security headers', () => {
-  it('applies the standard hardening headers on matched routes', () => {
+  // Non-CSP hardening headers (X-Content-Type-Options, Referrer-Policy,
+  // Permissions-Policy, X-Frame-Options) are owned by next.config.mjs and are
+  // applied by the framework, so they are not set on the proxy() response here.
+  it('does not set non-CSP hardening headers (owned by next.config.mjs)', () => {
     const response = proxy(createRequest('/'))
 
-    expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff')
-    expect(response.headers.get('Referrer-Policy')).toBe(
-      'strict-origin-when-cross-origin',
-    )
-    expect(response.headers.get('Permissions-Policy')).toBe(
-      'camera=(), microphone=(), geolocation=()',
-    )
-    expect(response.headers.get('X-Frame-Options')).toBe('DENY')
+    expect(response.headers.get('X-Content-Type-Options')).toBeNull()
+    expect(response.headers.get('Referrer-Policy')).toBeNull()
+    expect(response.headers.get('Permissions-Policy')).toBeNull()
+    expect(response.headers.get('X-Frame-Options')).toBeNull()
   })
 
   it('keeps the Content Security Policy intact', () => {

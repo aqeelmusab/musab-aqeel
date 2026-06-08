@@ -19,17 +19,12 @@ import { NextResponse, type NextRequest } from 'next/server'
  * `vitals.vercel-insights.com` hosts are only used by the dev debug builds.
  */
 
-// Standard hardening headers applied alongside the CSP on every matched route.
-// Cross-Origin-Opener-Policy is intentionally omitted: it can interfere with
-// @vercel/analytics / @vercel/speed-insights beacons and preview popups, and is
-// not required for this static site.
-const SECURITY_HEADERS: Readonly<Record<string, string>> = {
-  'X-Content-Type-Options': 'nosniff',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-  'X-Frame-Options': 'DENY',
-}
-
+// Non-CSP hardening headers (X-Content-Type-Options, Referrer-Policy,
+// Permissions-Policy, X-Frame-Options, etc.) are owned by next.config.mjs so
+// they apply on every route without duplication. Cross-Origin-Opener-Policy is
+// intentionally omitted there: it can interfere with @vercel/analytics /
+// @vercel/speed-insights beacons and preview popups. This proxy is responsible
+// only for the Content-Security-Policy on matched pages.
 export function proxy(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development'
 
@@ -56,10 +51,6 @@ export function proxy(request: NextRequest) {
     request: { headers: requestHeaders },
   })
   response.headers.set('Content-Security-Policy', csp)
-
-  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
-    response.headers.set(key, value)
-  }
 
   return response
 }
