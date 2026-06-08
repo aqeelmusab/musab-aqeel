@@ -11,6 +11,12 @@ import { NextResponse, type NextRequest } from 'next/server'
  *
  * Dev mode relaxes directives for HMR (ws:/wss:, `'unsafe-eval'`) and for
  * @vercel/analytics / @vercel/speed-insights debug scripts and beacons.
+ *
+ * Production needs no extra script-src/connect-src for that telemetry: on
+ * Vercel both packages load their scripts and send beacons from first-party
+ * same-origin paths (`/_vercel/insights/*`, `/_vercel/speed-insights/*`), which
+ * `'self'` already covers. The external `va.vercel-scripts.com` /
+ * `vitals.vercel-insights.com` hosts are only used by the dev debug builds.
  */
 
 // Standard hardening headers applied alongside the CSP on every matched route.
