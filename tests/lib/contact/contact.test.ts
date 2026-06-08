@@ -483,6 +483,34 @@ describe('contact route', () => {
     fetchImpl.mockRestore()
   })
 
+  it('rejects an oversized request body even when content-length is missing', async () => {
+    vi.stubEnv('CONTACT_WEBHOOK_URL', 'https://example.com/webhooks/contact')
+
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-forwarded-for': '203.0.113.10',
+        },
+        body: JSON.stringify({
+          ...createEmptyContactSubmission(Date.now() - 5_000),
+          ...TEST_CONTACT,
+          message: 'a'.repeat(CONTACT_MAX_REQUEST_BODY_BYTES),
+        }),
+      }),
+    )
+
+    expect(response.status).toBe(413)
+    expect(fetchImpl).not.toHaveBeenCalled()
+
+    fetchImpl.mockRestore()
+  })
+
   it('accepts a normal-sized request whose content-length is within the limit', async () => {
     vi.stubEnv('CONTACT_WEBHOOK_URL', 'https://example.com/webhooks/contact')
 

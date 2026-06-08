@@ -31,11 +31,54 @@ function jsonError(
   )
 }
 
+function concatUint8Arrays(chunks: Uint8Array[], totalLength: number) {
+  const result = new Uint8Array(totalLength)
+  let offset = 0
+
+  for (const chunk of chunks) {
+    result.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+
+  return result
+}
+
+// Stream the body and stop reading once it exceeds the byte cap. This is the
+// real size guard: unlike the content-length check, it does not trust client
+// headers, so missing or spoofed content-length cannot bypass it.
 async function readRequestBody(request: Request) {
   try {
-    return { success: true as const, data: await request.json() }
+    if (!request.body) {
+      return { success: false as const, code: 'invalid_json' as const }
+    }
+
+    const reader = request.body.getReader()
+    const chunks: Uint8Array[] = []
+    let receivedBytes = 0
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+
+      receivedBytes += value.byteLength
+
+      if (receivedBytes > CONTACT_MAX_REQUEST_BODY_BYTES) {
+        await reader.cancel().catch(() => {})
+        return { success: false as const, code: 'payload_too_large' as const }
+      }
+
+      chunks.push(value)
+    }
+
+    const body = new TextDecoder().decode(
+      chunks.length === 1
+        ? chunks[0]
+        : concatUint8Arrays(chunks, receivedBytes),
+    )
+
+    return { success: true as const, data: JSON.parse(body) }
   } catch {
-    return { success: false as const }
+    return { success: false as const, code: 'invalid_json' as const }
   }
 }
 
@@ -58,9 +101,9 @@ function hasJsonContentType(request: Request): boolean {
   return contentType?.toLowerCase().includes('application/json') ?? false
 }
 
-// Reject obviously oversized payloads before buffering and parsing the body.
-// A missing or unparseable content-length falls through to request.json(),
-// preserving existing behavior.
+// Cheap fast-path: reject obviously oversized payloads before reading the
+// body. A missing or unparseable content-length falls through to the
+// stream-based guard in readRequestBody(), which is the real protection.
 function exceedsMaxBodySize(request: Request): boolean {
   const contentLength = request.headers.get('content-length')
   if (contentLength === null) return false
@@ -86,7 +129,12 @@ export async function POST(request: Request) {
     }
 
     const rawBody = await readRequestBody(request)
+
     if (!rawBody.success) {
+      if (rawBody.code === 'payload_too_large') {
+        return jsonError('Request body is too large.', 413, 'payload_too_large')
+      }
+
       return jsonError('Invalid JSON body.', 400, 'invalid_json')
     }
 
