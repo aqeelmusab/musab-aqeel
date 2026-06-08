@@ -24,7 +24,7 @@ export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`
 export const SOCIAL_LINKS: readonly SocialLink[] = [
   {
     label: 'GitHub',
-    href: 'https://github.com/aqeelspark',
+    href: 'https://github.com/aqeelmusab',
   },
   {
     label: 'WhatsApp',
