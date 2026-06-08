@@ -16,8 +16,7 @@ import {
   CONTACT_PROJECT_TYPES,
   createEmptyContactSubmission,
   getBudgetOptionsForProjectType,
-  type ContactApiErrorCode,
-  type ContactApiResponse,
+  submitContactRequest,
   type ContactFormStatus,
   type ContactSubmission,
 } from '@/lib/contact'
@@ -25,41 +24,6 @@ import {
 const BUDGET_HELPER_ID = 'contact-budget-helper'
 import CopyEmail from '@/components/ui/CopyEmail'
 import { CONTACT_EMAIL_HREF } from '@/lib/config'
-
-const GENERIC_ERROR_MESSAGE =
-  'Something went wrong sending your message. Please try again.'
-const NETWORK_ERROR_MESSAGE =
-  "Couldn't reach the server. Check your connection and try again."
-
-// Friendlier, more specific client copy per server error code. Falls back to
-// the server's own message, then to a generic line, so new codes still surface.
-const ERROR_COPY: Record<ContactApiErrorCode, string> = {
-  invalid_content_type: GENERIC_ERROR_MESSAGE,
-  payload_too_large:
-    'Your message is too long. Please shorten it and try again.',
-  invalid_json: GENERIC_ERROR_MESSAGE,
-  invalid_payload: 'Please double-check the form and try again.',
-  missing_fields: 'Please complete all required fields.',
-  invalid_email: 'Please enter a valid email address.',
-  invalid_timestamp: 'Please refresh the page and try again.',
-  rate_limited: 'Too many attempts. Please wait a few minutes, then try again.',
-  service_unavailable: 'The form is temporarily unavailable right now.',
-  webhook_failed:
-    "Your message couldn't be delivered. Please try again in a moment.",
-  internal_error: 'Something went wrong on our end. Please try again.',
-}
-
-function resolveErrorMessage(
-  data: ContactApiResponse | null,
-  httpStatus: number,
-): string {
-  if (data && data.success === false) {
-    return ERROR_COPY[data.code] ?? data.error ?? GENERIC_ERROR_MESSAGE
-  }
-  if (httpStatus === 429) return ERROR_COPY.rate_limited
-  if (httpStatus >= 500) return ERROR_COPY.internal_error
-  return GENERIC_ERROR_MESSAGE
-}
 
 const SelectArrow = () => (
   <span
@@ -121,27 +85,17 @@ export default function Contact() {
     setErrorMessage('')
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
+      const result = await submitContactRequest(form)
 
-      if (res.ok) {
+      if (result.ok) {
         setStatus('sent')
         // Preserve `startedAt` so a rapid second submission isn't blocked by
         // the server-side time-trap (CONTACT_MIN_SUBMISSION_TIME_MS).
         setForm((prev) => createEmptyContactSubmission(prev.startedAt))
       } else {
-        const data = (await res
-          .json()
-          .catch(() => null)) as ContactApiResponse | null
-        setErrorMessage(resolveErrorMessage(data, res.status))
+        setErrorMessage(result.message)
         setStatus('error')
       }
-    } catch {
-      setErrorMessage(NETWORK_ERROR_MESSAGE)
-      setStatus('error')
     } finally {
       isSubmittingRef.current = false
     }

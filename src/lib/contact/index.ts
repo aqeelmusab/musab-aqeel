@@ -23,6 +23,11 @@ export {
 } from './abuse'
 export { parseContactSubmission } from './validation'
 export {
+  CONTACT_REQUEST_TIMEOUT_MS,
+  submitContactRequest,
+} from './submit'
+export type { ContactSubmitResult } from './submit'
+export {
   buildContactWebhookPayload,
   getContactWebhookUrl,
   resolveWebhookTarget,
