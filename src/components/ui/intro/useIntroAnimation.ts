@@ -40,8 +40,8 @@ function updateMorphStyles(
   text1.style.filter = `blur(${Math.min(8 / inverseFraction - 8, 100)}px)`
   text1.style.opacity = `${Math.pow(inverseFraction, 0.4) * 100}%`
 
-  text1.textContent = TEXTS[textIndex % TEXTS.length]
-  text2.textContent = TEXTS[(textIndex + 1) % TEXTS.length]
+  text1.textContent = TEXTS[textIndex % TEXTS.length] ?? ''
+  text2.textContent = TEXTS[(textIndex + 1) % TEXTS.length] ?? ''
 }
 
 function resetCooldownStyles(text1: HTMLSpanElement, text2: HTMLSpanElement) {
@@ -77,8 +77,8 @@ export function useIntroAnimation({ isVisible }: { isVisible: boolean }) {
     timeRef.current = initialTime
     startTimeRef.current = initialTime
 
-    text1.textContent = TEXTS[textIndexRef.current % TEXTS.length]
-    text2.textContent = TEXTS[(textIndexRef.current + 1) % TEXTS.length]
+    text1.textContent = TEXTS[textIndexRef.current % TEXTS.length] ?? ''
+    text2.textContent = TEXTS[(textIndexRef.current + 1) % TEXTS.length] ?? ''
 
     const maxIndex = textIndexRef.current + TEXTS.length - 1
 

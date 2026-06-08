@@ -96,6 +96,7 @@ describe('project collections', () => {
 
   it('getOtherProjects excludes the current project', () => {
     const [first] = getAllProjects()
+    if (!first) throw new Error('Expected at least one project')
     const others = getOtherProjects(first.slug)
 
     expect(others.every((project) => project.slug !== first.slug)).toBe(true)
@@ -103,6 +104,7 @@ describe('project collections', () => {
 
   it('getOtherProjects respects the requested limit', () => {
     const [first] = getAllProjects()
+    if (!first) throw new Error('Expected at least one project')
 
     expect(getOtherProjects(first.slug, 1)).toHaveLength(1)
   })

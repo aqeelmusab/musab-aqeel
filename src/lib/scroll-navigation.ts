@@ -60,7 +60,7 @@ export function scrollToPageTop(
       lenis.scrollTo(0, {
         duration,
         ...(resolvedEasing && { easing: resolvedEasing }),
-        onComplete,
+        ...(onComplete && { onComplete }),
       })
       return
     }
@@ -95,7 +95,7 @@ export function scrollToElement(
         offset,
         duration,
         ...(resolvedEasing && { easing: resolvedEasing }),
-        onComplete,
+        ...(onComplete && { onComplete }),
       })
       return
     }

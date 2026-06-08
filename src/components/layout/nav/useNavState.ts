@@ -46,10 +46,14 @@ function resolveActiveSection(pathname: string, isReadyToAnimate: boolean) {
     document.documentElement.scrollHeight - 2
 
   if (atBottom) {
-    return NAV_LINKS[NAV_LINKS.length - 1].href
+    const lastLink = NAV_LINKS[NAV_LINKS.length - 1]
+    return lastLink ? lastLink.href : ''
   }
 
-  const firstSection = document.querySelector<HTMLElement>(NAV_LINKS[0].href)
+  const firstLink = NAV_LINKS[0]
+  const firstSection = firstLink
+    ? document.querySelector<HTMLElement>(firstLink.href)
+    : null
   if (
     !firstSection ||
     firstSection.getBoundingClientRect().top > ACTIVE_SECTION_THRESHOLD

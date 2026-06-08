@@ -271,11 +271,11 @@ describe('webhook helpers', () => {
       }>
     }
 
-    expect(payload.embeds[0].description.length).toBeLessThanOrEqual(4_096)
+    const [embed] = payload.embeds
+    expect(embed).toBeDefined()
+    expect(embed?.description.length).toBeLessThanOrEqual(4_096)
     // The message must not be relegated to a 1024-char field.
-    expect(
-      payload.embeds[0].fields.some((f) => f.name.includes('Message')),
-    ).toBe(false)
+    expect(embed?.fields.some((f) => f.name.includes('Message'))).toBe(false)
   })
 
   it('escapes Discord markdown so values cannot break out of code spans', () => {
@@ -285,7 +285,7 @@ describe('webhook helpers', () => {
       now: new Date('2026-04-16T12:00:00.000Z'),
     }) as { embeds: Array<{ fields: Array<{ name: string; value: string }> }> }
 
-    const nameField = payload.embeds[0].fields.find((f) =>
+    const nameField = payload.embeds[0]?.fields.find((f) =>
       f.name.includes('Name'),
     )
     expect(nameField?.value).toBe("`a'b'c`")
@@ -320,7 +320,7 @@ describe('webhook helpers', () => {
       now: new Date('2026-04-16T12:00:00.000Z'),
     }) as { embeds: Array<{ fields: Array<{ name: string; value: string }> }> }
 
-    const fields = payload.embeds[0].fields
+    const fields = payload.embeds[0]?.fields ?? []
     const budgetField = fields.find((f) => f.name.includes('Budget'))
     const projectTypeField = fields.find((f) => f.name.includes('Project Type'))
 

@@ -222,7 +222,7 @@ function resolveRateLimitKey({
   fallbackIdentifier,
 }: {
   ipAddress: string | null
-  fallbackIdentifier?: string
+  fallbackIdentifier?: string | undefined
 }) {
   if (ipAddress) {
     return `ip:${ipAddress}`

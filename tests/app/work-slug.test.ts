@@ -13,6 +13,7 @@ describe('work/[slug] route generation', () => {
 
   it('builds canonical metadata from the project for a known slug', async () => {
     const project = getAllProjects()[0]
+    if (!project) throw new Error('Expected at least one project')
 
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: project.slug }),

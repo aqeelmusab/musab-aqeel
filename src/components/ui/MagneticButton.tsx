@@ -74,25 +74,32 @@ export default function MagneticButton({
       ? motion.a
       : motion.button
 
+  // Build props conditionally so we never pass an explicit `undefined`
+  // (incompatible with exactOptionalPropertyTypes). Omitting a key is
+  // equivalent to the previous `: undefined` branches at runtime.
+  // No `style` when non-magnetic: avoids a persistent transform/compositor
+  // layer (the source of the mobile remount ghost).
+  const magneticProps = isMagnetic
+    ? {
+        onMouseEnter: () => setIsHovered(true),
+        onMouseLeave: handleMouseLeave,
+        style: { x: springX, y: springY },
+        ...(disabled ? {} : { onMouseMove: handleMouseMove }),
+      }
+    : {}
+
+  const isButton = as === 'button'
+
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={isMagnetic && !disabled ? handleMouseMove : undefined}
-      onMouseEnter={isMagnetic ? () => setIsHovered(true) : undefined}
-      onMouseLeave={isMagnetic ? handleMouseLeave : undefined}
-      // No `style` when non-magnetic: avoids a persistent transform/compositor
-      // layer (the source of the mobile remount ghost).
-      style={isMagnetic ? { x: springX, y: springY } : undefined}
-    >
+    <motion.div ref={ref} {...magneticProps}>
       <Tag
         href={href as string}
-        onClick={onClick}
-        type={as === 'button' ? (type ?? 'button') : undefined}
-        disabled={as === 'button' ? disabled : undefined}
-        aria-disabled={disabled || undefined}
         className={className}
         whileTap={{ scale: 0.97 }}
-        data-magnetic-hover={isHovered || undefined}
+        {...(onClick ? { onClick } : {})}
+        {...(isButton ? { type: type ?? 'button', disabled } : {})}
+        {...(disabled ? { 'aria-disabled': true } : {})}
+        {...(isHovered ? { 'data-magnetic-hover': true } : {})}
       >
         {children}
       </Tag>

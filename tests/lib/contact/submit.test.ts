@@ -69,7 +69,7 @@ describe('submitContactRequest', () => {
       ok: false,
       message: 'The request timed out. Please try again or email me directly.',
     })
-    expect(fetchImpl.mock.calls[0][1]?.signal?.aborted).toBe(true)
+    expect(fetchImpl.mock.calls[0]?.[1]?.signal?.aborted).toBe(true)
   })
 
   it('maps a server error response to friendly copy', async () => {
