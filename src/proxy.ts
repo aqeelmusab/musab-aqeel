@@ -12,6 +12,18 @@ import { NextResponse, type NextRequest } from 'next/server'
  * Dev mode relaxes directives for HMR (ws:/wss:, `'unsafe-eval'`) and for
  * @vercel/analytics / @vercel/speed-insights debug scripts and beacons.
  */
+
+// Standard hardening headers applied alongside the CSP on every matched route.
+// Cross-Origin-Opener-Policy is intentionally omitted: it can interfere with
+// @vercel/analytics / @vercel/speed-insights beacons and preview popups, and is
+// not required for this static site.
+const SECURITY_HEADERS: Readonly<Record<string, string>> = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  'X-Frame-Options': 'DENY',
+}
+
 export function proxy(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development'
 
@@ -38,6 +50,10 @@ export function proxy(request: NextRequest) {
     request: { headers: requestHeaders },
   })
   response.headers.set('Content-Security-Policy', csp)
+
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    response.headers.set(key, value)
+  }
 
   return response
 }
