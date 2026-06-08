@@ -51,6 +51,18 @@ describe('project data invariants', () => {
       expect(project.coverImage.startsWith('/')).toBe(true)
     }
   })
+
+  it('uses valid URLs when optional links are present', () => {
+    for (const project of getAllProjects()) {
+      if (project.liveUrl) {
+        expect(() => new URL(project.liveUrl as string)).not.toThrow()
+      }
+
+      if (project.repoUrl) {
+        expect(() => new URL(project.repoUrl as string)).not.toThrow()
+      }
+    }
+  })
 })
 
 describe('project lookups', () => {
