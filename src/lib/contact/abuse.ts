@@ -15,6 +15,24 @@ interface RateLimitEntry {
 const CONTACT_RATE_LIMIT_REDIS_KEY_PREFIX = 'contact-rate-limit'
 
 /**
+ * Forwarding headers trusted to carry the originating client IP, in priority
+ * order: Cloudflare's `cf-connecting-ip`, then the left-most `x-forwarded-for`
+ * entry, then `x-real-ip`.
+ *
+ * TRUST BOUNDARY: every one of these is client-spoofable at the network edge.
+ * We only trust them because this app is meant to run behind a trusted
+ * proxy/platform (e.g. Vercel) that overwrites them with the real peer address.
+ * If deployed without that guarantee, an attacker can forge these headers to
+ * evade or poison the contact rate limiter, so this resolution must be
+ * revisited. See the README "Rate-limit identity and trusted proxy" note.
+ */
+const TRUSTED_CLIENT_IP_HEADERS = [
+  'cf-connecting-ip',
+  'x-forwarded-for',
+  'x-real-ip',
+] as const
+
+/**
  * Local fallback store used when a shared backend is unavailable.
  */
 const rateLimitStore = new Map<string, RateLimitEntry>()
@@ -33,11 +51,12 @@ function getFirstHeaderValue(headers: Headers, name: string): string | null {
     return null
   }
 
-  if (name === 'x-forwarded-for') {
-    return value.split(',')[0]?.trim() ?? null
-  }
+  // x-forwarded-for is a comma-separated, hop-by-hop appended list; the
+  // left-most entry is the original client as recorded by the trusted proxy.
+  const candidate = name === 'x-forwarded-for' ? value.split(',')[0] : value
+  const trimmed = candidate?.trim()
 
-  return value.trim()
+  return trimmed ? trimmed : null
 }
 
 function cleanupExpiredRateLimitEntries(now: number) {
@@ -188,12 +207,14 @@ async function recordRateLimitAttempt(
 }
 
 export function getClientIpAddress(headers: Headers): string | null {
-  const ipAddress =
-    getFirstHeaderValue(headers, 'cf-connecting-ip') ??
-    getFirstHeaderValue(headers, 'x-forwarded-for') ??
-    getFirstHeaderValue(headers, 'x-real-ip')
+  for (const headerName of TRUSTED_CLIENT_IP_HEADERS) {
+    const value = getFirstHeaderValue(headers, headerName)
+    if (value) {
+      return value
+    }
+  }
 
-  return ipAddress || null
+  return null
 }
 
 function resolveRateLimitKey({

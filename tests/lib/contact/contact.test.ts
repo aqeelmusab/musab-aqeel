@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/contact/route'
 import {
   evaluateContactAbuse,
+  getClientIpAddress,
   resetContactAbuseState,
 } from '@/lib/contact/abuse'
 import {
@@ -102,6 +103,40 @@ describe('parseContactSubmission', () => {
   })
 })
 
+describe('getClientIpAddress', () => {
+  it('prefers cf-connecting-ip over other forwarding headers', () => {
+    const headers = new Headers({
+      'cf-connecting-ip': '198.51.100.5',
+      'x-forwarded-for': '203.0.113.10, 70.41.3.18',
+      'x-real-ip': '192.0.2.7',
+    })
+
+    expect(getClientIpAddress(headers)).toBe('198.51.100.5')
+  })
+
+  it('uses the left-most x-forwarded-for entry when cf-connecting-ip is absent', () => {
+    const headers = new Headers({
+      'x-forwarded-for': '203.0.113.10, 70.41.3.18, 150.172.238.178',
+      'x-real-ip': '192.0.2.7',
+    })
+
+    expect(getClientIpAddress(headers)).toBe('203.0.113.10')
+  })
+
+  it('falls back to x-real-ip when no other forwarding header is set', () => {
+    const headers = new Headers({ 'x-real-ip': '192.0.2.7' })
+
+    expect(getClientIpAddress(headers)).toBe('192.0.2.7')
+  })
+
+  it('returns null when no trusted forwarding header carries an IP', () => {
+    expect(getClientIpAddress(new Headers())).toBeNull()
+    expect(
+      getClientIpAddress(new Headers({ 'x-forwarded-for': '   ' })),
+    ).toBeNull()
+  })
+})
+
 describe('evaluateContactAbuse', () => {
   beforeEach(() => {
     resetContactAbuseState()
@@ -118,6 +153,21 @@ describe('evaluateContactAbuse', () => {
     expect(result).toEqual({
       kind: 'silently_reject',
       reason: 'honeypot',
+      ipAddress: '203.0.113.10',
+    })
+  })
+
+  it('silently rejects submissions sent faster than the minimum time', async () => {
+    const result = await evaluateContactAbuse({
+      headers: createHeaders(),
+      honeypotValue: '',
+      startedAt: 4_900,
+      now: 5_000,
+    })
+
+    expect(result).toEqual({
+      kind: 'silently_reject',
+      reason: 'submitted_too_fast',
       ipAddress: '203.0.113.10',
     })
   })

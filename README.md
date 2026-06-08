@@ -131,6 +131,8 @@ public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mo
 
 - **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. The webhook auto-targets Discord, Slack, or a generic JSON consumer based on the URL, shaping each payload (and respecting per-provider length limits) accordingly. `tests/lib/contact/contact.test.ts` exercises the path end to end.
 
+  - **Rate-limit identity and trusted proxy**: the limiter keys on the client IP, resolved in priority order from `cf-connecting-ip`, the left-most `x-forwarded-for` entry, then `x-real-ip` (see `TRUSTED_CLIENT_IP_HEADERS` in `src/lib/contact/abuse.ts`); when no IP is present it falls back to the submitter's email. These forwarding headers are client-spoofable, so the app must be deployed behind a trusted proxy/platform (e.g. Vercel) that overwrites them with the real peer address. If you deploy somewhere without that guarantee, an attacker can forge those headers to evade or poison the limiter, and the header trust order must be revisited.
+
 - **Copy-to-clipboard email** (`src/components/ui/CopyEmail.tsx`): the contact email is a copy button with a GSAP-driven clipboard animation (the "page" tears off and an accent check draws in on the cooldown). Falls back to a legacy copy path and honors reduced motion.
 
 - **Input affordances**: focus rings show only for keyboard users (`src/components/ui/InputModalityWatcher.tsx` toggles `data-input-modality` on `<html>`); the magnetic button effect (`MagneticButton`) is disabled on touch pointers to avoid a remount ghost; form fields use a 16px font on coarse pointers so iOS Safari does not zoom on focus.
