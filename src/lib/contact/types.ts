@@ -23,6 +23,7 @@ export type ContactFormStatus = 'idle' | 'sending' | 'sent' | 'error'
 
 export type ContactApiErrorCode =
   | 'invalid_content_type'
+  | 'payload_too_large'
   | 'invalid_json'
   | 'invalid_payload'
   | 'missing_fields'

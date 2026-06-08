@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import {
+  CONTACT_MAX_REQUEST_BODY_BYTES,
   evaluateContactAbuse,
   getContactWebhookUrl,
   parseContactSubmission,
@@ -57,6 +58,19 @@ function hasJsonContentType(request: Request): boolean {
   return contentType?.toLowerCase().includes('application/json') ?? false
 }
 
+// Reject obviously oversized payloads before buffering and parsing the body.
+// A missing or unparseable content-length falls through to request.json(),
+// preserving existing behavior.
+function exceedsMaxBodySize(request: Request): boolean {
+  const contentLength = request.headers.get('content-length')
+  if (contentLength === null) return false
+
+  const declaredBytes = Number(contentLength)
+  if (!Number.isFinite(declaredBytes)) return false
+
+  return declaredBytes > CONTACT_MAX_REQUEST_BODY_BYTES
+}
+
 export async function POST(request: Request) {
   try {
     if (!hasJsonContentType(request)) {
@@ -65,6 +79,10 @@ export async function POST(request: Request) {
         415,
         'invalid_content_type',
       )
+    }
+
+    if (exceedsMaxBodySize(request)) {
+      return jsonError('Request body is too large.', 413, 'payload_too_large')
     }
 
     const rawBody = await readRequestBody(request)

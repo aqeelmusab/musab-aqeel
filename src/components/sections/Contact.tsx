@@ -5,7 +5,7 @@ import {
   useEffect,
   useRef,
   type ChangeEvent,
-  type FormEvent,
+  type SyntheticEvent,
 } from 'react'
 import SplitText from '@/components/ui/reveal/SplitText'
 import RevealText from '@/components/ui/reveal/RevealText'
@@ -35,6 +35,8 @@ const NETWORK_ERROR_MESSAGE =
 // the server's own message, then to a generic line, so new codes still surface.
 const ERROR_COPY: Record<ContactApiErrorCode, string> = {
   invalid_content_type: GENERIC_ERROR_MESSAGE,
+  payload_too_large:
+    'Your message is too long. Please shorten it and try again.',
   invalid_json: GENERIC_ERROR_MESSAGE,
   invalid_payload: 'Please double-check the form and try again.',
   missing_fields: 'Please complete all required fields.',
@@ -107,7 +109,7 @@ export default function Contact() {
   const isReplay = revealCycle > 0
   const revealTrigger = isReplay ? 'load' : 'scroll'
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault()
 
     if (isSubmittingRef.current) {

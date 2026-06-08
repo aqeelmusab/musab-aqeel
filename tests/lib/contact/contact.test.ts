@@ -5,7 +5,10 @@ import {
   evaluateContactAbuse,
   resetContactAbuseState,
 } from '@/lib/contact/abuse'
-import { createEmptyContactSubmission } from '@/lib/contact/constants'
+import {
+  CONTACT_MAX_REQUEST_BODY_BYTES,
+  createEmptyContactSubmission,
+} from '@/lib/contact/constants'
 import type { ContactPayload } from '@/lib/contact/types'
 import { parseContactSubmission } from '@/lib/contact/validation'
 import {
@@ -393,6 +396,125 @@ describe('contact route', () => {
 
     expect(response.status).toBe(429)
     expect(response.headers.get('Retry-After')).toBe('600')
+
+    fetchImpl.mockRestore()
+  })
+
+  it('rejects an oversized content-length with 413 before delivering the webhook', async () => {
+    vi.stubEnv('CONTACT_WEBHOOK_URL', 'https://example.com/webhooks/contact')
+
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'content-length': String(CONTACT_MAX_REQUEST_BODY_BYTES + 1),
+          'x-forwarded-for': '203.0.113.10',
+        },
+        body: JSON.stringify({
+          ...createEmptyContactSubmission(Date.now() - 5_000),
+          ...TEST_CONTACT,
+        }),
+      }),
+    )
+
+    expect(response.status).toBe(413)
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Request body is too large.',
+      code: 'payload_too_large',
+    })
+    expect(fetchImpl).not.toHaveBeenCalled()
+
+    fetchImpl.mockRestore()
+  })
+
+  it('accepts a normal-sized request whose content-length is within the limit', async () => {
+    vi.stubEnv('CONTACT_WEBHOOK_URL', 'https://example.com/webhooks/contact')
+
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const body = JSON.stringify({
+      ...createEmptyContactSubmission(Date.now() - 5_000),
+      ...TEST_CONTACT,
+    })
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'content-length': String(Buffer.byteLength(body)),
+          'x-forwarded-for': '203.0.113.10',
+        },
+        body,
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    await expect(response.json()).resolves.toEqual({ success: true })
+    expect(fetchImpl).toHaveBeenCalledTimes(1)
+
+    fetchImpl.mockRestore()
+  })
+
+  it('returns 415 for a non-JSON content type even when content-length is huge', async () => {
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'text/plain',
+          'content-length': String(CONTACT_MAX_REQUEST_BODY_BYTES + 1),
+          'x-forwarded-for': '203.0.113.10',
+        },
+        body: 'not json',
+      }),
+    )
+
+    expect(response.status).toBe(415)
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Contact form expects application/json.',
+      code: 'invalid_content_type',
+    })
+    expect(fetchImpl).not.toHaveBeenCalled()
+
+    fetchImpl.mockRestore()
+  })
+
+  it('returns 400 for invalid JSON when the body is within the size limit', async () => {
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-forwarded-for': '203.0.113.10',
+        },
+        body: '{ not valid json',
+      }),
+    )
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Invalid JSON body.',
+      code: 'invalid_json',
+    })
+    expect(fetchImpl).not.toHaveBeenCalled()
 
     fetchImpl.mockRestore()
   })

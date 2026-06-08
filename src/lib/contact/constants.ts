@@ -64,6 +64,11 @@ export const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5
 export const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1_000
 export const CONTACT_WEBHOOK_TIMEOUT_MS = 10_000
 
+// Upper bound on the contact JSON body we are willing to parse. The largest
+// field (message) caps at 4,000 chars, so 32kb leaves ample headroom for the
+// rest of the payload while rejecting obviously oversized submissions early.
+export const CONTACT_MAX_REQUEST_BODY_BYTES = 32 * 1_024
+
 export function isProjectTypeValue(
   value: string,
 ): value is ContactProjectTypeValue {
