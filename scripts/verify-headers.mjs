@@ -101,7 +101,8 @@ async function fetchRoute(route) {
       redirect: 'follow',
     })
   } catch (error) {
-    check(route, false, `request failed: ${error.message}`)
+    const message = error instanceof Error ? error.message : String(error)
+    check(route, false, `request failed: ${message}`)
     return null
   }
 }
@@ -120,6 +121,13 @@ async function verifyExcludedRoute(route) {
   const response = await fetchRoute(route)
   if (!response) return
 
+  // The route must exist (GET on the POST-only contact API returns 405, not
+  // 404); without this guard a deleted route with global headers would pass.
+  check(
+    route,
+    response.status !== 404,
+    `expected route to exist, got ${response.status}`,
+  )
   checkGlobalHeaders(route, response.headers)
 }
 

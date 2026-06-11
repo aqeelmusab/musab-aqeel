@@ -60,10 +60,31 @@ test.describe('mobile', () => {
     await expectNoSeriousA11yViolations(page)
   })
 
+  test('the home page contact section has no serious accessibility violations', async ({
+    page,
+  }) => {
+    await gotoAndWaitForIntro(page, '/')
+
+    const contact = page.locator('#contact')
+    await contact.scrollIntoViewIfNeeded()
+    await expect(contact).toBeVisible()
+
+    await expectNoSeriousA11yViolations(page)
+  })
+
   test('the work index has no serious accessibility violations', async ({
     page,
   }) => {
     await gotoAndWaitForIntro(page, '/work')
     await expectNoSeriousA11yViolations(page)
   })
+
+  for (const slug of getProjectSlugs()) {
+    test(`/work/${slug} has no serious accessibility violations`, async ({
+      page,
+    }) => {
+      await gotoAndWaitForIntro(page, `/work/${slug}`)
+      await expectNoSeriousA11yViolations(page)
+    })
+  }
 })
