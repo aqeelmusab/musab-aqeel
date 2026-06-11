@@ -6,3 +6,8 @@ allowBuilds:
 
 overrides:
   postcss: 8.5.15
+  # Security floors (dormant unless a dependency pulls these in):
+  # tmp >=0.2.6 fixes GHSA-ph9p-34f9-6g65 (high) and GHSA-52f5-9888-hmc6 (low),
+  # uuid >=11.1.1 fixes GHSA-w5hq-g745-h8pq (moderate).
+  tmp: ">=0.2.6"
+  uuid: ">=11.1.1"
