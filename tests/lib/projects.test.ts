@@ -53,13 +53,13 @@ describe('project data invariants', () => {
   })
 
   it('uses valid URLs when optional links are present', () => {
-    for (const project of getAllProjects()) {
-      if (project.liveUrl) {
-        expect(() => new URL(project.liveUrl as string)).not.toThrow()
+    for (const { liveUrl, repoUrl } of getAllProjects()) {
+      if (liveUrl) {
+        expect(() => new URL(liveUrl)).not.toThrow()
       }
 
-      if (project.repoUrl) {
-        expect(() => new URL(project.repoUrl as string)).not.toThrow()
+      if (repoUrl) {
+        expect(() => new URL(repoUrl)).not.toThrow()
       }
     }
   })
