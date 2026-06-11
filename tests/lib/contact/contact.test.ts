@@ -601,4 +601,30 @@ describe('contact route', () => {
 
     fetchImpl.mockRestore()
   })
+
+  it('returns 400 invalid_json for an empty request body', async () => {
+    const fetchImpl = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }))
+
+    const response = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-forwarded-for': '203.0.113.10',
+        },
+      }),
+    )
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Invalid JSON body.',
+      code: 'invalid_json',
+    })
+    expect(fetchImpl).not.toHaveBeenCalled()
+
+    fetchImpl.mockRestore()
+  })
 })
