@@ -167,12 +167,22 @@ function buildGenericPayload(
 }
 
 export function resolveWebhookTarget(webhookUrl: string): ContactWebhookTarget {
-  if (webhookUrl.includes('discord.com/api/webhooks')) {
-    return 'discord'
-  }
+  try {
+    const parsedUrl = new URL(webhookUrl)
+    const hostname = parsedUrl.hostname.toLowerCase()
 
-  if (webhookUrl.includes('hooks.slack.com')) {
-    return 'slack'
+    if (
+      hostname === 'discord.com' &&
+      parsedUrl.pathname.startsWith('/api/webhooks/')
+    ) {
+      return 'discord'
+    }
+
+    if (hostname === 'hooks.slack.com') {
+      return 'slack'
+    }
+  } catch {
+    return 'generic'
   }
 
   return 'generic'

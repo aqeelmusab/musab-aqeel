@@ -237,6 +237,16 @@ describe('webhook helpers', () => {
     )
   })
 
+  it('rejects substring host spoofing when resolving webhook targets', () => {
+    expect(
+      resolveWebhookTarget('https://evil.com/hooks.slack.com/services/a/b/c'),
+    ).toBe('generic')
+    expect(
+      resolveWebhookTarget('https://evil.com/discord.com/api/webhooks/123/abc'),
+    ).toBe('generic')
+    expect(resolveWebhookTarget('not-a-url')).toBe('generic')
+  })
+
   it('builds a Discord webhook payload with the expected branding fields', () => {
     const payload = buildContactWebhookPayload({
       contact: TEST_CONTACT,
