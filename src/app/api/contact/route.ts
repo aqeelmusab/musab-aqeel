@@ -4,13 +4,13 @@ import {
   CONTACT_MAX_REQUEST_BODY_BYTES,
   evaluateContactAbuse,
   getContactWebhookUrl,
-  logContactFailure,
   parseContactSubmission,
   sendContactWebhook,
   type ContactApiErrorCode,
   type ContactApiErrorResponse,
   type ContactApiSuccessResponse,
 } from '@/lib/contact'
+import { logContactFailure } from '@/lib/contact/observability'
 
 function jsonSuccess() {
   return NextResponse.json<ContactApiSuccessResponse>({ success: true })

@@ -21,14 +21,9 @@ export {
   getClientIpAddress,
   resetContactAbuseState,
 } from './abuse'
-export {
-  logContactFailure,
-  resetContactObservabilityState,
-} from './observability'
-export type {
-  ContactFailureEvent,
-  ContactFailureReason,
-} from './observability'
+// Observability is intentionally NOT re-exported here: it imports
+// node:crypto, and this barrel is consumed by client components. Server code
+// imports it directly from '@/lib/contact/observability'.
 export { parseContactSubmission } from './validation'
 export {
   CONTACT_REQUEST_TIMEOUT_MS,

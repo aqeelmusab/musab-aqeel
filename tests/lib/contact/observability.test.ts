@@ -1,11 +1,11 @@
 import type { MockInstance } from 'vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { sendContactWebhook } from '@/lib/contact'
 import {
   logContactFailure,
   resetContactObservabilityState,
-  sendContactWebhook,
-} from '@/lib/contact'
+} from '@/lib/contact/observability'
 
 type ConsoleSpy = MockInstance<typeof console.error>
 
