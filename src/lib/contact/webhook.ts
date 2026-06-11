@@ -8,6 +8,7 @@ import {
   getBudgetLabel,
   getProjectTypeLabel,
 } from './constants'
+import { logContactFailure } from './observability'
 import type {
   ContactPayload,
   ContactWebhookDeliveryResult,
@@ -222,6 +223,7 @@ export async function sendContactWebhook({
     contact,
     webhookUrl,
   })
+  const webhookTarget = resolveWebhookTarget(webhookUrl)
 
   try {
     const webhookResponse = await fetchImpl(webhookUrl, {
@@ -232,8 +234,13 @@ export async function sendContactWebhook({
     })
 
     if (!webhookResponse.ok) {
-      const details = await webhookResponse.text().catch(() => 'Unknown error')
-      console.error(`Webhook failed (${webhookResponse.status}): ${details}`)
+      logContactFailure({
+        reason: 'webhook_non_2xx',
+        code: 'webhook_failed',
+        httpStatus: webhookResponse.status,
+        webhookTarget,
+        email: contact.email,
+      })
 
       return {
         success: false,
@@ -245,7 +252,13 @@ export async function sendContactWebhook({
 
     return { success: true }
   } catch (error) {
-    console.error('Webhook delivery error:', error)
+    logContactFailure({
+      reason: 'webhook_request_failed',
+      code: 'webhook_failed',
+      webhookTarget,
+      ...(error instanceof Error ? { errorName: error.name } : {}),
+      email: contact.email,
+    })
 
     return {
       success: false,

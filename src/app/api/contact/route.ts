@@ -4,6 +4,7 @@ import {
   CONTACT_MAX_REQUEST_BODY_BYTES,
   evaluateContactAbuse,
   getContactWebhookUrl,
+  logContactFailure,
   parseContactSubmission,
   sendContactWebhook,
   type ContactApiErrorCode,
@@ -89,6 +90,11 @@ function handleMissingWebhookConfiguration() {
   }
 
   console.error('CONTACT_WEBHOOK_URL not configured for contact form delivery')
+  logContactFailure({
+    reason: 'missing_webhook_config',
+    code: 'service_unavailable',
+    httpStatus: 503,
+  })
   return jsonError(
     'Contact form is temporarily unavailable. Please email me directly.',
     503,
@@ -160,6 +166,13 @@ export async function POST(request: Request) {
       case 'silently_reject':
         return jsonSuccess()
       case 'reject':
+        logContactFailure({
+          reason: 'rate_limited',
+          code: abuseCheck.code,
+          httpStatus: abuseCheck.status,
+          email: parsedSubmission.data.payload.email,
+          ipAddress: abuseCheck.ipAddress,
+        })
         return jsonError(abuseCheck.error, abuseCheck.status, abuseCheck.code, {
           headers: {
             'Retry-After': String(abuseCheck.retryAfterSeconds),
@@ -188,6 +201,12 @@ export async function POST(request: Request) {
     return jsonSuccess()
   } catch (error) {
     console.error('Contact route error:', error)
+    logContactFailure({
+      reason: 'internal_error',
+      code: 'internal_error',
+      httpStatus: 500,
+      ...(error instanceof Error ? { errorName: error.name } : {}),
+    })
     return jsonError('Internal error.', 500, 'internal_error')
   }
 }

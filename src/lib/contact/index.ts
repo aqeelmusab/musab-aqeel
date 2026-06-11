@@ -21,6 +21,14 @@ export {
   getClientIpAddress,
   resetContactAbuseState,
 } from './abuse'
+export {
+  logContactFailure,
+  resetContactObservabilityState,
+} from './observability'
+export type {
+  ContactFailureEvent,
+  ContactFailureReason,
+} from './observability'
 export { parseContactSubmission } from './validation'
 export {
   CONTACT_REQUEST_TIMEOUT_MS,

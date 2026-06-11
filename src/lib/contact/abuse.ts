@@ -5,6 +5,7 @@ import {
   CONTACT_RATE_LIMIT_MAX_REQUESTS,
   CONTACT_RATE_LIMIT_WINDOW_MS,
 } from './constants'
+import { logContactFailure } from './observability'
 import type { ContactAbuseCheckResult } from './types'
 
 interface RateLimitEntry {
@@ -128,6 +129,10 @@ function logUpstashRateLimitFailure(error: unknown) {
     'Contact rate limiting could not reach Upstash Redis; falling back to the in-memory limiter.',
     error,
   )
+  logContactFailure({
+    reason: 'upstash_unavailable',
+    ...(error instanceof Error ? { errorName: error.name } : {}),
+  })
 }
 
 function recordRateLimitAttemptInMemory(
