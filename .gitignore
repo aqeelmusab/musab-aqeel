@@ -31,6 +31,14 @@ yarn-error.log*
 # ── Test output ─────────────────────────────────────────────────────────────
 coverage/
 
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+
+# Lighthouse CI
+.lighthouseci/
+
 # ── Caches ──────────────────────────────────────────────────────────────────
 .cache/
 .vercel/

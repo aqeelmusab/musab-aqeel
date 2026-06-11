@@ -12,5 +12,8 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    // Unit/integration tests only. Playwright owns tests/e2e (*.spec.ts),
+    // which Vitest's default include pattern would otherwise pick up.
+    include: ['tests/**/*.test.ts'],
   },
 })
