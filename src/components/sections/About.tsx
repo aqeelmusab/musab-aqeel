@@ -56,6 +56,15 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
          */
         data-lenis-prevent
         style={{ touchAction: 'pan-x' }}
+        /**
+         * The code block overflows horizontally on narrow viewports, so the
+         * scroll container must be keyboard-reachable (axe:
+         * scrollable-region-focusable). The region role gives the tab stop an
+         * accessible name.
+         */
+        role="region"
+        aria-label="Engagement terms"
+        tabIndex={0}
       >
         <pre className="m-0 box-border inline-block w-max max-w-none min-w-full p-5 align-top">
           {children}

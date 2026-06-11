@@ -9,7 +9,10 @@
       "!**/node_modules/**",
       "!**/next-env.d.ts",
       "!**/pnpm-lock.yaml",
-      "!**/public/**"
+      "!**/public/**",
+      "!**/playwright-report/**",
+      "!**/test-results/**",
+      "!**/blob-report/**"
     ],
     "ignoreUnknown": true
   },
