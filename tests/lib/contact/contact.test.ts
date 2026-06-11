@@ -506,6 +506,11 @@ describe('contact route', () => {
     )
 
     expect(response.status).toBe(413)
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Request body is too large.',
+      code: 'payload_too_large',
+    })
     expect(fetchImpl).not.toHaveBeenCalled()
 
     fetchImpl.mockRestore()
