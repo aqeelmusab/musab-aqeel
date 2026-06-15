@@ -1,0 +1,38 @@
+version: 2
+updates:
+  # Keep the SHA-pinned workflow actions current (Dependabot bumps the SHA and
+  # the trailing version comment together).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # pnpm is detected under the npm ecosystem (reads pnpm-lock.yaml).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps
+      prefix-development: deps-dev
+    groups:
+      # Collapse low-risk minor/patch bumps into a single PR to cut noise.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Project targets Node 24; hold @types/node on the 24 major.
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
+      # ESLint 10 breaks the plugins bundled by eslint-config-next; hold on 9.x.
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
