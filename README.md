@@ -11,6 +11,7 @@ Personal portfolio and case-study site. Next.js 16 App Router: the home and work
 - **Lenis** smooth wheel scroll on desktop (native touch on mobile)
 - **Tailwind CSS 4** plus a small hand-written layer in `src/app/globals.css`
 - **Vitest** for domain specs under `tests/` (layout mirrors `src/` where helpful)
+- **Playwright** for end-to-end browser specs under `tests/e2e/` (Chromium), run as a separate CI job
 - **Proxy** (Next 16's renamed middleware): sets CSP on matched requests. Script-src skips nonces so static routes still hydrate; the comment at the top of `src/proxy.ts` explains the tradeoff.
 - **CI and git hooks** keep the lockfile honest and run the full verify pipeline
 
@@ -60,17 +61,20 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Script                  | Purpose                                                             |
-| ----------------------- | ------------------------------------------------------------------- |
-| `pnpm run dev`          | Dev server with HMR (Turbopack)                                     |
-| `pnpm run build`        | Production build                                                    |
-| `pnpm run start`        | Serve the production build                                          |
-| `pnpm run lint`         | ESLint (flat config)                                                |
-| `pnpm run typecheck`    | `tsc --noEmit`                                                      |
-| `pnpm run test`         | Vitest run                                                          |
-| `pnpm run verify`       | format check + lint + typecheck + test + build (what CI runs)       |
-| `pnpm run format`       | Biome format write                                                  |
-| `pnpm run format:check` | Biome format check                                                  |
+| Script                     | Purpose                                                            |
+| -------------------------- | ------------------------------------------------------------------ |
+| `pnpm run dev`             | Dev server with HMR (Turbopack)                                    |
+| `pnpm run build`           | Production build                                                   |
+| `pnpm run start`           | Serve the production build                                         |
+| `pnpm run lint`            | ESLint (flat config)                                               |
+| `pnpm run typecheck`       | `tsc --noEmit`                                                     |
+| `pnpm run test`            | Vitest run                                                         |
+| `pnpm run test:e2e`        | Playwright end-to-end tests (Chromium)                             |
+| `pnpm run test:e2e:headed` | Playwright e2e in a headed browser                                 |
+| `pnpm run test:e2e:ui`     | Playwright e2e in interactive UI mode                              |
+| `pnpm run verify`          | format check + lint + typecheck + test + build (the CI verify job) |
+| `pnpm run format`          | Biome format write                                                 |
+| `pnpm run format:check`    | Biome format check                                                 |
 
 ## Project structure
 
@@ -113,10 +117,10 @@ src/
 ├── types/                Shared TS types + re-exports
 └── proxy.ts              CSP + security headers (was middleware.ts before Next 16)
 
-tests/                    Vitest specs mirroring src/
+tests/                    Vitest specs mirroring src/; tests/e2e/ holds Playwright specs
 public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mono), project images
 .githooks/pre-push        Lockfile check; enabled by postinstall
-.github/workflows/ci.yml  format + lint + typecheck + test + build on PR/push
+.github/workflows/ci.yml  verify job (format + lint + typecheck + test + build) plus a browser-tests job (Playwright e2e) on PR/push
 ```
 
 ## Notable systems
