@@ -4,19 +4,9 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
-minimumReleaseAgeExclude:
-  - "@biomejs/biome@2.5.0"
-  - "@biomejs/cli-darwin-arm64@2.5.0"
-  - "@biomejs/cli-darwin-x64@2.5.0"
-  - "@biomejs/cli-linux-arm64-musl@2.5.0"
-  - "@biomejs/cli-linux-arm64@2.5.0"
-  - "@biomejs/cli-linux-x64-musl@2.5.0"
-  - "@biomejs/cli-linux-x64@2.5.0"
-  - "@biomejs/cli-win32-arm64@2.5.0"
-  - "@biomejs/cli-win32-x64@2.5.0"
-  - "@playwright/test@1.61.0"
-  - playwright-core@1.61.0
-  - playwright@1.61.0
+# Disabled: exact pins + frozen lockfile in CI/Vercel are the real gate. pnpm 11's
+# default (24h) blocked preview/Dependabot installs for freshly published packages.
+minimumReleaseAge: 0
 
 overrides:
   postcss: 8.5.15
