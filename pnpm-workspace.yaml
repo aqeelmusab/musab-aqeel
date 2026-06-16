@@ -14,16 +14,17 @@ minimumReleaseAgeExclude:
   - "@biomejs/cli-linux-x64@2.5.0"
   - "@biomejs/cli-win32-arm64@2.5.0"
   - "@biomejs/cli-win32-x64@2.5.0"
-  - '@playwright/test@1.61.0'
+  - "@playwright/test@1.61.0"
   - playwright-core@1.61.0
   - playwright@1.61.0
 
 overrides:
   postcss: 8.5.15
   # Security floors (dormant unless a dependency pulls these in):
-  # tmp >=0.2.6 fixes GHSA-ph9p-34f9-6g65 (high) and GHSA-52f5-9888-hmc6 (low),
+  # tmp >=0.2.7 fixes GHSA-7c78-jf6q-g5cm (high); >=0.2.6 fixes GHSA-ph9p-34f9-6g65
+  # (high) and GHSA-52f5-9888-hmc6 (low),
   # uuid >=11.1.1 fixes GHSA-w5hq-g745-h8pq (moderate),
   # vite >=8.0.16 fixes GHSA-6qmx-6pjm-2p66 (high) and GHSA-4w4q-4g67-8f4w (medium).
-  tmp: ">=0.2.6"
+  tmp: ">=0.2.7"
   uuid: ">=11.1.1"
   vite: "8.0.16"
