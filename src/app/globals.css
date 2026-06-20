@@ -536,7 +536,8 @@ h4 {
 }
 
 .form-field:has(input:not(:placeholder-shown)) .field-label,
-.form-field:has(textarea:not(:placeholder-shown)) .field-label {
+.form-field:has(textarea:not(:placeholder-shown)) .field-label,
+.form-field:has(select:valid) .field-label {
   color: var(--color-text-secondary);
 }
 
