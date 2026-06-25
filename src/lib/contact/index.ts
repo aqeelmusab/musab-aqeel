@@ -1,4 +1,15 @@
 export {
+  evaluateContactAbuse,
+  getClientIpAddress,
+  resetContactAbuseState,
+} from './abuse'
+export type {
+  ContactBudgetOption,
+  ContactBudgetValue,
+  ContactBudgetValueFor,
+  ContactProjectTypeValue,
+} from './constants'
+export {
   CONTACT_BUDGET_MAP,
   CONTACT_BUDGET_PLACEHOLDER_ENABLED,
   CONTACT_HONEYPOT_FIELD_NAME,
@@ -10,29 +21,11 @@ export {
   getProjectTypeLabel,
   isProjectTypeValue,
 } from './constants'
-export type {
-  ContactBudgetOption,
-  ContactBudgetValue,
-  ContactBudgetValueFor,
-  ContactProjectTypeValue,
-} from './constants'
-export {
-  evaluateContactAbuse,
-  getClientIpAddress,
-  resetContactAbuseState,
-} from './abuse'
-export { parseContactSubmission } from './validation'
+export type { ContactSubmitResult } from './submit'
 export {
   CONTACT_REQUEST_TIMEOUT_MS,
   submitContactRequest,
 } from './submit'
-export type { ContactSubmitResult } from './submit'
-export {
-  buildContactWebhookPayload,
-  getContactWebhookUrl,
-  resolveWebhookTarget,
-  sendContactWebhook,
-} from './webhook'
 export type {
   ContactAbuseCheckResult,
   ContactApiErrorCode,
@@ -46,3 +39,10 @@ export type {
   ContactWebhookTarget,
   ParsedContactSubmission,
 } from './types'
+export { parseContactSubmission } from './validation'
+export {
+  buildContactWebhookPayload,
+  getContactWebhookUrl,
+  resolveWebhookTarget,
+  sendContactWebhook,
+} from './webhook'

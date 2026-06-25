@@ -1,9 +1,9 @@
-import ProjectCard from '@/components/work/ProjectCard'
+import type { Metadata } from 'next'
 import Footer from '@/components/layout/Footer'
 import BackButton from '@/components/ui/BackButton'
+import ProjectCard from '@/components/work/ProjectCard'
 import { PAGE_TITLE_WORK } from '@/lib/config'
 import { getAllProjects } from '@/lib/projects'
-import type { Metadata } from 'next'
 
 const workDescription =
   'Full stack projects spanning SaaS platforms, e-commerce, real-time dashboards, and agency websites. Each built solo, start to finish.'

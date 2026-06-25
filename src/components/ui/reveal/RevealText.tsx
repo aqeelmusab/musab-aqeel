@@ -1,7 +1,7 @@
 'use client'
 
-import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
+import { type ReactNode, useLayoutEffect, useRef } from 'react'
 
 import DustFilterSvg from '@/components/ui/reveal/DustFilterSvg'
 import {

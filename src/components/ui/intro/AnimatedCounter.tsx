@@ -47,11 +47,13 @@ export default function AnimatedCounter({ value }: AnimatedCounterProps) {
 
   return (
     <span
+      role="img"
       className="font-mono text-sm text-white/60 tabular-nums md:text-base"
       aria-label={`${value} percent`}
     >
       {characters.map((char, index) => (
         <span
+          // biome-ignore lint/suspicious/noArrayIndexKey: character slots are positionally stable so digits update in place (see file header)
           key={index}
           aria-hidden="true"
           className="inline-block overflow-hidden align-bottom"

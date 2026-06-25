@@ -11,6 +11,7 @@ export default function DustFilterSvg({
   displacementRef: RefObject<SVGFEDisplacementMapElement | null>
 }) {
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: decorative filter-defs container, hidden from the a11y tree
     <svg
       className="pointer-events-none fixed top-0 left-0 h-0 w-0 opacity-0"
       aria-hidden

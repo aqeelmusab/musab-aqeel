@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useEffectEvent, useRef, type ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
 import type Lenis from 'lenis'
+import { usePathname } from 'next/navigation'
+import { type ReactNode, useEffect, useEffectEvent, useRef } from 'react'
 import 'lenis/dist/lenis.css'
 
-import { LenisContext } from '@/lib/contexts/LenisContext'
 import { useIntro } from '@/lib/contexts/IntroContext'
+import { LenisContext } from '@/lib/contexts/LenisContext'
 import {
   attachLenisTicker,
   createLenisInstance,

@@ -1,11 +1,10 @@
-import type { Project } from '@/types'
-
 import {
   auraCommerceProject,
   meridianPlatformProject,
   nexusDashboardProject,
   vertexStudioProject,
 } from '@/lib/project-data'
+import type { Project } from '@/types'
 
 export const projects: readonly Project[] = [
   meridianPlatformProject,

@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 const WORK_SECTION_SPACING = 'px-6 py-16 md:px-12 md:py-20 lg:px-24'
 const WORK_SECTION_MAX_WIDTH = 'mx-auto max-w-350'

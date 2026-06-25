@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { type ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useMainWrapperReveal } from '@/components/layout/main-wrapper/useMainWrapperReveal'
 import { useIntro } from '@/lib/contexts/IntroContext'

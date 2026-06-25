@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import SplitText from '@/components/ui/reveal/SplitText'
 import RevealText from '@/components/ui/reveal/RevealText'
+import SplitText from '@/components/ui/reveal/SplitText'
 import ProjectCard from '@/components/work/ProjectCard'
 import { getFeaturedProjects } from '@/lib/projects'
 

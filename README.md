@@ -66,15 +66,15 @@ Then open [http://localhost:3000](http://localhost:3000).
 | `pnpm run dev`             | Dev server with HMR (Turbopack)                                    |
 | `pnpm run build`           | Production build                                                   |
 | `pnpm run start`           | Serve the production build                                         |
-| `pnpm run lint`            | ESLint (flat config)                                               |
+| `pnpm run lint`            | Biome check (format + lint + import sort)                          |
+| `pnpm run lint:fix`        | Biome check with safe autofixes applied                            |
 | `pnpm run typecheck`       | `tsc --noEmit`                                                     |
 | `pnpm run test`            | Vitest run                                                         |
 | `pnpm run test:e2e`        | Playwright end-to-end tests (Chromium)                             |
 | `pnpm run test:e2e:headed` | Playwright e2e in a headed browser                                 |
 | `pnpm run test:e2e:ui`     | Playwright e2e in interactive UI mode                              |
-| `pnpm run verify`          | format check + lint + typecheck + test + build (the CI verify job) |
+| `pnpm run verify`          | lint + typecheck + test + build (the CI verify job)                |
 | `pnpm run format`          | Biome format write                                                 |
-| `pnpm run format:check`    | Biome format check                                                 |
 
 ## Project structure
 

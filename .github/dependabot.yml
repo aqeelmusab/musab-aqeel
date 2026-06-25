@@ -32,7 +32,3 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - version-update:semver-major
-      # ESLint 10 breaks the plugins bundled by eslint-config-next; hold on 9.x.
-      - dependency-name: eslint
-        update-types:
-          - version-update:semver-major

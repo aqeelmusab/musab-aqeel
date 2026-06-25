@@ -1,27 +1,28 @@
 'use client'
 
 import {
-  useState,
-  useEffect,
-  useRef,
   type ChangeEvent,
   type SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
-import SplitText from '@/components/ui/reveal/SplitText'
-import RevealText from '@/components/ui/reveal/RevealText'
 import MagneticButton from '@/components/ui/MagneticButton'
+import RevealText from '@/components/ui/reveal/RevealText'
+import SplitText from '@/components/ui/reveal/SplitText'
 import {
   CONTACT_BUDGET_PLACEHOLDER_ENABLED,
   CONTACT_HONEYPOT_FIELD_NAME,
   CONTACT_PROJECT_TYPES,
+  type ContactFormStatus,
+  type ContactSubmission,
   createEmptyContactSubmission,
   getBudgetOptionsForProjectType,
   submitContactRequest,
-  type ContactFormStatus,
-  type ContactSubmission,
 } from '@/lib/contact'
 
 const BUDGET_HELPER_ID = 'contact-budget-helper'
+
 import CopyEmail from '@/components/ui/CopyEmail'
 import { CONTACT_EMAIL_HREF } from '@/lib/config'
 

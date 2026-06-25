@@ -3,16 +3,16 @@
   "files": {
     "includes": [
       "**",
-      "!**/.next/**",
-      "!**/out/**",
-      "!**/build/**",
-      "!**/node_modules/**",
+      "!**/.next",
+      "!**/out",
+      "!**/build",
+      "!**/node_modules",
       "!**/next-env.d.ts",
       "!**/pnpm-lock.yaml",
-      "!**/public/**",
-      "!**/playwright-report/**",
-      "!**/test-results/**",
-      "!**/blob-report/**"
+      "!**/public",
+      "!**/playwright-report",
+      "!**/test-results",
+      "!**/blob-report"
     ],
     "ignoreUnknown": true
   },
@@ -34,9 +34,28 @@
     }
   },
   "linter": {
-    "enabled": false
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "complexity": {
+        "noImportantStyles": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "noDescendingSpecificity": "off"
+      }
+    },
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
+    }
   },
   "assist": {
-    "enabled": false
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   }
 }

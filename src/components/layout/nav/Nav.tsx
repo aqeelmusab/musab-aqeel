@@ -2,17 +2,16 @@
 
 import { AnimatePresence } from 'motion/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useRef, useState, type MouseEvent } from 'react'
-
+import { type MouseEvent, useCallback, useRef, useState } from 'react'
+import {
+  HOME_PATH,
+  MOBILE_SCROLL_DELAY_MS,
+} from '@/components/layout/nav/constants'
 import {
   DesktopActions,
   DesktopNavLinks,
   MobileMenu,
 } from '@/components/layout/nav/NavPieces'
-import {
-  HOME_PATH,
-  MOBILE_SCROLL_DELAY_MS,
-} from '@/components/layout/nav/constants'
 import {
   useActiveSectionState,
   useHeaderScrolledState,

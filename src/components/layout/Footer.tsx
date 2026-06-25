@@ -1,5 +1,5 @@
-import { SITE_NAME, SOCIAL_LINKS } from '@/lib/config'
 import CurrentYear from '@/components/ui/CurrentYear'
+import { SITE_NAME, SOCIAL_LINKS } from '@/lib/config'
 
 export default function Footer() {
   return (

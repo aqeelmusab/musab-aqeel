@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CONTACT_EMAIL } from '@/lib/config'
 import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
@@ -180,6 +180,7 @@ export default function CopyEmail() {
         aria-hidden="true"
         className="text-theme-tertiary group-hover:text-theme-primary relative inline-block h-4 w-4 shrink-0 transition-colors duration-200"
       >
+        {/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, parent span is aria-hidden */}
         <svg
           viewBox="0 0 16 32"
           className="absolute top-0 left-0 h-8 w-4"

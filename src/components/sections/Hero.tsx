@@ -1,15 +1,15 @@
 'use client'
 
+import { gsap } from 'gsap'
 import { motion } from 'motion/react'
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import SplitText from '@/components/ui/reveal/SplitText'
 import MagneticButton from '@/components/ui/MagneticButton'
+import SplitText from '@/components/ui/reveal/SplitText'
 import { useIntro } from '@/lib/contexts/IntroContext'
 import { useLenisRef } from '@/lib/contexts/LenisContext'
+import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 import { duration, ease } from '@/lib/motion'
 import { scrollToHashSection } from '@/lib/scroll-navigation'
-import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 
 export default function Hero() {
   const scrollLineRef = useRef<HTMLDivElement>(null)

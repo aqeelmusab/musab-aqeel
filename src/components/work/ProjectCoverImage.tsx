@@ -1,14 +1,14 @@
 'use client'
 
+import { motion } from 'motion/react'
+import Image from 'next/image'
 import {
+  type CSSProperties,
+  type ReactNode,
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
-  type ReactNode,
 } from 'react'
-import Image from 'next/image'
-import { motion } from 'motion/react'
 
 import { duration, ease } from '@/lib/motion'
 

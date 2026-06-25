@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import SplitText from '@/components/ui/reveal/SplitText'
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import RevealText from '@/components/ui/reveal/RevealText'
+import SplitText from '@/components/ui/reveal/SplitText'
 
 const SCROLL_EPS = 2
 
@@ -43,6 +43,7 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative min-w-0">
+      {/* biome-ignore lint/a11y/useSemanticElements: region role is deliberate; a styled scroll container, not a document section */}
       <div
         ref={scrollRef}
         className="overflow-x-auto"
@@ -64,6 +65,7 @@ function AboutTerminalBlock({ children }: { children: ReactNode }) {
          */
         role="region"
         aria-label="Engagement terms"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: scroll container must be keyboard-focusable (axe scrollable-region-focusable)
         tabIndex={0}
       >
         <pre className="m-0 box-border inline-block w-max max-w-none min-w-full p-5 align-top">
@@ -197,7 +199,10 @@ export default function About() {
             <AboutTerminalBlock>
               <code className="font-mono text-[13px] leading-[1.7]">
                 {CODE_BLOCK.split('\n').map((line, i) => (
-                  <div key={i}>
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static code listing that never reorders
+                    key={i}
+                  >
                     {line.includes(':') ? (
                       <>
                         <span style={{ color: 'var(--color-text-secondary)' }}>

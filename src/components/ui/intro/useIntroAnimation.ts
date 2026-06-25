@@ -34,11 +34,11 @@ function updateMorphStyles(
 ) {
   // text2 is incoming (fraction 0→1), text1 is outgoing.
   text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`
-  text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`
+  text2.style.opacity = `${fraction ** 0.4 * 100}%`
 
   const inverseFraction = 1 - fraction
   text1.style.filter = `blur(${Math.min(8 / inverseFraction - 8, 100)}px)`
-  text1.style.opacity = `${Math.pow(inverseFraction, 0.4) * 100}%`
+  text1.style.opacity = `${inverseFraction ** 0.4 * 100}%`
 
   text1.textContent = TEXTS[textIndex % TEXTS.length] ?? ''
   text2.textContent = TEXTS[(textIndex + 1) % TEXTS.length] ?? ''

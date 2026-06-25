@@ -1,16 +1,16 @@
 'use client'
 
-import { useEffect, useRef, useCallback, type MouseEvent } from 'react'
+import { gsap } from 'gsap'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { gsap } from 'gsap'
+import { type MouseEvent, useCallback, useEffect, useRef } from 'react'
+import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 import {
   logoFinalState,
   logoGlitchState1,
   logoGlitchState2,
   logoGlitchState3,
 } from '@/lib/logo-paths'
-import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 
 interface LogoProps {
   onClick?: (e: MouseEvent) => void

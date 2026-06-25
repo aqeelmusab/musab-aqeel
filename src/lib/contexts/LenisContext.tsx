@@ -1,7 +1,7 @@
 'use client'
 
-import { createContext, useContext, type RefObject } from 'react'
 import type Lenis from 'lenis'
+import { createContext, type RefObject, useContext } from 'react'
 
 // Expose the Lenis ref (not state) so consumers get the live instance
 // without triggering extra renders when it initialises.

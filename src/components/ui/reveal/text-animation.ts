@@ -1,13 +1,13 @@
 'use client'
 
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useId, useRef, type CSSProperties } from 'react'
+import { type CSSProperties, useId, useRef } from 'react'
 
 import { useScrollTriggerCleanup } from '@/components/ui/reveal/useScrollTriggerCleanup'
 import { useIntro } from '@/lib/contexts/IntroContext'
 import { useIsCoarsePointer } from '@/lib/hooks/useIsCoarsePointer'
-import { scroll } from '@/lib/motion'
 import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
+import { scroll } from '@/lib/motion'
 
 export function getRevealScrollStart(delay: number) {
   return delay !== 0

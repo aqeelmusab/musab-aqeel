@@ -1,9 +1,9 @@
 'use client'
 
-import { useCallback, useEffect, useRef, type MouseEvent } from 'react'
+import { gsap } from 'gsap'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { gsap } from 'gsap'
+import { type MouseEvent, useCallback, useEffect, useRef } from 'react'
 import Tag from '@/components/ui/Tag'
 import { ProjectCoverImage } from '@/components/work/ProjectCoverImage'
 import type { Project } from '@/types'

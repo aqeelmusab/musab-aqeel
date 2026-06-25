@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { PAGE_TITLE_NOT_FOUND, SITE_DOMAIN } from '@/lib/config'
 
 export const metadata: Metadata = {

@@ -1,18 +1,14 @@
-import type { Metadata, Viewport } from 'next'
-import type { ReactNode } from 'react'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
-import SmoothScroll from '@/lib/contexts/SmoothScroll'
-import Nav from '@/components/layout/nav/Nav'
+import type { ReactNode } from 'react'
 import MainWrapper from '@/components/layout/main-wrapper/MainWrapper'
-import Intro from '@/components/ui/intro/Intro'
-import IntroFilterDefs from '@/components/ui/intro/IntroFilterDefs'
+import Nav from '@/components/layout/nav/Nav'
 import CustomCursor from '@/components/ui/cursor/CustomCursor'
 import InputModalityWatcher from '@/components/ui/InputModalityWatcher'
-import { IntroProvider } from '@/lib/contexts/IntroContext'
-import { scroll } from '@/lib/motion'
-import { personJsonLd, websiteJsonLd } from '@/lib/structured-data'
+import Intro from '@/components/ui/intro/Intro'
+import IntroFilterDefs from '@/components/ui/intro/IntroFilterDefs'
 import {
   SITE_NAME,
   SITE_SHORT_TITLE,
@@ -20,7 +16,11 @@ import {
   SITE_URL,
   TWITTER_HANDLE,
 } from '@/lib/config'
+import { IntroProvider } from '@/lib/contexts/IntroContext'
+import SmoothScroll from '@/lib/contexts/SmoothScroll'
+import { scroll } from '@/lib/motion'
 import { APP_VERSION } from '@/lib/package-version'
+import { personJsonLd, websiteJsonLd } from '@/lib/structured-data'
 import './globals.css'
 
 const clashDisplay = localFont({

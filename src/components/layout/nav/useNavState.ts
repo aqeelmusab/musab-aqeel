@@ -1,15 +1,15 @@
 'use client'
 
+import type Lenis from 'lenis'
 import {
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
-  type Dispatch,
-  type RefObject,
-  type SetStateAction,
 } from 'react'
-import type Lenis from 'lenis'
 
 import { useLenisRef } from '@/lib/contexts/LenisContext'
 

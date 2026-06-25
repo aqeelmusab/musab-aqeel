@@ -1,17 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { animate, useMotionValue, useSpring } from 'motion/react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { usePrefersReducedMotion } from '@/lib/hooks/usePrefersReducedMotion'
 
 import {
   CURSOR_RIPPLE_MS,
+  type CursorState,
   cursorDotSpring,
   cursorPressSpring,
   cursorReleaseSpring,
   cursorRingSpring,
-  type CursorState,
   getCursorRingSize,
 } from './constants'
 

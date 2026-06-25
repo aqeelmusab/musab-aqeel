@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server'
 
 import {
   CONTACT_MAX_REQUEST_BODY_BYTES,
+  type ContactApiErrorCode,
+  type ContactApiErrorResponse,
+  type ContactApiSuccessResponse,
   evaluateContactAbuse,
   getContactWebhookUrl,
   parseContactSubmission,
   sendContactWebhook,
-  type ContactApiErrorCode,
-  type ContactApiErrorResponse,
-  type ContactApiSuccessResponse,
 } from '@/lib/contact'
 
 function jsonSuccess() {

@@ -1,5 +1,5 @@
-import { useCallback, useRef } from 'react'
 import type { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useCallback, useRef } from 'react'
 
 export function useScrollTriggerCleanup() {
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null)

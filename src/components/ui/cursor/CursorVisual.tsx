@@ -1,14 +1,14 @@
 'use client'
 
-import { AnimatePresence, motion, type MotionValue } from 'motion/react'
+import { AnimatePresence, type MotionValue, motion } from 'motion/react'
 
 import {
   CURSOR_FADE_MS,
   CURSOR_RIPPLE_MS,
+  type CursorState,
   cursorRingSizeSpring,
   DOT_OFFSET,
   DOT_SIZE,
-  type CursorState,
 } from './constants'
 import type { CursorRipple } from './useCustomCursor'
 

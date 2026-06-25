@@ -1,8 +1,8 @@
 'use client'
 
-import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Lenis from 'lenis'
 
 import { completeScrubAnimationsAtPageEnd } from '@/lib/complete-scrub-at-page-end'
 import { lenis as lenisConfig, scroll } from '@/lib/motion'

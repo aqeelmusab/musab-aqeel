@@ -1,5 +1,5 @@
-import SplitText from '@/components/ui/reveal/SplitText'
 import RevealText from '@/components/ui/reveal/RevealText'
+import SplitText from '@/components/ui/reveal/SplitText'
 import type { ProcessStep } from '@/types'
 
 const STEPS: ProcessStep[] = [
