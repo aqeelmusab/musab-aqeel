@@ -45,7 +45,6 @@ export const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: SITE_NAME,
-  alternateName: [SITE_NAME, SITE_DOMAIN],
   url: SITE_URL,
   description: `Portfolio of ${SITE_NAME} - full stack developer, architect, and operator.`,
   author: {
