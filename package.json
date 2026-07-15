@@ -1,6 +1,6 @@
 {
   "name": "musab-aqeel",
-  "version": "5.8.5",
+  "version": "5.8.6",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -34,7 +34,7 @@
     "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.3",
+    "@biomejs/biome": "2.5.4",
     "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "4.3.2",
     "@types/node": "24.13.3",
