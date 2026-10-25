@@ -11,9 +11,9 @@ Personal portfolio and case-study site. Next.js 16 App Router: the home and work
 - **Lenis** smooth wheel scroll on desktop (native touch on mobile)
 - **Tailwind CSS 4** plus a small hand-written layer in `src/app/globals.css`
 - **Vitest** for domain specs under `tests/` (layout mirrors `src/` where helpful)
-- **Playwright** for end-to-end browser specs under `tests/e2e/` (Chromium), run as a separate CI job
+- **Playwright** for end-to-end browser specs under `tests/e2e/` (Chromium), included in the CI verify job
 - **Proxy** (Next 16's renamed middleware): sets CSP on matched requests. Script-src skips nonces so static routes still hydrate; the comment at the top of `src/proxy.ts` explains the tradeoff.
-- **CI and git hooks** keep the lockfile honest and run the full verify pipeline
+- **CI** runs the full verify pipeline; the pre-push hook checks that the lockfile matches `package.json`
 
 ## Getting started
 
@@ -61,22 +61,22 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Script                     | Purpose                                                            |
-| -------------------------- | ------------------------------------------------------------------ |
-| `pnpm run dev`             | Dev server with HMR (Turbopack)                                    |
-| `pnpm run build`           | Production build                                                   |
-| `pnpm run start`           | Serve the production build                                         |
-| `pnpm run lint`            | Biome check (format + lint + import sort)                          |
-| `pnpm run lint:fix`        | Biome check with safe autofixes applied                            |
-| `pnpm run typecheck`       | `tsc --noEmit`                                                     |
-| `pnpm run test`            | Vitest run                                                         |
-| `pnpm run test:e2e:install`| Install Playwright Chromium binary                                 |
-| `pnpm run test:e2e`        | Playwright end-to-end tests (Chromium)                             |
-| `pnpm run test:e2e:headed` | Playwright e2e in a headed browser                                 |
-| `pnpm run test:e2e:ui`     | Playwright e2e in interactive UI mode                              |
-| `pnpm run verify:quick`    | lint + typecheck + test + build (fast local loop)                  |
-| `pnpm run verify`          | Full gate: `verify:quick` plus Playwright install and e2e tests    |
-| `pnpm run format`          | Biome format write                                                 |
+| Script                      | Purpose                                                         |
+| --------------------------- | --------------------------------------------------------------- |
+| `pnpm run dev`              | Dev server with HMR (Turbopack)                                 |
+| `pnpm run build`            | Production build                                                |
+| `pnpm run start`            | Serve the production build                                      |
+| `pnpm run lint`             | Biome check (format + lint + import sort)                       |
+| `pnpm run lint:fix`         | Biome check with safe autofixes applied                         |
+| `pnpm run typecheck`        | `tsc --noEmit`                                                  |
+| `pnpm run test`             | Vitest run                                                      |
+| `pnpm run test:e2e:install` | Install Playwright Chromium binary                              |
+| `pnpm run test:e2e`         | Playwright end-to-end tests (Chromium)                          |
+| `pnpm run test:e2e:headed`  | Playwright e2e in a headed browser                              |
+| `pnpm run test:e2e:ui`      | Playwright e2e in interactive UI mode                           |
+| `pnpm run verify:quick`     | lint + typecheck + test + build (fast local loop)               |
+| `pnpm run verify`           | Full gate: `verify:quick` plus Playwright install and e2e tests |
+| `pnpm run format`           | Biome format write                                              |
 
 ## Project structure
 
@@ -117,12 +117,13 @@ src/
 │   ├── SocialImage.tsx   next/og template for OG/Twitter routes
 │   └── *.ts              Config, motion tokens, scroll helpers, structured data, …
 ├── types/                Shared TS types + re-exports
-└── proxy.ts              CSP + security headers (was middleware.ts before Next 16)
+└── proxy.ts              Content Security Policy (was middleware.ts before Next 16)
 
 tests/                    Vitest specs mirroring src/; tests/e2e/ holds Playwright specs
 public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mono), project images
 .githooks/pre-push        Lockfile check; enabled by postinstall
 .github/workflows/ci.yml  single verify job on PR/push (full verify including Playwright e2e)
+next.config.mjs           Non-CSP security headers
 ```
 
 ## Notable systems
@@ -136,7 +137,6 @@ public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mo
 - **Smooth scroll** (`src/lib/contexts/SmoothScroll.tsx`, `src/lib/smooth-scroll-helpers.ts`): Lenis on desktop wheel, native touch (`syncTouch: false`). `src/lib/scroll-navigation.ts` defaults programmatic scrolls to a bouncy `scrollEaseOut`. Nested scroll areas opt out with `data-lenis-prevent`.
 
 - **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. The webhook auto-targets Discord, Slack, or a generic JSON consumer based on the URL, shaping each payload (and respecting per-provider length limits) accordingly. `tests/lib/contact/contact.test.ts` exercises the path end to end.
-
   - **Rate-limit identity and trusted proxy**: the limiter keys on the client IP, resolved in priority order from `cf-connecting-ip`, the left-most `x-forwarded-for` entry, then `x-real-ip` (see `TRUSTED_CLIENT_IP_HEADERS` in `src/lib/contact/abuse.ts`); when no IP is present it falls back to the submitter's email. These forwarding headers are client-spoofable, so the app must be deployed behind a trusted proxy/platform (e.g. Vercel) that overwrites them with the real peer address. If you deploy somewhere without that guarantee, an attacker can forge those headers to evade or poison the limiter, and the header trust order must be revisited.
 
 - **Copy-to-clipboard email** (`src/components/ui/CopyEmail.tsx`): the contact email is a copy button with a GSAP-driven clipboard animation (the "page" tears off and an accent check draws in on the cooldown). Falls back to a legacy copy path and honors reduced motion.
