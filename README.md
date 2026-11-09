@@ -19,12 +19,12 @@ Personal portfolio and case-study site. Next.js 16 App Router: the home and work
 
 ### Requirements
 
-- **Node.js 24.x** everywhere: deploy, local dev, and CI (`package.json#engines`, `.nvmrc`, `.node-version`)
+- **Node.js 26.x** for local development, deployment, and CI (`package.json#engines`, `.nvmrc`, `.node-version`).
 - **pnpm** version pinned in `packageManager`, enforced with [Corepack](https://nodejs.org/api/corepack.html)
 
 Pinning pnpm stops “works on my machine” lockfile churn from different package managers resolving deps differently. Enable Corepack once per machine; after that `pnpm` in this repo uses that pin.
 
-Node is pinned at the major so local matches hosts like Vercel (`24.x`) without chasing patch drift.
+Node is pinned at the major so local development and deployment use the same runtime without chasing patch drift.
 
 ### Install
 
@@ -155,4 +155,4 @@ next.config.mjs           Non-CSP security headers
 
 ## Deployment
 
-No vendor-specific config: plain Next.js 16. Anything that can run `next start` on Node 24 is fine. `src/proxy.ts` runs as expected on Vercel-style setups.
+No vendor-specific config: plain Next.js 16. Use Node 26.x, as required by `package.json#engines`. `src/proxy.ts` runs as expected on Vercel-style setups.
