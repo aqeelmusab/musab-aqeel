@@ -29,7 +29,7 @@ Node is pinned at the major so local development and deployment use the same run
 ### Install
 
 ```bash
-fnm use            # or nvm use, asdf shell nodejs 24, etc.
+fnm use            # or nvm use, asdf shell nodejs 26, etc.
 corepack enable    # one-time; picks up packageManager
 pnpm install       # postinstall wires the pre-push hook
 ```
