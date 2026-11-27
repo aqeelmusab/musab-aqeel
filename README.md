@@ -4,23 +4,24 @@ Personal portfolio and case-study site. Next.js 16 App Router: the home and work
 
 ## Stack
 
-- **Next.js 16** App Router, Turbopack build, React 19
-- **TypeScript** strict mode, `@/` path alias → `src/`
+- **Next.js 16.4** App Router, Turbopack build, React 19.3
+- **TypeScript 7** strict mode, `@/` path alias to `src/`
 - **GSAP** scroll-triggered reveals, intro choreography, cursor/logo micro-animations
 - **Motion** layout transitions, magnetic buttons, mobile menu clip-path, cursor springs
 - **Lenis** smooth wheel scroll on desktop (native touch on mobile)
 - **Tailwind CSS 4** plus a small hand-written layer in `src/app/globals.css`
-- **Vitest** for domain specs under `tests/` (layout mirrors `src/` where helpful)
-- **Playwright** for end-to-end browser specs under `tests/e2e/` (Chromium), included in the CI verify job
+- **Vitest 5.1** for unit and route specs under `tests/` (layout mirrors `src/` where helpful)
+- **Playwright 1.65** for end-to-end Chromium specs under `tests/e2e/`, including contact-form success and failure smoke tests
 - **Proxy** (Next 16's renamed middleware): sets CSP on matched requests. Script-src skips nonces so static routes still hydrate; the comment at the top of `src/proxy.ts` explains the tradeoff.
-- **CI** runs the full verify pipeline; the pre-push hook checks that the lockfile matches `package.json`
+- **CI** installs dependencies and Chromium with a frozen lockfile, runs the full verify pipeline, and uploads the Playwright report on failure
+- **Pre-push** checks that `pnpm-lock.yaml` still matches `package.json`
 
 ## Getting started
 
 ### Requirements
 
 - **Node.js 26.x** for local development, deployment, and CI (`package.json#engines`, `.nvmrc`, `.node-version`).
-- **pnpm** version pinned in `packageManager`, enforced with [Corepack](https://nodejs.org/api/corepack.html)
+- **pnpm 12.23.0**, exactly pinned in `packageManager` and enforced with [Corepack](https://nodejs.org/api/corepack.html)
 
 Pinning pnpm stops “works on my machine” lockfile churn from different package managers resolving deps differently. Enable Corepack once per machine; after that `pnpm` in this repo uses that pin.
 
@@ -66,7 +67,7 @@ Then open [http://localhost:3000](http://localhost:3000).
 | `pnpm run dev`              | Dev server with HMR (Turbopack)                                 |
 | `pnpm run build`            | Production build                                                |
 | `pnpm run start`            | Serve the production build                                      |
-| `pnpm run lint`             | Biome check (format + lint + import sort)                       |
+| `pnpm run lint`             | Biome check (format, lint, and import organization)             |
 | `pnpm run lint:fix`         | Biome check with safe autofixes applied                         |
 | `pnpm run typecheck`        | `tsc --noEmit`                                                  |
 | `pnpm run test`             | Vitest run                                                      |
@@ -122,8 +123,9 @@ src/
 tests/                    Vitest specs mirroring src/; tests/e2e/ holds Playwright specs
 public/                   Favicons, fonts (Clash Display / Satoshi / Fragment Mono), project images
 .githooks/pre-push        Lockfile check; enabled by postinstall
-.github/workflows/ci.yml  single verify job on PR/push (full verify including Playwright e2e)
+.github/workflows/ci.yml  Frozen installs, full verification, Playwright report retention
 next.config.mjs           Non-CSP security headers
+pnpm-workspace.yaml       pnpm install-script approvals and dependency security overrides
 ```
 
 ## Notable systems
@@ -136,7 +138,7 @@ next.config.mjs           Non-CSP security headers
 
 - **Smooth scroll** (`src/lib/contexts/SmoothScroll.tsx`, `src/lib/smooth-scroll-helpers.ts`): Lenis on desktop wheel, native touch (`syncTouch: false`). `src/lib/scroll-navigation.ts` defaults programmatic scrolls to a bouncy `scrollEaseOut`. Nested scroll areas opt out with `data-lenis-prevent`.
 
-- **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, then webhook. The webhook auto-targets Discord, Slack, or a generic JSON consumer based on the URL, shaping each payload (and respecting per-provider length limits) accordingly. `tests/lib/contact/contact.test.ts` exercises the path end to end.
+- **Contact** (`src/lib/contact/`): honeypot, timing guard, Upstash-backed rate limit when configured (in-memory fallback otherwise), strict validation, and a 32 KB streaming request-body limit, then webhook delivery. The webhook auto-targets Discord, Slack, or a generic JSON consumer based on the URL, shaping each payload and respecting per-provider length limits. `submitContactRequest` applies a 15-second client timeout and maps API failures to typed, display-ready results. `tests/lib/contact/contact.test.ts` exercises the route end to end, `tests/lib/contact/submit.test.ts` covers client submission, and `tests/e2e/contact.spec.ts` covers the rendered form.
   - **Rate-limit identity and trusted proxy**: the limiter keys on the client IP, resolved in priority order from `cf-connecting-ip`, the left-most `x-forwarded-for` entry, then `x-real-ip` (see `TRUSTED_CLIENT_IP_HEADERS` in `src/lib/contact/abuse.ts`); when no IP is present it falls back to the submitter's email. These forwarding headers are client-spoofable, so the app must be deployed behind a trusted proxy/platform (e.g. Vercel) that overwrites them with the real peer address. If you deploy somewhere without that guarantee, an attacker can forge those headers to evade or poison the limiter, and the header trust order must be revisited.
 
 - **Copy-to-clipboard email** (`src/components/ui/CopyEmail.tsx`): the contact email is a copy button with a GSAP-driven clipboard animation (the "page" tears off and an accent check draws in on the cooldown). Falls back to a legacy copy path and honors reduced motion.
